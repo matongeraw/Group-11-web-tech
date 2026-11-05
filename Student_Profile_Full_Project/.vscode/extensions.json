@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "ritwickdey.LiveServer",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "toba.vsfire",
+    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "ecmel.vscode-html-css",
+    "christian-kohler.path-intellisense"
+  ]
+}

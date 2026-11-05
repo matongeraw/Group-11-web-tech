@@ -1,0 +1,10 @@
+{
+  "description": "A responsive student portal offering comprehensive academic profiles, course tracking, skills, projects, and contact info to support university students and staff.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
