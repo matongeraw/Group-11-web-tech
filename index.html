@@ -269,6 +269,11 @@
           <span class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">2</span>
         </button>
 
+         <button class="nav-btn" data-route="recommendations">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span>Recommendations</span>
+        </button>
+
         <button class="nav-btn" data-route="faculty-modules">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg>
           <span>My Taught Modules</span>
@@ -1105,13 +1110,79 @@
 
         <!-- VIEW: ACHIEVEMENTS -->
         <div class="page-stack screen-view" id="view-achievements">
+                    <div class="card" style="margin-bottom: 16px;">
+            <div class="section-head">
+              <div>
+                <h2>Recommendation Letters</h2>
+                <p>Request a letter from your lecturer, built from your verified achievements.</p>
+              </div>
+              <button type="button" class="btn btn-primary" onclick="openRequestModal()">+ Request Recommendation</button>
+            </div>
+            <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
+          </div>
           <div class="achievement-grid">
             <div class="card"><div class="medal">&#127894;</div><span class="badge badge-green">Verified</span><h3>Dean's Honour Roll</h3><p>Recognised for semester GPA performance (3.78).</p></div>
             <div class="card"><div class="medal">&#127942;</div><span class="badge badge-green">Verified</span><h3>GDSC Solution Challenge 2025</h3><p>1st Runner Up for campus accessibility prototype.</p></div>
             <div class="card"><div class="medal">&#128220;</div><span class="badge badge-green">Verified</span><h3>Cisco CCNA Certification</h3><p>Completed CCNA Introduction to Networks.</p></div>
           </div>
         </div>
-
+        <!-- VIEW: RECOMMENDATIONS (Natasha Nyamutsaka - 250426) -->
+        <section class="screen-view" id="view-recommendations" aria-labelledby="heading-recommendations">
+          <div class="screen-header">
+            <div>
+              <div class="screen-eyebrow">FAIR & EVIDENCE-BASED REFERENCES</div>
+              <h2 class="screen-title" id="heading-recommendations">Recommendation Letter Engine</h2>
+            </div>
+            <div class="screen-actions">
+              
+            </div>
+          </div>
+          
+          <!-- Recommendation Hero Card -->
+          <div class="welcome-card" style="background: linear-gradient(135deg, #151515 0%, #2a151b 100%);">
+            <div class="welcome-content">
+              <span class="eyebrow" style="color: #fca5a5;">INSTANT LETTER SYNTHESIS</span>
+              <h2>Cut letter writing turnaround from 10 days to minutes.</h2>
+              <p>The system auto-compiles your Dean's List standing, cumulative GPA, and faculty-verified achievements into an editable draft for your lecturer.</p>
+            </div>
+          </div>
+            <article class="card" style="margin-top: 2rem;">
+              <div class="card-header">
+                <h3 class="card-title">Incoming Student Requests</h3>
+              </div>
+              <div id="incoming-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
+            </article>
+          <!-- Generated Letter Preview Area -->
+          <article class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+              <h3 class="card-title">Simulated Recommendation Draft (AU Official Letterhead)</h3>
+              <button type="button" class="btn btn-secondary" onclick="window.print()">Print Official Letter</button>
+            </div>
+            <div class="recommendation-letter-box" id="recommendation-letter-preview" style="background: #fafafa; border: 1px solid #e2e8f0; padding: 2rem; font-family: var(--font-heading); line-height: 1.8;">
+              <div style="border-bottom: 2px solid var(--au-red); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <strong style="color: var(--au-red); font-size: 1.25rem;">AFRICA UNIVERSITY &bull; FACULTY OF ENGINEERING</strong>
+                <p style="font-size: 0.8125rem; font-family: var(--font-body); color: var(--text-muted); margin: 0;">Academic Reference &amp; Verified Credential Statement</p>
+              </div>
+              <p><strong>To the Admissions / Selection Committee,</strong></p>
+              <p>I am pleased to provide this official academic recommendation for <strong>Wayne Matongera (Student ID: AU250444)</strong>, currently enrolled in the Bachelor of Science (Honours) in Computer Science program at Africa University.</p>
+              <p>Wayne has maintained an exemplary academic record with a cumulative GPA of <strong>3.84 / 4.00</strong>, earning a confirmed position on the <strong>Dean's Honour Roll</strong>. Through verified coursework in Web Technologies (WTS201) and Data Structures (CSC201), he has demonstrated superior analytical ability and technical execution.</p>
+              <p>Beyond classroom excellence, the Africa University Student Verification Registry confirms his leadership as <strong>Vice Lead of the Google Developer Student Club (GDSC)</strong> and <strong>1st Runner Up in the Campus Solution Challenge 2025</strong>.</p>
+              <p>I recommend him without reservation.</p>
+              <div style="margin-top: 2rem;">
+                <strong>Dr. C. T. Chimedza, Ph.D.</strong><br>
+                <span style="font-size: 0.875rem; color: var(--text-muted);">Senior Lecturer &amp; Academic Supervisor &bull; Africa University</span>
+              </div>
+            </div>
+          </article>
+            <article class="card" style="margin-top: 2rem;">
+              <div class="card-header">
+                <h3 class="card-title">My Requests</h3>
+              </div>
+              <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+                <p id="my-requests-empty" style="font-size: 13px; color: var(--muted);">No requests yet. Click "Request New Recommendation" to start.</p>
+              </div>
+            </article>
+        </section>
         <!-- VIEW: PROJECTS -->
         <div class="page-stack screen-view" id="view-projects">
           <div class="project-grid">
@@ -1355,7 +1426,41 @@ Faculty of Engineering & Applied Sciences, Africa University</textarea>
       </form>
     </div>
   </div>
-
+    <div class="modal-scrim" id="modal-request-letter" style="display: none;">
+      <div class="modal" style="max-width: 560px;">
+        <button class="modal-close" type="button" onclick="closeRequestModal()">&times;</button>
+        <h2>Request a Recommendation Letter</h2>
+        <form id="request-letter-form" style="margin-top: 15px;">
+          <label class="field">
+            <span>Purpose</span>
+            <select id="letter-purpose" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+              <option value="Academic Reference">Academic Reference</option>
+              <option value="Master's Degree">Master's Degree</option>
+              <option value="Industrial Attachment">Industrial Attachment</option>
+              <option value="Scholarship">Scholarship</option>
+            </select>
+          </label>
+          <label class="field" style="margin-top: 10px;">
+            <span>Target Institution / Organization</span>
+            <input type="text" id="letter-target" placeholder="e.g. University of Cape Town" required>
+          </label>
+          <label class="field" style="margin-top: 10px;">
+            <span>Personal Statement / Key Points</span>
+            <textarea id="letter-statement" rows="3" style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 12px;"></textarea>
+          </label>
+          <div style="margin-top: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+            <span style="font-size: 11px; font-weight: 700; display: block; margin-bottom: 8px;">ATTACH VERIFIED ACHIEVEMENTS</span>
+            <label style="display: flex; gap: 8px; font-size: 12px; margin-bottom: 6px;"><input type="checkbox" name="letter-achievement" value="Dean's Honour Roll" checked> Dean's Honour Roll</label>
+            <label style="display: flex; gap: 8px; font-size: 12px; margin-bottom: 6px;"><input type="checkbox" name="letter-achievement" value="1st Runner Up, GDSC Solution Challenge 2025" checked> GDSC Solution Challenge 2025 (1st Runner Up)</label>
+            <label style="display: flex; gap: 8px; font-size: 12px;"><input type="checkbox" name="letter-achievement" value="Cisco CCNA: Introduction to Networks"> Cisco CCNA Certification</label>
+          </div>
+          <div class="form-actions" style="margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeRequestModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Send to Lecturer</button>
+          </div>
+        </form>
+      </div>
+    </div>
   <div id="toast-root"></div>
 
   <script src="script.js"></script>
