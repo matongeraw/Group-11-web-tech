@@ -601,3 +601,143 @@ window.markAllNotificationsRead = function() {
   }
   showToast('All notifications marked as read.');
 };
+
+/* ===== Recommendations page navigation (Natasha) ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  const recNav = document.querySelector('.nav-btn[data-route="recommendations"]');
+  if (!recNav) return;
+
+  recNav.addEventListener('click', (e) => {
+    e.stopImmediatePropagation();
+
+    // hide every view, show mine
+    document.querySelectorAll('.screen-view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-recommendations').classList.add('active');
+
+    // highlight my nav button only
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    recNav.classList.add('active');
+
+    // update the header title
+    const title = document.getElementById('header-title');
+    if (title) title.textContent = 'Recommendations';
+
+    window.scrollTo(0, 0);
+  }, true);
+
+  // make the Request button open the existing letter modal
+  document.getElementById('btn-open-request-letter')?.addEventListener('click', () => {
+    if (typeof openLetterModal === 'function') openLetterModal();
+  });
+});
+
+/* ===== Recommendation requests: student -> lecturer (Natasha) ===== */
+const REQ_KEY = 'auRecommendationRequests';
+const loadReqs = () => { try { return JSON.parse(localStorage.getItem(REQ_KEY)) || []; } catch (e) { return []; } };
+const saveReqs = (l) => { try { localStorage.setItem(REQ_KEY, JSON.stringify(l)); } catch (e) {} };
+const escHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function openRequestModal() { document.getElementById('modal-request-letter').style.display = 'flex'; }
+function closeRequestModal() { document.getElementById('modal-request-letter').style.display = 'none'; }
+
+function reqBadge(status) {
+  if (status === 'approved') return '<span class="badge badge-green">Approved &amp; Sealed</span>';
+  if (status === 'declined') return '<span class="badge badge-red">Declined by Lecturer</span>';
+  return '<span class="badge badge-amber">Pending Lecturer Review</span>';
+}
+
+function renderRequests() {
+  const list = loadReqs();
+
+  // Student side
+  const mine = document.getElementById('my-requests-list');
+  if (mine) {
+    mine.innerHTML = list.length ? list.map(r => `
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; border:1px solid var(--line); border-radius:10px; padding:12px 14px;">
+        <span><strong>${escHtml(r.purpose)} &rarr; ${escHtml(r.target)}</strong>
+        <small style="display:block; color:var(--muted);">Attached: ${escHtml(r.picked.join(', ') || 'None')}</small></span>
+        ${reqBadge(r.status)}
+      </div>`).join('')
+      : '<p style="font-size:13px; color:var(--muted);">No requests yet.</p>';
+  }
+
+  // Lecturer side
+  const inc = document.getElementById('incoming-requests-list');
+  if (inc) {
+    inc.innerHTML = list.length ? list.map(r => `
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border:1px solid var(--line); border-left:4px solid var(--red); border-radius:10px; padding:14px 16px;">
+        <span>
+          ${reqBadge(r.status)}
+          <strong style="display:block; margin-top:6px;">Wayne Matongera (250444) &mdash; ${escHtml(r.purpose)}</strong>
+          <small style="display:block; color:var(--muted);">To: ${escHtml(r.target)} &bull; Attached: ${escHtml(r.picked.join(', ') || 'None')}</small>
+        </span>
+        ${r.status === 'pending' ? `
+        <span style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary" onclick="reviewRequestDraft('${r.id}')" style="font-size:12px; padding:7px 14px;">Review &amp; Edit Draft</button>
+          <button type="button" class="btn btn-primary" onclick="decideRequest('${r.id}', 'approved')" style="font-size:12px; padding:7px 14px;">Approve</button>
+          <button type="button" class="btn btn-secondary" onclick="decideRequest('${r.id}', 'declined')" style="font-size:12px; padding:7px 14px;">Decline</button>
+        </span>` : ''}
+      </div>`).join('')
+      : '<p style="font-size:13px; color:var(--muted);">No student requests yet.</p>';
+  }
+}
+
+function reviewRequestDraft(id) {
+  const r = loadReqs().find(x => x.id === id);
+  const box = document.getElementById('recommendation-letter-preview');
+  if (!r || !box) return;
+  const ach = r.picked.length
+    ? `<p>The Africa University Student Verification Registry confirms: <strong>${r.picked.map(escHtml).join('</strong>; <strong>')}</strong>.</p>` : '';
+  const note = r.statement ? `<p>The student has asked that the following be noted: ${escHtml(r.statement)}</p>` : '';
+  box.innerHTML = `
+    <div style="border-bottom:2px solid var(--red); padding-bottom:1rem; margin-bottom:1.5rem;">
+      <strong style="color:var(--red); font-size:1.25rem;">AFRICA UNIVERSITY &bull; FACULTY OF ENGINEERING</strong>
+      <p style="font-size:0.8125rem; color:var(--muted); margin:0;">${escHtml(r.purpose)} &amp; Verified Credential Statement</p>
+    </div>
+    <div contenteditable="true">
+      <p><strong>To the ${escHtml(r.target)} Selection Committee,</strong></p>
+      <p>I am pleased to provide this official ${escHtml(r.purpose)} recommendation for <strong>Wayne Matongera (Student ID: 250444)</strong>, currently enrolled in the BSc. Computer Information Systems programme at Africa University.</p>
+      <p>Wayne has maintained an exemplary academic record with a cumulative GPA of <strong>3.78 / 4.00</strong>, earning a confirmed position on the <strong>Dean's Honour Roll</strong>.</p>
+      ${ach}${note}
+      <p>I recommend him without reservation.</p>
+      <div style="margin-top:2rem;"><strong>Dr. C. T. Chimedza, Ph.D.</strong><br>
+      <span style="font-size:0.875rem; color:var(--muted);">Senior Lecturer &amp; Academic Supervisor &bull; Africa University</span></div>
+    </div>`;
+  box.scrollIntoView({ behavior: 'smooth' });
+  showToast('Draft generated. Click the letter text to edit it.');
+}
+
+function decideRequest(id, decision) {
+  const list = loadReqs();
+  const r = list.find(x => x.id === id);
+  if (!r) return;
+  r.status = decision;
+  saveReqs(list);
+  renderRequests();
+  showToast(decision === 'approved' ? 'Letter approved and sealed. Student notified.' : 'Request declined. Student notified.');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderRequests();
+
+  document.getElementById('request-letter-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const list = loadReqs();
+    list.unshift({
+      id: 'req' + Date.now(),
+      purpose: document.getElementById('letter-purpose').value,
+      target: document.getElementById('letter-target').value,
+      statement: document.getElementById('letter-statement').value.trim(),
+      picked: [...document.querySelectorAll('input[name="letter-achievement"]:checked')].map(cb => cb.value),
+      status: 'pending'
+    });
+    saveReqs(list);
+    renderRequests();
+    closeRequestModal();
+    e.target.reset();
+    showToast('Request sent to your lecturer.');
+  });
+});
+
+// refresh the lists whenever someone logs in or clicks around
+document.addEventListener('click', () => setTimeout(renderRequests, 60));
