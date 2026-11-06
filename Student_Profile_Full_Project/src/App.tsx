@@ -93,7 +93,35 @@ function ExaminationPage(){return <div className="page-stack"><PageHead title="E
 function Progress(){return <div className="page-stack"><PageHead title="Academic Progress" subtitle="Track your journey, examination schedule, and results"/><Card className="progress-hero"><div><span className="eyebrow">Overall degree completion</span><h2>You’re 42% toward graduation</h2><p>Great progress, Wayne. Keep building momentum toward your degree.</p><div className="big-bar"><span/></div><div className="bar-labels"><span>Enrolled 2025</span><b>Expected graduation · June 2028</b></div></div><div className="progress-number"><strong>42%</strong><span>Complete</span></div></Card><div className="four-metrics">{[["Completed","16","Courses"],["Current","4","Courses"],["Outstanding","19","Courses"],["Credits earned","48","of 120"]].map(x=><Card key={x[0]}><span>{x[0]}</span><strong>{x[1]}</strong><small>{x[2]}</small></Card>)}</div><Card><SectionHead title="Course progress" subtitle="Current and recently completed modules"/><div className="course-progress">{[["Web Technologies",78],["Applied Statistics",100],["Mobile Applications",42],["Database Systems",90]].map(([n,s])=><div key={n}><span><strong>{n}</strong><b>{s}%</b></span><progress max="100" value={s as number}/></div>)}</div></Card><Card className="exam-card"><SectionHead title="Upcoming exam timetable" subtitle="Semester 1 · Final examinations" action={<button className="text-link" onClick={()=>location.hash="/calendar"}>Open calendar <Icon name="calendar"/></button>}/><div className="exam-table"><div className="exam-head"><span>Date</span><span>Course</span><span>Time</span><span>Venue</span><span>Status</span></div>{examSchedule.map(exam=><div className="exam-row" key={exam.code}><span><b>{exam.date.split(" ")[0]}</b><small>{exam.date.slice(3)}</small></span><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span>{exam.time}</span><span>{exam.venue}</span><Badge tone="amber">Upcoming</Badge></div>)}</div><div className="exam-note"><Icon name="clock"/><p>Examination venues may change. Confirm your timetable 24 hours before each paper and arrive 30 minutes early.</p></div></Card><Card className="exam-card"><SectionHead title="Previous examination results" subtitle="Verified marks from completed examinations" action={<div className="pass-key"><span/> Pass mark: 50%</div>}/><div className="results-table"><div className="results-head"><span>Course</span><span>Exam mark</span><span>Pass grade</span><span>Grade</span><span>Result</span></div>{previousExams.map(exam=><div className="results-row" key={exam.code}><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span className="mark"><b>{exam.mark}%</b><progress max="100" value={exam.mark}/></span><span>{exam.pass}%</span><strong>{exam.grade}</strong><Badge tone={exam.mark>=exam.pass?"green":"red"}>{exam.mark>=exam.pass?"Passed":"Failed"}</Badge></div>)}</div></Card></div>}
 function Achievements({go}:{go:(p:string)=>void}){
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [achievementList, setAchievementList] = useState(achievements);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const [achievementList, setAchievementList] = useState([
+    {
+      title: "Dean's List",
+      type: "Academic",
+      date: "Semester 2 · 2025",
+      detail: "Recognises students who maintained exceptional academic performance across a full semester.",
+      status: "Verified",
+      rejectionReason: ""
+    },
+    {
+      title: "Google UX Design Certificate",
+      type: "Certifications",
+      date: "August 2025",
+      detail: "Completed a professional programme covering user research, interaction design, and prototyping.",
+      status: "Verified",
+      rejectionReason: ""
+    },
+    {
+      title: "Community Outreach Lead",
+      type: "Leadership",
+      date: "September 2025",
+      detail: "Led local digital literacy workshop.",
+      status: "Changes Requested / Rejected",
+      rejectionReason: "Please upload an official letter from the program coordinator confirming your contact hours."
+    }
+  ]);
+
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Academic");
   const [date, setDate] = useState("");
@@ -107,7 +135,8 @@ function Achievements({go}:{go:(p:string)=>void}){
       type: category,
       date: date || "Pending Review",
       detail: `Evidence: ${evidence} (Impact Level: ${level})`,
-      status: "Pending Review"
+      status: "Pending Review",
+      rejectionReason: ""
     };
     setAchievementList([newAchievement, ...achievementList]);
     setIsModalOpen(false);
@@ -115,6 +144,10 @@ function Achievements({go}:{go:(p:string)=>void}){
     setEvidence("");
     setDate("");
   };
+
+  const filteredList = achievementList.filter(
+    (a) => selectedCategory === "All" || a.type === selectedCategory
+  );
 
   return (
     <div className="page-stack">
@@ -132,18 +165,47 @@ function Achievements({go}:{go:(p:string)=>void}){
         }
       />
       
+      {/* Category Filter Buttons */}
+      <div className="segmented" style={{ marginBottom: "1.5rem" }} role="group" aria-label="Achievement Category Filter">
+        {["All", "Academic", "Leadership", "Certifications", "Innovation", "Sports", "Volunteering"].map((cat) => (
+          <button
+            key={cat}
+            className={selectedCategory === cat ? "active" : ""}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       <div className="achievement-grid">
-        {achievementList.map((a, i) => (
+        {filteredList.map((a, i) => (
           <Card key={i} className="clickable" onClick={() => go(`achievement/${i}`)}>
             <div className="card-top">
               <span className="medal"><Icon name={i === 0 ? "trophy" : i === 1 ? "award" : "spark"} /></span>
-              <Badge tone={a.status === "Pending Review" ? "amber" : "green"}>
+              <Badge 
+                tone={
+                  a.status === "Pending Review" 
+                    ? "amber" 
+                    : a.status === "Changes Requested / Rejected" 
+                    ? "red" 
+                    : "green"
+                }
+              >
                 <Icon name="check" size={12} /> {a.status || "Verified"}
               </Badge>
             </div>
             <span className="eyebrow">{a.type}</span>
             <h3>{a.title}</h3>
             <p><Icon name="calendar" /> {a.date}</p>
+
+            {/* Rejection Feedback Callout Box */}
+            {a.status === "Changes Requested / Rejected" && a.rejectionReason && (
+              <div style={{ marginTop: "0.75rem", padding: "0.75rem", background: "#fef2f2", borderLeft: "3px solid #ef4444", borderRadius: "4px", fontSize: "0.8125rem", color: "#991b1b" }}>
+                <strong>Verifier Feedback:</strong> {a.rejectionReason}
+              </div>
+            )}
+
             <span className="text-link">View credential <Icon name="arrow" /></span>
           </Card>
         ))}
