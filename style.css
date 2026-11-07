@@ -460,3 +460,39 @@
     width: 100%;
   }
 }
+
+.interactive-calendar .calendar-days > button {
+  position: relative;
+}
+.interactive-calendar .calendar-days > button.has-event > .event-dots {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+}
+.event-dots .event-marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.agenda-item > .event-marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  flex: none;
+}
+@media (max-width: 520px) {
+  .exam-card {
+    padding: 14px;
+  }
+  .exam-card .section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

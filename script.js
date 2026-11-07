@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     overview: 'Overview',
     'personal-academic': 'Personal & Academic',
     courses: 'Courses',
+    calendar: 'Calendar',
+    examination: 'Examination',
     'academic-progress': 'Academic Progress',
     'skills-activities': 'Skills & Activities',
     achievements: 'Achievements',
@@ -38,9 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
     'admin-verifiers': 'Verifier Governance'
   };
 
-  const studentRoutes = ['overview', 'personal-academic', 'courses', 'academic-progress', 'skills-activities', 'achievements', 'projects', 'contact'];
+  const studentRoutes = ['overview', 'personal-academic', 'courses', 'calendar', 'examination', 'academic-progress', 'skills-activities', 'achievements', 'projects', 'contact'];
   const lecturerRoutes = ['faculty-dashboard', 'verification-queue', 'reference-requests', 'faculty-modules', 'supervised-students'];
   const adminRoutes = ['admin-dashboard', 'admin-transcripts', 'admin-id-validation', 'admin-verifiers'];
+
+  let activeRoute = '';
+  const courseMenu = document.getElementById('course-submenu');
+  const courseButton = document.querySelector('.course-nav-group > .nav-btn');
 
   window.navigate = function(route) {
     // Validate route or assign default based on current role
@@ -67,12 +73,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update active nav button
     document.querySelectorAll('.nav-btn, .nav-sub').forEach(btn => {
-      if (btn.getAttribute('data-route') === route) {
+      const btnRoute = btn.getAttribute('data-route');
+      if (btnRoute === route || (btnRoute === 'courses' && ['calendar', 'examination'].includes(route))) {
         btn.classList.add('active');
       } else {
         btn.classList.remove('active');
       }
     });
+
+    if (courseMenu && courseButton) {
+      const isCourseChild = ['calendar', 'examination'].includes(route);
+      if (isCourseChild || (route === 'courses' && activeRoute !== 'courses')) {
+        courseMenu.classList.add('open');
+      } else if (route !== 'courses') {
+        courseMenu.classList.remove('open');
+      }
+      courseButton.setAttribute('aria-expanded', String(courseMenu.classList.contains('open')));
+    }
 
     // Update active view (Strict single-view display)
     document.querySelectorAll('.screen-view').forEach(v => {
@@ -88,8 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
       headerTitle.textContent = routeTitles[route];
     }
 
+    activeRoute = route;
+
     // Close mobile sidebar if open
-    if (sidebar) sidebar.classList.remove('open');
+    if (sidebar && route !== 'courses') sidebar.classList.remove('open');
 
     // Update URL hash
     window.location.hash = `#/${route}`;
@@ -99,9 +118,143 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-btn, .nav-sub').forEach(btn => {
     btn.addEventListener('click', () => {
       const route = btn.getAttribute('data-route');
-      if (route) navigate(route);
+      if (!route) return;
+      if (route === 'courses' && activeRoute === 'courses' && courseMenu) {
+        courseMenu.classList.toggle('open');
+        if (courseButton) courseButton.setAttribute('aria-expanded', String(courseMenu.classList.contains('open')));
+        return;
+      }
+      navigate(route);
     });
   });
+
+  const calendarDays = document.getElementById('calendar-days');
+  const calendarMonth = document.getElementById('calendar-month');
+  const calendarEventCount = document.getElementById('calendar-event-count');
+  const agendaDate = document.getElementById('agenda-date');
+  const agendaCount = document.getElementById('agenda-count');
+  const agendaList = document.getElementById('agenda-list');
+
+  if (calendarDays && calendarMonth && calendarEventCount && agendaDate && agendaCount && agendaList) {
+    const calendarEvents = [
+      { date: '2026-11-03', title: 'WTS201 Project Submission', time: 'Due by 23:59', location: 'Learning Portal', category: 'academic' },
+      { date: '2026-11-07', title: 'Responsible AI Workshop', time: '10:00–13:00', location: 'Innovation Hub', category: 'institution' },
+      { date: '2026-11-10', title: 'Web Technologies Examination', time: '09:00–12:00', location: 'Great Hall', category: 'academic' },
+      { date: '2026-11-12', title: 'Applied Statistics Examination', time: '14:00–17:00', location: 'New Building 14', category: 'academic' },
+      { date: '2026-11-14', title: 'University Sports Day', time: '08:00–16:00', location: 'University Sports Grounds', category: 'institution' },
+      { date: '2026-11-15', title: 'Mobile Applications Examination', time: '09:00–12:00', location: 'ICT Lab 2', category: 'academic' },
+      { date: '2026-11-20', title: 'Student Robotics Showcase', time: '13:00–16:00 · Pending approval', location: 'Innovation Hub', category: 'pending' }
+    ];
+    let calendarDate = new Date(2026, 10, 1);
+    let selectedDate = '2026-11-14';
+
+    const dateKey = (year, month, day) => `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const renderAgenda = () => {
+      const events = calendarEvents.filter(event => event.date === selectedDate);
+      const selected = new Date(`${selectedDate}T00:00:00`);
+      agendaDate.textContent = selected.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+      agendaCount.textContent = `${events.length} scheduled ${events.length === 1 ? 'event' : 'events'}`;
+      agendaList.replaceChildren();
+
+      if (!events.length) {
+        const empty = document.createElement('div');
+        empty.className = 'agenda-empty';
+        empty.textContent = 'No events scheduled for this day.';
+        agendaList.append(empty);
+        return;
+      }
+
+      events.forEach(event => {
+        const item = document.createElement('div');
+        item.className = 'agenda-item';
+        const marker = document.createElement('span');
+        marker.className = `event-marker ${event.category}`;
+        marker.setAttribute('aria-hidden', 'true');
+        const details = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = event.title;
+        const time = document.createElement('small');
+        time.textContent = event.time;
+        const venue = document.createElement('small');
+        venue.textContent = event.location;
+        details.append(title, time, venue);
+        item.append(marker, details);
+        agendaList.append(item);
+      });
+    };
+
+    const renderCalendar = () => {
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+      const monthEvents = calendarEvents.filter(event => event.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`));
+      const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
+
+      calendarMonth.textContent = calendarDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+      calendarEventCount.textContent = `${monthEvents.length} events scheduled`;
+      calendarDays.replaceChildren();
+
+      for (let blank = 0; blank < firstWeekday; blank += 1) {
+        const empty = document.createElement('span');
+        empty.setAttribute('role', 'presentation');
+        calendarDays.append(empty);
+      }
+
+      for (let day = 1; day <= daysInMonth; day += 1) {
+        const key = dateKey(year, month, day);
+        const dayEvents = calendarEvents.filter(event => event.date === key);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('role', 'gridcell');
+        button.setAttribute('aria-label', `${new Date(year, month, day).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}${dayEvents.length ? `, ${dayEvents.length} scheduled ${dayEvents.length === 1 ? 'event' : 'events'}` : ''}`);
+        if (key === selectedDate) button.classList.add('selected');
+        if (key === todayKey) button.classList.add('current-day');
+        if (dayEvents.length) button.classList.add('has-event');
+
+        const number = document.createElement('b');
+        number.textContent = day;
+        button.append(number);
+        if (dayEvents.length) {
+          const markers = document.createElement('span');
+          markers.className = 'event-dots';
+          markers.setAttribute('aria-hidden', 'true');
+          [...new Set(dayEvents.map(event => event.category))].forEach(category => {
+            const dot = document.createElement('i');
+            dot.className = `event-marker ${category}`;
+            markers.append(dot);
+          });
+          button.append(markers);
+        }
+        button.addEventListener('click', () => {
+          selectedDate = key;
+          renderCalendar();
+        });
+        calendarDays.append(button);
+      }
+
+      renderAgenda();
+    };
+
+    document.getElementById('calendar-prev')?.addEventListener('click', () => {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+      selectedDate = dateKey(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+      renderCalendar();
+    });
+    document.getElementById('calendar-next')?.addEventListener('click', () => {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
+      selectedDate = dateKey(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+      renderCalendar();
+    });
+    document.getElementById('calendar-today')?.addEventListener('click', () => {
+      const today = new Date();
+      calendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      selectedDate = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
+      renderCalendar();
+    });
+    renderCalendar();
+  }
 
   // Handle URL hash on load
   function syncHash() {
