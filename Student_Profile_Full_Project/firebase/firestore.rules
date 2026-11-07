@@ -5,15 +5,27 @@ service cloud.firestore {
     function role() { return signedIn() ? request.auth.token.role : null; }
     function isAdmin() { return role() == 'admin'; }
     function isLecturer() { return role() == 'lecturer'; }
+    function isAssignedStudent(classId) {
+      return signedIn() && role() == 'student' &&
+        classId is string && classId != '' &&
+        exists(/databases/$(database)/documents/classes/$(classId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/classes/$(classId)).data.studentUids;
+    }
+    function isAssignedClassLecturer(classId) {
+      return signedIn() && isLecturer() &&
+        classId is string && classId != '' &&
+        exists(/databases/$(database)/documents/classes/$(classId)) &&
+        get(/databases/$(database)/documents/classes/$(classId)).data.lecturerUid == request.auth.uid;
+    }
     match /users/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || isAdmin() || (isLecturer() && resource.data.role == 'student'));
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow create: if signedIn() && request.auth.uid == uid && request.resource.data.role == 'student' && request.resource.data.status == 'active';
       allow update: if signedIn() && request.auth.uid == uid && request.resource.data.role == resource.data.role && request.resource.data.status == resource.data.status;
       allow delete: if isAdmin();
     }
     match /students/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || isAdmin() || (isLecturer() && resource.data.role == 'student'));
-      allow write: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
     }
     match /lecturers/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
@@ -23,8 +35,37 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create, update, delete: if isAdmin() || isLecturer();
     }
+    match /events/{id} {
+      allow read: if signedIn() && (isAdmin() || resource.data.status == 'approved');
+      allow create, update, delete: if isAdmin();
+    }
+    match /courses/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /classes/{id} {
+      allow read: if signedIn() && (
+        isAdmin() ||
+        (isLecturer() && resource.data.lecturerUid == request.auth.uid) ||
+        (role() == 'student' && request.auth.uid in resource.data.studentUids)
+      );
+      allow write: if isAdmin();
+    }
+    match /timetables/{id} {
+      allow read: if signedIn() && (
+        isAdmin() ||
+        (isLecturer() && resource.data.lecturerUid == request.auth.uid) ||
+        isAssignedStudent(resource.data.classId)
+      );
+      allow write: if isAdmin();
+    }
     match /documents/{id} {
-      allow read: if signedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin() || isLecturer());
+      allow read: if signedIn() && (
+        resource.data.ownerUid == request.auth.uid ||
+        isAdmin() ||
+        (isAssignedClassLecturer(resource.data.classId) &&
+          resource.data.ownerUid in get(/databases/$(database)/documents/classes/$(resource.data.classId)).data.studentUids)
+      );
       allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
       allow update, delete: if signedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
     }
