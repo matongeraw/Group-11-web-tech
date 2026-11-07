@@ -807,7 +807,7 @@ window.performLogin = function(e) {
   if (loginView) loginView.style.display = 'none';
   if (portalShell) portalShell.style.display = 'flex';
 
-  applyRoleUI(currentRole);
+  if (typeof applyRoleUI === 'function') applyRoleUI(currentRole || 'student');
 
   const roleLabels = {
     student: 'Wayne Matongera (Student)',
@@ -815,8 +815,62 @@ window.performLogin = function(e) {
     admin: 'Academic Registry (Administrator)'
   };
 
-  showToast(`Welcome back, ${roleLabels[currentRole] || 'User'}!`);
-  window.navigate('overview');
+  if (typeof showToast === 'function') {
+    showToast(`Welcome back, ${roleLabels[currentRole || 'student'] || 'User'}!`);
+  }
+  if (typeof navigate === 'function') navigate('overview');
+};
+
+window.performLogout = function() {
+  const loginView = document.getElementById('login-view');
+  const portalShell = document.getElementById('portal-shell');
+
+  if (portalShell) portalShell.style.display = 'none';
+  if (loginView) loginView.style.display = 'grid';
+
+  if (typeof showToast === 'function') {
+    showToast('You have been signed out securely.');
+  }
+};
+
+window.applyRoleUI = function(role) {
+  currentRole = role || 'student';
+  const topKicker = document.getElementById('top-kicker');
+  const topRoleBadge = document.getElementById('topbar-role-badge');
+  const sideRoleLabel = document.getElementById('sidebar-role-label');
+  const miniName = document.getElementById('mini-user-name');
+  const miniId = document.getElementById('mini-user-id');
+
+  const navStudent = document.getElementById('nav-student');
+  const navLecturer = document.getElementById('nav-lecturer');
+  const navAdmin = document.getElementById('nav-admin');
+
+  if (navStudent) navStudent.style.display = currentRole === 'student' ? 'flex' : 'none';
+  if (navLecturer) navLecturer.style.display = currentRole === 'lecturer' ? 'flex' : 'none';
+  if (navAdmin) navAdmin.style.display = currentRole === 'admin' ? 'flex' : 'none';
+
+  if (role === 'student') {
+    if (miniName) miniName.textContent = 'Wayne Matongera';
+    if (miniId) miniId.textContent = '250444';
+    if (topRoleBadge) {
+      topRoleBadge.textContent = 'Student Mode';
+      topRoleBadge.className = 'role-badge-pill role-badge-student';
+    }
+  } else if (role === 'lecturer') {
+    if (miniName) miniName.textContent = 'Dr. C. T. Chimedza';
+    if (miniId) miniId.textContent = '250731';
+    if (topRoleBadge) {
+      topRoleBadge.textContent = 'Lecturer Mode';
+      topRoleBadge.className = 'role-badge-pill role-badge-lecturer';
+    }
+  } else if (role === 'admin') {
+    if (miniName) miniName.textContent = 'Academic Registry';
+    if (miniId) miniId.textContent = '240618';
+    if (topRoleBadge) {
+      topRoleBadge.textContent = 'Admin Mode';
+      topRoleBadge.className = 'role-badge-pill role-badge-admin';
+    }
+  }
 };
 // Hide navbars first
   if (navStudent) navStudent.style.display = 'none';
