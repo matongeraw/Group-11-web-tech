@@ -1255,6 +1255,28 @@
                 <p>Request a letter from your lecturer, built from your verified achievements.</p>
               </div>
               <button type="button" class="btn btn-primary" onclick="openRequestModal()">+ Request Recommendation</button>
+              <!-- VIEW: ACHIEVEMENTS -->
+<div class="page-stack screen-view" id="view-achievements">
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="section-head">
+      <div>
+        <h2>Recommendation Letters & Verified Credentials</h2>
+        <p>Request a letter from your lecturer or log a new milestone for verification.</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-secondary" onclick="openRequestModal()">+ Request Recommendation</button>
+        
+        <button type="button" class="btn btn-primary" id="btn-open-add-achievement" onclick="openAddAchievementModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          + Log New Achievement
+        </button>
+      </div>
+    </div>
+    <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
+  </div>
             </div>
             <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
           </div>
@@ -1602,5 +1624,62 @@ Faculty of Engineering & Applied Sciences, Africa University</textarea>
   <div id="toast-root"></div>
 
   <script src="script.js"></script>
+  <!-- Modal: Log New Achievement -->
+  <div class="modal-scrim" id="modal-add-achievement" style="display: none;">
+    <div class="modal" style="max-width: 540px;">
+      <button class="modal-close" type="button" onclick="closeAddAchievementModal()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span class="badge badge-amber">Workshop Section 4.1</span>
+        <span style="font-size: 12px; color: var(--muted);">Student Self-Reporting & Verification</span>
+      </div>
+      <h2>Log New Student Achievement</h2>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+        Submit credentials, awards, or certs for faculty verifier approval. Unverified items remain marked pending.
+      </p>
+
+      <form id="form-log-achievement" onsubmit="handleAchievementSubmit(event)" style="margin-top: 15px;">
+        <label class="field">
+          <span>Achievement Title *</span>
+          <input type="text" id="achieve-title" placeholder="e.g. 1st Place National Hackathon" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Category *</span>
+          <select id="achieve-category" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Academic">Academic Awards & Honors</option>
+            <option value="Leadership">Student Leadership & Governance</option>
+            <option value="Certifications">Industry Certifications</option>
+            <option value="Innovation">Projects & Innovation</option>
+            <option value="Sports">Sports & Athletics</option>
+            <option value="Volunteering">Community Engagement & Volunteering</option>
+          </select>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Date Completed *</span>
+          <input type="date" id="achieve-date" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Impact Level</span>
+          <select id="achieve-level" style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Major">Major (National / International recognition)</option>
+            <option value="Moderate">Moderate (University-wide impact)</option>
+            <option value="Minor">Minor (Departmental / Class activity)</option>
+          </select>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Evidence Description or Document URL *</span>
+          <textarea id="achieve-evidence" rows="3" placeholder="Describe certificate or paste link..." required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 12px;"></textarea>
+        </label>
+
+        <div class="form-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddAchievementModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit for Verification</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>

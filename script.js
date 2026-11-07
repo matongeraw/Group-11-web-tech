@@ -1093,6 +1093,7 @@ function reqBadge(status) {
   return '<span class="badge badge-amber">Pending Lecturer Review</span>';
 }
 
+
 function renderRequests() {
   const list = loadReqs();
 
@@ -1181,10 +1182,45 @@ document.addEventListener('DOMContentLoaded', () => {
     saveReqs(list);
     renderRequests();
     closeRequestModal();
+
     e.target.reset();
     showToast('Request sent to your lecturer.');
   });
 });
+function openAddAchievementModal() {
+  const modal = document.getElementById('modal-add-achievement');
+  if (modal) modal.style.display = 'flex';
+}
 
+function closeAddAchievementModal() {
+  const modal = document.getElementById('modal-add-achievement');
+  if (modal) modal.style.display = 'none';
+}
+
+function handleAchievementSubmit(e) {
+  e.preventDefault();
+  const title = document.getElementById('achieve-title').value;
+  const category = document.getElementById('achieve-category').value;
+  const date = document.getElementById('achieve-date').value;
+  
+  const grid = document.querySelector('#view-achievements .achievement-grid');
+  if (grid) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="medal">&#127941;</div>
+      <span class="badge badge-amber">Pending Review</span>
+      <h3>${title}</h3>
+      <p>${category} &bull; Submitted ${date}</p>
+    `;
+    grid.prepend(card);
+  }
+  
+  closeAddAchievementModal();
+  document.getElementById('form-log-achievement').reset();
+  if (typeof showToast === 'function') {
+    showToast('Achievement submitted for faculty verification!');
+  }
+}
 // refresh the lists whenever someone logs in or clicks around
 document.addEventListener('click', () => setTimeout(renderRequests, 60));
