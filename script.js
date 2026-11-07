@@ -134,24 +134,236 @@ document.addEventListener('DOMContentLoaded', () => {
   const agendaDate = document.getElementById('agenda-date');
   const agendaCount = document.getElementById('agenda-count');
   const agendaList = document.getElementById('agenda-list');
+  const holidaySourceStatus = document.getElementById('holiday-source-status');
+  const calendarTooltip = document.getElementById('calendar-tooltip');
+  const eventModal = document.getElementById('calendar-event-modal');
+  const eventDialog = eventModal?.querySelector('.calendar-event-dialog');
+  const eventDialogTitle = document.getElementById('calendar-event-dialog-title');
+  const eventDetails = document.getElementById('calendar-event-details');
 
-  if (calendarDays && calendarMonth && calendarEventCount && agendaDate && agendaCount && agendaList) {
-    const calendarEvents = [
-      { date: '2026-11-03', title: 'WTS201 Project Submission', time: 'Due by 23:59', location: 'Learning Portal', category: 'academic' },
-      { date: '2026-11-07', title: 'Responsible AI Workshop', time: '10:00–13:00', location: 'Innovation Hub', category: 'institution' },
-      { date: '2026-11-10', title: 'Web Technologies Examination', time: '09:00–12:00', location: 'Great Hall', category: 'academic' },
-      { date: '2026-11-12', title: 'Applied Statistics Examination', time: '14:00–17:00', location: 'New Building 14', category: 'academic' },
-      { date: '2026-11-14', title: 'University Sports Day', time: '08:00–16:00', location: 'University Sports Grounds', category: 'institution' },
-      { date: '2026-11-15', title: 'Mobile Applications Examination', time: '09:00–12:00', location: 'ICT Lab 2', category: 'academic' },
-      { date: '2026-11-20', title: 'Student Robotics Showcase', time: '13:00–16:00 · Pending approval', location: 'Innovation Hub', category: 'pending' }
+  if (calendarDays && calendarMonth && calendarEventCount && agendaDate && agendaCount && agendaList && holidaySourceStatus && calendarTooltip && eventModal && eventDialog && eventDialogTitle && eventDetails) {
+    const prototypeEvents = [
+      { id: 'wts-project', title: 'WTS201 Project Submission', description: 'Final submission deadline for the Web Technologies project. Submit the project archive and repository link before the portal closes.', date: '2026-11-03', startTime: 'Not specified', endTime: '23:59', location: 'Learning Portal', category: 'academic', approvalStatus: 'Not applicable', organizer: 'Computing & Technology Department', instructions: 'Submit the project archive and repository link before the portal closes.' },
+      { id: 'ai-workshop', title: 'Responsible AI Workshop', description: 'A proposed academic workshop exploring responsible and inclusive uses of artificial intelligence. This is a fictional prototype event and has not been verified or approved by the university.', date: '2026-11-07', startTime: '10:00', endTime: '13:00', location: 'Innovation Hub', category: 'pending', approvalStatus: 'Proposed — fictional prototype; institutional approval not verified', organizer: 'Computing & Technology Department (prototype)', instructions: 'Registration and event details are not confirmed. Check official university announcements before making plans.' },
+      { id: 'wts-exam', title: 'Web Technologies Examination', description: 'Final examination for Web Technologies (WTS201). This timetable entry is fictional prototype data and must be confirmed with the Academic Registry.', date: '2026-11-10', startTime: '09:00', endTime: '12:00', location: 'Great Hall', category: 'academic', approvalStatus: 'Prototype timetable — verify with Academic Registry', organizer: 'Academic Registry (prototype)', instructions: 'Arrive 30 minutes early with your student ID and approved stationery.' },
+      { id: 'sta-exam', title: 'Applied Statistics Examination', description: 'Final examination for Applied Statistics (STA201). This timetable entry is fictional prototype data and must be confirmed with the Academic Registry.', date: '2026-11-12', startTime: '14:00', endTime: '17:00', location: 'New Building 14', category: 'academic', approvalStatus: 'Prototype timetable — verify with Academic Registry', organizer: 'Academic Registry (prototype)', instructions: 'A non-programmable calculator is permitted. Arrive 30 minutes early.' },
+      { id: 'sports-day', title: 'University Sports Day', description: 'A proposed day featuring athletics, team sports, wellness activities, and student participation. This is a fictional prototype event; university approval and arrangements have not been verified.', date: '2026-11-14', startTime: '08:00', endTime: '16:00', location: 'University Sports Grounds (prototype)', category: 'pending', approvalStatus: 'Proposed — fictional prototype; institutional approval not verified', organizer: 'University Sports Office (prototype)', instructions: 'Date, venue, registration, and participation requirements are not confirmed. Follow official university announcements.' },
+      { id: 'cis-exam', title: 'Mobile Applications Examination', description: 'Final practical examination for Mobile Applications (CIS202). This timetable entry is fictional prototype data and must be confirmed with the Academic Registry.', date: '2026-11-15', startTime: '09:00', endTime: '12:00', location: 'ICT Lab 2', category: 'academic', approvalStatus: 'Prototype timetable — verify with Academic Registry', organizer: 'Academic Registry (prototype)', instructions: 'Use your assigned laboratory workstation and arrive 30 minutes early.' },
+      { id: 'robotics-showcase', title: 'Student Robotics Showcase', description: 'A proposed exhibition of student robotics projects. Event details remain subject to institutional approval; this is fictional prototype data.', date: '2026-11-20', startTime: '13:00', endTime: '16:00', location: 'Innovation Hub (proposed)', category: 'pending', approvalStatus: 'Pending — fictional prototype; institutional approval not verified', organizer: 'Developer Student Club (prototype)', instructions: 'Do not make travel or participation arrangements until approval is confirmed through official university channels.' },
+      { id: 'unity-day-gathering', title: 'Campus Community Gathering', description: 'A proposed campus gathering shown alongside the public holiday to demonstrate how multiple entries on one date are displayed. This fictional prototype event is not institutionally verified.', date: '2026-12-22', startTime: '10:00', endTime: '12:00', location: 'Main Campus (proposed)', category: 'pending', approvalStatus: 'Proposed — fictional prototype; institutional approval not verified', organizer: 'Student Affairs (prototype)', instructions: 'This prototype listing is not a confirmed event. Confirm university opening hours and arrangements before attending.' },
+      { id: 'orientation-2027', title: 'New Student Orientation', description: 'A proposed orientation introducing new students to academic services, campus life, and university policies. This is fictional prototype data and has not been confirmed by the institution.', date: '2027-01-12', startTime: '08:30', endTime: '15:30', location: 'Main Auditorium (proposed)', category: 'pending', approvalStatus: 'Proposed — fictional prototype; institutional approval not verified', organizer: 'Student Affairs (prototype)', instructions: 'Date, venue, and required registration documents must be confirmed through official university channels.' }
     ];
+    const holidayCache = new Map();
     let calendarDate = new Date(2026, 10, 1);
     let selectedDate = '2026-11-14';
+    let holidayRequestId = 0;
+    let tooltipTimer;
+    let modalOpenerDate = null;
 
     const dateKey = (year, month, day) => `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const parseDate = date => {
+      const [year, month, day] = date.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    };
+    const categoryLabel = category => ({
+      institution: 'Institution-approved event',
+      pending: 'Proposed / pending university event',
+      academic: 'Academic event',
+      holiday: 'Zimbabwe public holiday'
+    }[category] || 'Calendar event');
+    const eventsForDate = date => [
+      ...prototypeEvents.filter(event => event.date === date),
+      ...(holidayCache.get(Number(date.slice(0, 4))) || []).filter(event => event.date === date)
+    ];
+    const monthEvents = year => [
+      ...prototypeEvents.filter(event => event.date.startsWith(`${year}-${String(calendarDate.getMonth() + 1).padStart(2, '0')}`)),
+      ...(holidayCache.get(year) || []).filter(event => event.date.startsWith(`${year}-${String(calendarDate.getMonth() + 1).padStart(2, '0')}`))
+    ];
+
+    const setHolidayStatus = (message, isError = false, retryYear = null) => {
+      holidaySourceStatus.replaceChildren();
+      holidaySourceStatus.classList.toggle('error', isError);
+      holidaySourceStatus.append(document.createTextNode(message));
+      if (retryYear !== null) {
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.className = 'holiday-retry';
+        retry.textContent = 'Retry';
+        retry.addEventListener('click', () => loadHolidays(retryYear, true));
+        holidaySourceStatus.append(' ', retry);
+      }
+    };
+
+    const loadHolidays = async (year, retry = false) => {
+      if (!retry && holidayCache.has(year)) {
+        setHolidayStatus(`${holidayCache.get(year).length} Zimbabwe public holidays loaded from Nager.Date for ${year}.`);
+        return;
+      }
+
+      const requestId = ++holidayRequestId;
+      setHolidayStatus(`Loading Zimbabwe public holidays for ${year} from Nager.Date…`);
+      try {
+        const response = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/ZW`, {
+          headers: { Accept: 'application/json' }
+        });
+        if (!response.ok) throw new Error(`Holiday source returned HTTP ${response.status}.`);
+        const records = await response.json();
+        if (!Array.isArray(records)) throw new Error('Holiday source returned an invalid response.');
+
+        const holidays = records.map(record => {
+          if (!record || typeof record.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(record.date) || !record.date.startsWith(`${year}-`)) {
+            throw new Error('Holiday source returned an invalid date.');
+          }
+          const title = typeof record.localName === 'string' && record.localName.trim()
+            ? record.localName
+            : record.name;
+          if (typeof title !== 'string' || !title.trim()) throw new Error('Holiday source returned a holiday without a name.');
+          return {
+            id: `zw-holiday-${record.date}-${title}`,
+            title,
+            description: `${title} is listed as a Zimbabwe public holiday by Nager.Date. Check current government announcements for official observance and any local arrangements.`,
+            date: record.date,
+            startTime: 'All day',
+            endTime: 'Not specified by the holiday source',
+            location: 'Zimbabwe; local arrangements may vary',
+            category: 'holiday',
+            approvalStatus: 'Listed as a public holiday by Nager.Date; confirm with Zimbabwean authorities',
+            organizer: 'Public holiday data: Nager.Date',
+            instructions: 'Public holiday dates are provided by a third-party data source and are not an institutional calendar. Verify observance and university opening arrangements with official authorities.'
+          };
+        });
+
+        holidayCache.set(year, holidays);
+        if (requestId !== holidayRequestId || calendarDate.getFullYear() !== year) return;
+        setHolidayStatus(`${holidays.length} Zimbabwe public holidays loaded from Nager.Date for ${year}. Verify observance with official authorities.`);
+        renderCalendar();
+      } catch (error) {
+        if (requestId !== holidayRequestId || calendarDate.getFullYear() !== year) return;
+        const message = error instanceof Error ? error.message : 'Unknown network error.';
+        setHolidayStatus(`Zimbabwe public holidays could not be loaded from Nager.Date: ${message}`, true, year);
+        renderCalendar();
+      }
+    };
+
+    const hideTooltip = () => {
+      clearTimeout(tooltipTimer);
+      calendarTooltip.hidden = true;
+      calendarTooltip.replaceChildren();
+    };
+
+    const showTooltip = (events, date, anchor) => {
+      clearTimeout(tooltipTimer);
+      calendarTooltip.replaceChildren();
+      const heading = document.createElement('strong');
+      heading.textContent = `${events.length} ${events.length === 1 ? 'event' : 'events'} · ${parseDate(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}`;
+      calendarTooltip.append(heading);
+      events.slice(0, 2).forEach(event => {
+        const item = document.createElement('div');
+        item.className = 'calendar-tooltip-event';
+        const title = document.createElement('b');
+        title.textContent = event.title;
+        const category = document.createElement('small');
+        category.textContent = categoryLabel(event.category);
+        const description = document.createElement('p');
+        description.textContent = event.description;
+        item.append(title, category, description);
+        if (event.approvalStatus && event.category !== 'academic') {
+          const status = document.createElement('small');
+          status.className = 'calendar-tooltip-status';
+          status.textContent = event.approvalStatus;
+          item.append(status);
+        }
+        calendarTooltip.append(item);
+      });
+      if (events.length > 2) {
+        const more = document.createElement('p');
+        more.className = 'calendar-tooltip-more';
+        more.textContent = `and ${events.length - 2} more scheduled ${events.length - 2 === 1 ? 'event' : 'events'}. Select this date to see all details.`;
+        calendarTooltip.append(more);
+      } else {
+        const hint = document.createElement('p');
+        hint.className = 'calendar-tooltip-more';
+        hint.textContent = 'Select this date to see full details.';
+        calendarTooltip.append(hint);
+      }
+
+      calendarTooltip.hidden = false;
+      requestAnimationFrame(() => {
+        const rect = anchor.getBoundingClientRect();
+        const margin = 12;
+        const spaceAbove = rect.top - margin * 2;
+        const spaceBelow = window.innerHeight - rect.bottom - margin * 2;
+        const placeAbove = spaceAbove >= spaceBelow;
+        const availableHeight = Math.max(80, Math.min(340, placeAbove ? spaceAbove : spaceBelow));
+        calendarTooltip.style.maxHeight = `${availableHeight}px`;
+        const tooltipRect = calendarTooltip.getBoundingClientRect();
+        const left = Math.min(Math.max(margin, rect.left + rect.width / 2 - tooltipRect.width / 2), window.innerWidth - tooltipRect.width - margin);
+        const top = placeAbove
+          ? rect.top - tooltipRect.height - margin
+          : rect.bottom + margin;
+        calendarTooltip.style.left = `${left}px`;
+        calendarTooltip.style.top = `${Math.min(Math.max(margin, top), window.innerHeight - tooltipRect.height - margin)}px`;
+      });
+    };
+
+    const openEventDetails = (events, date) => {
+      hideTooltip();
+      modalOpenerDate = date;
+      eventDetails.replaceChildren();
+      eventDialogTitle.textContent = events.length === 1 ? events[0].title : `${events.length} events`;
+
+      events.forEach(event => {
+        const article = document.createElement('article');
+        article.className = `calendar-event-detail ${event.category}`;
+        const title = document.createElement('h3');
+        title.textContent = event.title;
+        const category = document.createElement('span');
+        category.className = `calendar-detail-category ${event.category}`;
+        category.textContent = categoryLabel(event.category);
+        const description = document.createElement('p');
+        description.className = 'calendar-detail-description';
+        description.textContent = event.description;
+        const details = document.createElement('dl');
+        const dateValue = parseDate(event.date);
+        const detailRows = [
+          ['Date', dateValue.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })],
+          ['Start time', event.startTime],
+          ['End time', event.endTime],
+          ['Venue / location', event.location],
+          ['Category', categoryLabel(event.category)]
+        ];
+        if (event.approvalStatus && event.category !== 'academic') detailRows.push(['Approval / source status', event.approvalStatus]);
+        if (event.organizer) detailRows.push(['Organizer', event.organizer]);
+        if (event.instructions) detailRows.push(['Instructions', event.instructions]);
+        detailRows.forEach(([label, value]) => {
+          const row = document.createElement('div');
+          const term = document.createElement('dt');
+          term.textContent = label;
+          const definition = document.createElement('dd');
+          definition.textContent = value;
+          row.append(term, definition);
+          details.append(row);
+        });
+        article.append(title, category, description, details);
+        eventDetails.append(article);
+      });
+
+      eventModal.hidden = false;
+      eventModal.classList.add('open');
+      eventDialog.focus();
+    };
+
+    const closeEventDetails = () => {
+      if (eventModal.hidden) return;
+      eventModal.hidden = true;
+      eventModal.classList.remove('open');
+      const opener = calendarDays.querySelector(`[data-date="${modalOpenerDate}"]`);
+      if (opener) opener.focus();
+    };
+
     const renderAgenda = () => {
-      const events = calendarEvents.filter(event => event.date === selectedDate);
-      const selected = new Date(`${selectedDate}T00:00:00`);
+      const events = eventsForDate(selectedDate);
+      const selected = parseDate(selectedDate);
       agendaDate.textContent = selected.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
       agendaCount.textContent = `${events.length} scheduled ${events.length === 1 ? 'event' : 'events'}`;
       agendaList.replaceChildren();
@@ -165,8 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       events.forEach(event => {
-        const item = document.createElement('div');
+        const item = document.createElement('button');
+        item.type = 'button';
         item.className = 'agenda-item';
+        item.setAttribute('aria-label', `${event.title}. Open full event details.`);
         const marker = document.createElement('span');
         marker.className = `event-marker ${event.category}`;
         marker.setAttribute('aria-hidden', 'true');
@@ -174,11 +388,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = document.createElement('strong');
         title.textContent = event.title;
         const time = document.createElement('small');
-        time.textContent = event.time;
+        time.textContent = event.startTime === 'All day'
+          ? 'All day'
+          : `${event.startTime}${event.endTime && event.endTime !== 'Not specified' ? `–${event.endTime}` : ''}`;
         const venue = document.createElement('small');
         venue.textContent = event.location;
         details.append(title, time, venue);
         item.append(marker, details);
+        item.addEventListener('click', () => openEventDetails([event], event.date));
         agendaList.append(item);
       });
     };
@@ -186,14 +403,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCalendar = () => {
       const year = calendarDate.getFullYear();
       const month = calendarDate.getMonth();
-      const monthEvents = calendarEvents.filter(event => event.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`));
+      const eventsThisMonth = monthEvents(year);
       const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const today = new Date();
       const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
 
       calendarMonth.textContent = calendarDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-      calendarEventCount.textContent = `${monthEvents.length} events scheduled`;
+      calendarEventCount.textContent = `${eventsThisMonth.length} events scheduled`;
       calendarDays.replaceChildren();
 
       for (let blank = 0; blank < firstWeekday; blank += 1) {
@@ -204,14 +421,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       for (let day = 1; day <= daysInMonth; day += 1) {
         const key = dateKey(year, month, day);
-        const dayEvents = calendarEvents.filter(event => event.date === key);
+        const dayEvents = eventsForDate(key);
         const button = document.createElement('button');
         button.type = 'button';
         button.setAttribute('role', 'gridcell');
+        button.dataset.date = key;
         button.setAttribute('aria-label', `${new Date(year, month, day).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}${dayEvents.length ? `, ${dayEvents.length} scheduled ${dayEvents.length === 1 ? 'event' : 'events'}` : ''}`);
         if (key === selectedDate) button.classList.add('selected');
         if (key === todayKey) button.classList.add('current-day');
         if (dayEvents.length) button.classList.add('has-event');
+        if (dayEvents.length) {
+          button.setAttribute('aria-describedby', 'calendar-tooltip');
+          button.setAttribute('aria-haspopup', 'dialog');
+        }
 
         const number = document.createElement('b');
         number.textContent = day;
@@ -225,35 +447,107 @@ document.addEventListener('DOMContentLoaded', () => {
             dot.className = `event-marker ${category}`;
             markers.append(dot);
           });
+          if (dayEvents.length > 1) {
+            const count = document.createElement('em');
+            count.textContent = String(dayEvents.length);
+            markers.append(count);
+          }
           button.append(markers);
+          button.addEventListener('pointerenter', event => {
+            if (event.pointerType !== 'touch') showTooltip(dayEvents, key, button);
+          });
+          button.addEventListener('pointerleave', () => {
+            tooltipTimer = setTimeout(() => {
+              if (!calendarTooltip.matches(':hover') && !button.matches(':focus-visible')) hideTooltip();
+            }, 120);
+          });
+          button.addEventListener('focus', () => showTooltip(dayEvents, key, button));
         }
         button.addEventListener('click', () => {
           selectedDate = key;
           renderCalendar();
+          renderAgenda();
+          if (dayEvents.length) openEventDetails(dayEvents, key);
         });
         calendarDays.append(button);
       }
 
-      renderAgenda();
+      if (!eventModal.hidden) {
+        const refreshedEvents = eventsForDate(modalOpenerDate);
+        if (refreshedEvents.length) openEventDetails(refreshedEvents, modalOpenerDate);
+      }
     };
 
-    document.getElementById('calendar-prev')?.addEventListener('click', () => {
-      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+    calendarTooltip.addEventListener('pointerenter', () => clearTimeout(tooltipTimer));
+    calendarTooltip.addEventListener('pointerleave', hideTooltip);
+    calendarTooltip.addEventListener('focusout', event => {
+      if (!calendarTooltip.contains(event.relatedTarget)) hideTooltip();
+    });
+    calendarDays.addEventListener('focusout', event => {
+      if (event.target.matches('.has-event') && !calendarTooltip.matches(':hover')) {
+        tooltipTimer = setTimeout(() => {
+          if (!calendarTooltip.contains(document.activeElement)) hideTooltip();
+        }, 120);
+      }
+    });
+    calendarDays.addEventListener('keydown', event => {
+      if (event.key === 'Escape') hideTooltip();
+    });
+    eventModal.addEventListener('click', event => {
+      if (event.target === eventModal) closeEventDetails();
+    });
+    document.getElementById('calendar-event-close')?.addEventListener('click', closeEventDetails);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        if (!eventModal.hidden) closeEventDetails();
+        else hideTooltip();
+        return;
+      }
+      if (event.key === 'Tab' && !eventModal.hidden) {
+        const focusable = [...eventDialog.querySelectorAll('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')];
+        if (!focusable.length) {
+          event.preventDefault();
+          eventDialog.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === eventDialog)) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+    window.addEventListener('resize', hideTooltip);
+    window.addEventListener('scroll', hideTooltip, true);
+
+    const changeMonth = delta => {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + delta, 1);
       selectedDate = dateKey(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+      hideTooltip();
       renderCalendar();
+      loadHolidays(calendarDate.getFullYear());
+    };
+    document.getElementById('calendar-prev')?.addEventListener('click', () => {
+      changeMonth(-1);
     });
     document.getElementById('calendar-next')?.addEventListener('click', () => {
-      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
-      selectedDate = dateKey(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
-      renderCalendar();
+      changeMonth(1);
     });
     document.getElementById('calendar-today')?.addEventListener('click', () => {
       const today = new Date();
       calendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
       selectedDate = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
+      hideTooltip();
       renderCalendar();
+      loadHolidays(calendarDate.getFullYear());
     });
     renderCalendar();
+    renderAgenda();
+    loadHolidays(calendarDate.getFullYear());
   }
 
   // Handle URL hash on load
