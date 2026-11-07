@@ -818,6 +818,39 @@ window.performLogin = function(e) {
   showToast(`Welcome back, ${roleLabels[currentRole] || 'User'}!`);
   window.navigate('overview');
 };
+window.performLogin = function(e) {
+  if (e) e.preventDefault();
+
+  const loginView = document.getElementById('login-view');
+  const portalShell = document.getElementById('portal-shell');
+
+  if (loginView) loginView.style.display = 'none';
+  if (portalShell) portalShell.style.display = 'flex';
+
+  applyRoleUI(currentRole);
+
+  // Read typed ID or default to Nothando Vimbai Makova
+  const identityInput = document.getElementById('login-identity');
+  const typedIdentity = identityInput ? identityInput.value.trim() : '';
+
+  const studentName = "Nothando Vimbai Makova";
+  const studentID = typedIdentity || "250764";
+
+  // Update DOM elements across header, hero, and sidebar
+  const nameElems = document.querySelectorAll('#hero-name, #mini-user-name');
+  const idElems = document.querySelectorAll('#hero-id, #mini-user-id');
+
+  nameElems.forEach(el => el.textContent = studentName);
+  idElems.forEach(el => el.textContent = el.id === 'hero-id' ? `Student ID: ${studentID}` : studentID);
+
+  const roleLabels = {
+    student: `${studentName} (Student)`,
+    lecturer: 'Dr. C. T. Chimedza (Faculty Verifier)',
+    admin: 'Academic Registry (Administrator)'
+  };
+
+  showToast(`Welcome back, ${roleLabels[currentRole] || 'User'}!`);
+};
 
 window.performLogout = function() {
   const loginView = document.getElementById('login-view');
