@@ -816,40 +816,8 @@ window.performLogin = function(e) {
   };
 
   showToast(`Welcome back, ${roleLabels[currentRole] || 'User'}!`);
-  if (typeof window.navigate === 'function') window.navigate('overview');
+  window.navigate('overview');
 };
-
-window.performLogout = function() {
-  const loginView = document.getElementById('login-view');
-  const portalShell = document.getElementById('portal-shell');
-
-  if (portalShell) portalShell.style.display = 'none';
-  if (loginView) loginView.style.display = 'grid';
-
-  showToast('You have been signed out securely.');
-};
-
-window.applyRoleUI = function(role) {
-  currentRole = role;
-  const topKicker = document.getElementById('top-kicker');
-  const topRoleBadge = document.getElementById('topbar-role-badge');
-  const sideRoleLabel = document.getElementById('sidebar-role-label');
-  const miniName = document.getElementById('mini-user-name');
-  const miniId = document.getElementById('mini-user-id');
-  const miniAvatar = document.getElementById('mini-user-avatar');
-  const headerAvatar = document.getElementById('header-avatar');
-
-  const navStudent = document.getElementById('nav-student');
-  const navLecturer = document.getElementById('nav-lecturer');
-  const navAdmin = document.getElementById('nav-admin');
-
-  // Set default student identity back to Wayne Matongera
-  if (role === 'student') {
-    if (miniName) miniName.textContent = 'Wayne Matongera';
-    if (miniId) miniId.textContent = '250444';
-  }
-};
-
 // Hide navbars first
   if (navStudent) navStudent.style.display = 'none';
   if (navLecturer) navLecturer.style.display = 'none';
