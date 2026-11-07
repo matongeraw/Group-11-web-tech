@@ -1,14 +1,84 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    function signedIn() { return request.auth != null; }
-    function isAdmin() { return signedIn() && request.auth.token.role == 'admin'; }
-    match /profiles/{uid}/{fileName} {
-      allow read: if signedIn();
-      allow write: if signedIn() && (request.auth.uid == uid || isAdmin()) && request.resource.size < 5 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+    function signedIn() {
+      return request.auth != null;
     }
-    match /documents/{uid}/{fileName} {
-      allow read, write: if signedIn() && (request.auth.uid == uid || isAdmin() || request.auth.token.role == 'lecturer');
+
+    function hasUser(uid) {
+      return firestore.exists(/databases/(default)/documents/users/$(uid));
+    }
+
+    function activeRole(role) {
+      return signedIn()
+        && hasUser(request.auth.uid)
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.status == 'active'
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return activeRole('admin');
+    }
+
+    function isAssignedLecturer(studentUid) {
+      return activeRole('lecturer')
+        && firestore.exists(/databases/(default)/documents/reviewAssignments/$(studentUid)/reviewers/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/reviewAssignments/$(studentUid)/reviewers/$(request.auth.uid)).data.status == 'active';
+    }
+
+    function canReadStudentFiles(uid) {
+      return (signedIn() && request.auth.uid == uid
+          && hasUser(uid)
+          && firestore.get(/databases/(default)/documents/users/$(uid)).data.status == 'active'
+          && firestore.get(/databases/(default)/documents/users/$(uid)).data.role == 'student')
+        || isAdmin()
+        || isAssignedLecturer(uid);
+    }
+
+    function validEvidenceUpload() {
+      return request.resource != null
+        && request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType.matches('(application/pdf|image/(jpeg|png|webp))');
+    }
+
+    match /student-files/{uid}/{allPaths=**} {
+      allow read: if canReadStudentFiles(uid);
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && hasUser(uid)
+        && firestore.get(/databases/(default)/documents/users/$(uid)).data.status == 'active'
+        && firestore.get(/databases/(default)/documents/users/$(uid)).data.role == 'student'
+        && validEvidenceUpload();
+      allow delete: if false;
+    }
+
+    match /profiles/{uid}/{fileName} {
+      allow read: if canReadStudentFiles(uid);
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && hasUser(uid)
+        && firestore.get(/databases/(default)/documents/users/$(uid)).data.status == 'active'
+        && firestore.get(/databases/(default)/documents/users/$(uid)).data.role == 'student'
+        && request.resource.size > 0
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow delete: if false;
+    }
+
+    match /documents/{uid}/{allPaths=**} {
+      allow read: if canReadStudentFiles(uid);
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && hasUser(uid)
+        && firestore.get(/databases/(default)/documents/users/$(uid)).data.status == 'active'
+        && firestore.get(/databases/(default)/documents/users/$(uid)).data.role == 'student'
+        && validEvidenceUpload();
+      allow delete: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

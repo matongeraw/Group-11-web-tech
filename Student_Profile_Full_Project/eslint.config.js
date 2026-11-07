@@ -1,7 +1,9 @@
 import js from '@eslint/js'
 import globals from 'globals'
+import tseslint from 'typescript-eslint'
 export default [
   { ignores: ['dist/**', 'node_modules/**'] },
   js.configs.recommended,
-  { files: ['backend/**/*.js', 'scripts/**/*.js', 'vite.config.ts'], languageOptions: { globals: { ...globals.node } } },
+  ...tseslint.configs.recommended,
+  { files: ['**/*.{js,jsx,ts,tsx}'], languageOptions: { globals: { ...globals.browser, ...globals.node } } },
 ]
