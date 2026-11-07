@@ -741,3 +741,259 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // refresh the lists whenever someone logs in or clicks around
 document.addEventListener('click', () => setTimeout(renderRequests, 60));
+
+/* ===== Skills and extracurricular activities demo ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  const activityList = document.getElementById('activity-list');
+  const activitySearch = document.getElementById('activity-search');
+  const categoryFilter = document.getElementById('activity-category-filter');
+  const statusFilter = document.getElementById('activity-status-filter');
+  const resultsLabel = document.getElementById('activity-results');
+  const emptyMessage = document.getElementById('activity-empty');
+  const detailModal = document.getElementById('activity-detail-modal');
+  const formModal = document.getElementById('activity-form-modal');
+  const activityForm = document.getElementById('activity-form');
+  if (!activityList || !activitySearch || !categoryFilter || !statusFilter || !resultsLabel || !emptyMessage || !detailModal || !formModal || !activityForm) return;
+
+  let activities = [
+    {
+      id: 'demo-gdsc',
+      name: 'Google Developer Student Club',
+      category: 'Technology',
+      organization: 'Africa University student community',
+      role: 'Workshop coordinator',
+      start: '2024-09-01',
+      end: '2025-06-30',
+      description: 'Helped organize peer learning sessions introducing students to web development and collaborative project work.',
+      achievements: ['Coordinated three introductory workshops', 'Supported a student project showcase'],
+      status: 'Verified'
+    },
+    {
+      id: 'demo-community',
+      name: 'Digital literacy outreach',
+      category: 'Community service',
+      organization: 'Community outreach programme',
+      role: 'Student volunteer',
+      start: '2025-02-01',
+      end: '',
+      description: 'Volunteered with a small student group to support introductory digital skills sessions for community learners.',
+      achievements: ['Prepared beginner-friendly learning materials', 'Provided one-to-one support during sessions'],
+      status: 'Pending'
+    },
+    {
+      id: 'demo-sports',
+      name: 'Inter-faculty football',
+      category: 'Sports',
+      organization: 'University sports programme',
+      role: 'Team member',
+      start: '2024-03-01',
+      end: '2024-11-30',
+      description: 'Participated in regular training and represented the faculty in the inter-faculty student competition.',
+      achievements: ['Maintained regular training attendance'],
+      status: 'Rejected'
+    }
+  ];
+
+  const escapeActivityHTML = value => String(value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[character]));
+
+  const formatActivityDate = value => {
+    if (!value) return 'Present';
+    const [year, month, day] = value.split('-').map(Number);
+    return new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
+      .format(new Date(Date.UTC(year, month - 1, day)));
+  };
+
+  const statusClass = status => ({
+    Pending: 'activity-status-pending',
+    Verified: 'activity-status-verified',
+    Rejected: 'activity-status-rejected'
+  }[status] || 'activity-status-pending');
+
+  function renderActivities() {
+    const query = activitySearch.value.trim().toLowerCase();
+    const category = categoryFilter.value;
+    const status = statusFilter.value;
+    const matches = activities.filter(activity => {
+      const searchable = [
+        activity.name, activity.category, activity.organization, activity.role,
+        activity.description, ...activity.achievements
+      ].join(' ').toLowerCase();
+      return (!query || searchable.includes(query))
+        && (!category || activity.category === category)
+        && (!status || activity.status === status);
+    });
+
+    activityList.innerHTML = matches.map(activity => `
+      <article class="activity-card">
+        <div class="activity-card-top">
+          <span class="activity-category">${escapeActivityHTML(activity.category)}</span>
+          <span class="activity-status ${statusClass(activity.status)}">${escapeActivityHTML(activity.status)} <span class="sr-only">demonstration status</span></span>
+        </div>
+        <h3>${escapeActivityHTML(activity.name)}</h3>
+        <p class="activity-organization">${escapeActivityHTML(activity.organization)}</p>
+        <p class="activity-role">${escapeActivityHTML(activity.role)}</p>
+        <p class="activity-card-description">${escapeActivityHTML(activity.description)}</p>
+        <p class="activity-card-dates">${formatActivityDate(activity.start)} – ${formatActivityDate(activity.end)}</p>
+        <div class="activity-card-actions">
+          <button type="button" class="text-link" data-activity-action="details" data-activity-id="${escapeActivityHTML(activity.id)}">View details <span aria-hidden="true">&rarr;</span></button>
+          <button type="button" class="text-link" data-activity-action="edit" data-activity-id="${escapeActivityHTML(activity.id)}">Edit</button>
+        </div>
+      </article>
+    `).join('');
+    resultsLabel.textContent = `${matches.length} ${matches.length === 1 ? 'activity' : 'activities'} shown`;
+    emptyMessage.hidden = matches.length > 0;
+  }
+
+  let lastFocusedElement = null;
+  function showActivityModal(modal) {
+    lastFocusedElement = document.activeElement;
+    modal.style.display = 'grid';
+    modal.setAttribute('aria-hidden', 'false');
+    modal.querySelector('[role="dialog"]').focus();
+  }
+
+  function hideActivityModal(modal) {
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    const focusTarget = lastFocusedElement && lastFocusedElement.isConnected
+      ? lastFocusedElement
+      : document.getElementById('activity-add-button');
+    if (focusTarget) focusTarget.focus();
+  }
+
+  function openActivityDetails(id) {
+    const activity = activities.find(item => item.id === id);
+    if (!activity) return;
+    const content = document.getElementById('activity-detail-content');
+    const achievements = activity.achievements.length
+      ? `<ul>${activity.achievements.map(item => `<li>${escapeActivityHTML(item)}</li>`).join('')}</ul>`
+      : '<p>No achievements have been added to this demonstration entry.</p>';
+    content.innerHTML = `
+      <span class="activity-category">${escapeActivityHTML(activity.category)}</span>
+      <span class="activity-status ${statusClass(activity.status)}">${escapeActivityHTML(activity.status)} <span class="sr-only">demonstration status</span></span>
+      <h2 id="activity-detail-title">${escapeActivityHTML(activity.name)}</h2>
+      <dl class="activity-detail-list">
+        <div><dt>Organization</dt><dd>${escapeActivityHTML(activity.organization)}</dd></div>
+        <div><dt>Student role</dt><dd>${escapeActivityHTML(activity.role)}</dd></div>
+        <div><dt>Dates</dt><dd>${formatActivityDate(activity.start)} – ${formatActivityDate(activity.end)}</dd></div>
+      </dl>
+      <h3>About this activity</h3><p>${escapeActivityHTML(activity.description)}</p>
+      <h3>Achievements</h3>${achievements}
+      <p class="activity-form-note">Demonstration entry only. This status is not officially verified or connected to an institutional database.</p>
+      <div class="form-actions"><button type="button" class="btn btn-secondary" id="activity-detail-done">Close details</button></div>
+    `;
+    document.getElementById('activity-detail-title').textContent = activity.name;
+    showActivityModal(detailModal);
+    document.getElementById('activity-detail-done').addEventListener('click', () => hideActivityModal(detailModal));
+  }
+
+  function resetActivityForm() {
+    activityForm.reset();
+    document.getElementById('activity-id').value = '';
+    document.getElementById('activity-form-title').textContent = 'Add activity';
+    document.getElementById('activity-form-submit').textContent = 'Add activity';
+  }
+
+  function openActivityForm(activity) {
+    resetActivityForm();
+    if (activity) {
+      document.getElementById('activity-id').value = activity.id;
+      document.getElementById('activity-name').value = activity.name;
+      document.getElementById('activity-category').value = activity.category;
+      document.getElementById('activity-organization').value = activity.organization;
+      document.getElementById('activity-role').value = activity.role;
+      document.getElementById('activity-start').value = activity.start;
+      document.getElementById('activity-end').value = activity.end;
+      document.getElementById('activity-description').value = activity.description;
+      document.getElementById('activity-achievements').value = activity.achievements.join('\n');
+      document.getElementById('activity-status').value = activity.status;
+      document.getElementById('activity-form-title').textContent = 'Edit activity';
+      document.getElementById('activity-form-submit').textContent = 'Save changes';
+    }
+    showActivityModal(formModal);
+    document.getElementById('activity-name').focus();
+  }
+
+  document.getElementById('activity-add-button').addEventListener('click', () => openActivityForm());
+  document.getElementById('activity-form-close').addEventListener('click', () => hideActivityModal(formModal));
+  document.getElementById('activity-form-cancel').addEventListener('click', () => hideActivityModal(formModal));
+  document.getElementById('activity-detail-close').addEventListener('click', () => hideActivityModal(detailModal));
+  [activitySearch, categoryFilter, statusFilter].forEach(control => {
+    control.addEventListener(control === activitySearch ? 'input' : 'change', renderActivities);
+  });
+
+  activityList.addEventListener('click', event => {
+    const button = event.target.closest('[data-activity-action]');
+    if (!button) return;
+    const activity = activities.find(item => item.id === button.dataset.activityId);
+    if (!activity) return;
+    if (button.dataset.activityAction === 'details') openActivityDetails(activity.id);
+    else openActivityForm(activity);
+  });
+
+  [detailModal, formModal].forEach(modal => {
+    modal.addEventListener('click', event => {
+      if (event.target === modal) hideActivityModal(modal);
+    });
+    modal.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        hideActivityModal(modal);
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = [...modal.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])')]
+        .filter(element => element.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  });
+
+  document.getElementById('activity-end').addEventListener('input', event => {
+    const startDate = document.getElementById('activity-start').value;
+    event.target.setCustomValidity(event.target.value && startDate && event.target.value < startDate
+      ? 'End date must be on or after the start date.'
+      : '');
+  });
+
+  activityForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const start = document.getElementById('activity-start').value;
+    const end = document.getElementById('activity-end').value;
+    const endInput = document.getElementById('activity-end');
+    endInput.setCustomValidity(end && start && end < start ? 'End date must be on or after the start date.' : '');
+    if (!activityForm.reportValidity()) return;
+
+    const id = document.getElementById('activity-id').value;
+    const activity = {
+      id: id || `demo-${Date.now()}`,
+      name: document.getElementById('activity-name').value.trim(),
+      category: document.getElementById('activity-category').value,
+      organization: document.getElementById('activity-organization').value.trim(),
+      role: document.getElementById('activity-role').value.trim(),
+      start,
+      end,
+      description: document.getElementById('activity-description').value.trim(),
+      achievements: document.getElementById('activity-achievements').value.split('\n').map(item => item.trim()).filter(Boolean),
+      status: document.getElementById('activity-status').value
+    };
+    const existingIndex = activities.findIndex(item => item.id === id);
+    if (existingIndex < 0) activities.unshift(activity);
+    else activities[existingIndex] = activity;
+    renderActivities();
+    hideActivityModal(formModal);
+    resetActivityForm();
+    showToast(existingIndex < 0 ? 'Demonstration activity added for this page session.' : 'Demonstration activity updated for this page session.');
+  });
+
+  renderActivities();
+});
