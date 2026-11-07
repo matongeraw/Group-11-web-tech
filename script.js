@@ -840,6 +840,8 @@ window.applyRoleUI = function(role) {
   const sideRoleLabel = document.getElementById('sidebar-role-label');
   const miniName = document.getElementById('mini-user-name');
   const miniId = document.getElementById('mini-user-id');
+  const miniAvatar = document.getElementById('mini-user-avatar');
+  const headerAvatar = document.getElementById('header-avatar');
 
   const navStudent = document.getElementById('nav-student');
   const navLecturer = document.getElementById('nav-lecturer');
@@ -849,65 +851,31 @@ window.applyRoleUI = function(role) {
   if (navLecturer) navLecturer.style.display = currentRole === 'lecturer' ? 'flex' : 'none';
   if (navAdmin) navAdmin.style.display = currentRole === 'admin' ? 'flex' : 'none';
 
-  if (role === 'student') {
-    if (miniName) miniName.textContent = 'Wayne Matongera';
-    if (miniId) miniId.textContent = '250444';
-    if (topRoleBadge) {
-      topRoleBadge.textContent = 'Student Mode';
-      topRoleBadge.className = 'role-badge-pill role-badge-student';
-    }
-  } else if (role === 'lecturer') {
-    if (miniName) miniName.textContent = 'Dr. C. T. Chimedza';
-    if (miniId) miniId.textContent = '250731';
-    if (topRoleBadge) {
-      topRoleBadge.textContent = 'Lecturer Mode';
-      topRoleBadge.className = 'role-badge-pill role-badge-lecturer';
-    }
-  } else if (role === 'admin') {
-    if (miniName) miniName.textContent = 'Academic Registry';
-    if (miniId) miniId.textContent = '240618';
-    if (topRoleBadge) {
-      topRoleBadge.textContent = 'Admin Mode';
-      topRoleBadge.className = 'role-badge-pill role-badge-admin';
-    }
-  }
-};
-// Hide navbars first
-  if (navStudent) navStudent.style.display = 'none';
-  if (navLecturer) navLecturer.style.display = 'none';
-  if (navAdmin) navAdmin.style.display = 'none';
-
   if (role === 'lecturer') {
-    if (navLecturer) navLecturer.style.display = 'block';
-
     if (topKicker) topKicker.textContent = 'FACULTY & VERIFIER PORTAL';
     if (sideRoleLabel) sideRoleLabel.textContent = 'FACULTY PORTAL';
     if (topRoleBadge) {
-      topRoleBadge.textContent = 'Lecturer / Verifier Mode';
+      topRoleBadge.textContent = 'Lecturer Mode';
       topRoleBadge.className = 'role-badge-pill role-badge-lecturer';
     }
     if (miniName) miniName.textContent = 'Dr. C. T. Chimedza';
     if (miniId) miniId.textContent = 'Faculty Staff 250731';
     if (miniAvatar) miniAvatar.src = 'assets/africa-university-logo.png';
     if (headerAvatar) headerAvatar.src = 'assets/africa-university-logo.png';
-    navigate('faculty-dashboard');
+    if (typeof navigate === 'function') navigate('faculty-dashboard');
   } else if (role === 'admin') {
-    if (navAdmin) navAdmin.style.display = 'block';
-
     if (topKicker) topKicker.textContent = 'ACADEMIC REGISTRY & GOVERNANCE';
     if (sideRoleLabel) sideRoleLabel.textContent = 'REGISTRY PORTAL';
     if (topRoleBadge) {
-      topRoleBadge.textContent = 'Administrator Mode';
+      topRoleBadge.textContent = 'Admin Mode';
       topRoleBadge.className = 'role-badge-pill role-badge-admin';
     }
     if (miniName) miniName.textContent = 'Academic Registry';
     if (miniId) miniId.textContent = 'Admin Authority 240618';
     if (miniAvatar) miniAvatar.src = 'assets/africa-university-logo.png';
     if (headerAvatar) headerAvatar.src = 'assets/africa-university-logo.png';
-    navigate('admin-dashboard');
+    if (typeof navigate === 'function') navigate('admin-dashboard');
   } else {
-    if (navStudent) navStudent.style.display = 'block';
-
     if (topKicker) topKicker.textContent = 'STUDENT PORTAL';
     if (sideRoleLabel) sideRoleLabel.textContent = 'STUDENT PORTAL';
     if (topRoleBadge) {
@@ -918,7 +886,6 @@ window.applyRoleUI = function(role) {
     if (miniId) miniId.textContent = 'Student ID 250444';
     if (miniAvatar) miniAvatar.src = 'assets/wayne-matongera-profile.jpg';
     if (headerAvatar) headerAvatar.src = 'assets/wayne-matongera-profile.jpg';
-    navigate('overview');
   }
 };
 
