@@ -816,40 +816,7 @@ window.performLogin = function(e) {
   };
 
   showToast(`Welcome back, ${roleLabels[currentRole] || 'User'}!`);
-  window.navigate('overview');
-};
-window.performLogin = function(e) {
-  if (e) e.preventDefault();
-
-  const loginView = document.getElementById('login-view');
-  const portalShell = document.getElementById('portal-shell');
-
-  if (loginView) loginView.style.display = 'none';
-  if (portalShell) portalShell.style.display = 'flex';
-
-  applyRoleUI(currentRole);
-
-  // Read typed ID or default to Nothando Vimbai Makova
-  const identityInput = document.getElementById('login-identity');
-  const typedIdentity = identityInput ? identityInput.value.trim() : '';
-
-  const studentName = "Nothando Vimbai Makova";
-  const studentID = typedIdentity || "250764";
-
-  // Update DOM elements across header, hero, and sidebar
-  const nameElems = document.querySelectorAll('#hero-name, #mini-user-name');
-  const idElems = document.querySelectorAll('#hero-id, #mini-user-id');
-
-  nameElems.forEach(el => el.textContent = studentName);
-  idElems.forEach(el => el.textContent = el.id === 'hero-id' ? `Student ID: ${studentID}` : studentID);
-
-  const roleLabels = {
-    student: `${studentName} (Student)`,
-    lecturer: 'Dr. C. T. Chimedza (Faculty Verifier)',
-    admin: 'Academic Registry (Administrator)'
-  };
-
-  showToast(`Welcome back, ${roleLabels[currentRole] || 'User'}!`);
+  if (typeof window.navigate === 'function') window.navigate('overview');
 };
 
 window.performLogout = function() {
@@ -876,7 +843,14 @@ window.applyRoleUI = function(role) {
   const navLecturer = document.getElementById('nav-lecturer');
   const navAdmin = document.getElementById('nav-admin');
 
-  // Hide navbars first
+  // Set default student identity back to Wayne Matongera
+  if (role === 'student') {
+    if (miniName) miniName.textContent = 'Wayne Matongera';
+    if (miniId) miniId.textContent = '250444';
+  }
+};
+
+// Hide navbars first
   if (navStudent) navStudent.style.display = 'none';
   if (navLecturer) navLecturer.style.display = 'none';
   if (navAdmin) navAdmin.style.display = 'none';
