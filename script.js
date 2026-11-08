@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'academic-progress': 'Academic Progress',
     'skills-activities': 'Skills & Activities',
     achievements: 'Achievements',
+    'my-cv': 'My CV',
     projects: 'Projects',
     contact: 'Contact',
 
@@ -40,13 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
     'admin-verifiers': 'Verifier Governance'
   };
 
-  const studentRoutes = ['overview', 'personal-academic', 'courses', 'calendar', 'examination', 'academic-progress', 'skills-activities', 'achievements', 'projects', 'contact'];
+  const studentRoutes = ['overview', 'personal-academic', 'courses', 'calendar', 'examination', 'academic-progress', 'skills-activities', 'achievements', 'my-cv', 'projects', 'contact'];
   const lecturerRoutes = ['faculty-dashboard', 'verification-queue', 'reference-requests', 'faculty-modules', 'supervised-students'];
   const adminRoutes = ['admin-dashboard', 'admin-transcripts', 'admin-id-validation', 'admin-verifiers'];
 
   let activeRoute = '';
   const courseMenu = document.getElementById('course-submenu');
   const courseButton = document.querySelector('.course-nav-group > .nav-btn');
+  const achievementsMenu = document.getElementById('achievements-submenu');
+  const achievementsButton = document.querySelector('.achievements-nav-group > .nav-btn');
 
   window.navigate = function(route) {
     // Validate route or assign default based on current role
@@ -74,7 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update active nav button
     document.querySelectorAll('.nav-btn, .nav-sub').forEach(btn => {
       const btnRoute = btn.getAttribute('data-route');
-      if (btnRoute === route || (btnRoute === 'courses' && ['calendar', 'examination'].includes(route))) {
+      if (
+        btnRoute === route ||
+        (btnRoute === 'courses' && ['calendar', 'examination'].includes(route)) ||
+        (btnRoute === 'achievements' && route === 'my-cv')
+      ) {
         btn.classList.add('active');
       } else {
         btn.classList.remove('active');
@@ -89,6 +96,16 @@ document.addEventListener('DOMContentLoaded', () => {
         courseMenu.classList.remove('open');
       }
       courseButton.setAttribute('aria-expanded', String(courseMenu.classList.contains('open')));
+    }
+
+    if (achievementsMenu && achievementsButton) {
+      const isAchievementsChild = route === 'my-cv';
+      if (isAchievementsChild || (route === 'achievements' && activeRoute !== 'achievements')) {
+        achievementsMenu.classList.add('open');
+      } else if (route !== 'achievements') {
+        achievementsMenu.classList.remove('open');
+      }
+      achievementsButton.setAttribute('aria-expanded', String(achievementsMenu.classList.contains('open')));
     }
 
     // Update active view (Strict single-view display)
@@ -108,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeRoute = route;
 
     // Close mobile sidebar if open
-    if (sidebar && route !== 'courses') sidebar.classList.remove('open');
+    if (sidebar && route !== 'courses' && route !== 'achievements') sidebar.classList.remove('open');
 
     // Update URL hash
     window.location.hash = `#/${route}`;
@@ -122,6 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (route === 'courses' && activeRoute === 'courses' && courseMenu) {
         courseMenu.classList.toggle('open');
         if (courseButton) courseButton.setAttribute('aria-expanded', String(courseMenu.classList.contains('open')));
+        return;
+      }
+      if (route === 'achievements' && activeRoute === 'achievements' && achievementsMenu) {
+        achievementsMenu.classList.toggle('open');
+        if (achievementsButton) achievementsButton.setAttribute('aria-expanded', String(achievementsMenu.classList.contains('open')));
         return;
       }
       navigate(route);
@@ -1220,3 +1242,178 @@ function handleAchievementSubmit(e) {
 }
 // refresh the lists whenever someone logs in or clicks around
 document.addEventListener('click', () => setTimeout(renderRequests, 60));
+
+// =========================================================================
+// CV MANAGEMENT & VIEWER (Figma Make Replica)
+// =========================================================================
+
+let currentCvData = {
+  name: 'Wayne_Matongera_Academic_CV.pdf',
+  type: 'PDF',
+  updated: '20 Oct 2026 · 09:30',
+  size: '624 KB',
+  version: 1,
+  blobUrl: null
+};
+
+window.triggerCvUpload = function() {
+  const fileInput = document.getElementById('cv-file-input');
+  if (fileInput) fileInput.click();
+};
+
+window.handleCvFileSelect = function(e) {
+  const file = e.target?.files?.[0];
+  if (!file) return;
+
+  const errorBox = document.getElementById('cv-error-box');
+  const errorText = document.getElementById('cv-error-text');
+  const progressBox = document.getElementById('cv-upload-progress-box');
+  const progressBar = document.getElementById('cv-progress-bar');
+  const progressPct = document.getElementById('cv-upload-pct');
+  const progressLabel = document.getElementById('cv-upload-label');
+
+  if (errorBox) errorBox.style.display = 'none';
+
+  const ext = file.name.split('.').pop()?.toLowerCase();
+  if (ext !== 'pdf' && ext !== 'docx') {
+    if (errorBox && errorText) {
+      errorText.textContent = 'Unsupported file format. Please upload a PDF or DOCX file.';
+      errorBox.style.display = 'flex';
+    }
+    showToast('Unsupported file type. Please choose a PDF or DOCX document.');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    if (errorBox && errorText) {
+      errorText.textContent = 'File exceeds maximum limit of 5 MB.';
+      errorBox.style.display = 'flex';
+    }
+    showToast('Document exceeds 5 MB. Please choose a smaller file.');
+    return;
+  }
+
+  // Simulated upload progress animation
+  if (progressBox) progressBox.style.display = 'block';
+  if (progressLabel) progressLabel.textContent = 'Uploading CV…';
+  let pct = 15;
+  if (progressBar) progressBar.value = pct;
+  if (progressPct) progressPct.textContent = `${pct}%`;
+
+  const interval = setInterval(() => {
+    pct = Math.min(pct + 25, 95);
+    if (progressBar) progressBar.value = pct;
+    if (progressPct) progressPct.textContent = `${pct}%`;
+  }, 120);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    if (progressBar) progressBar.value = 100;
+    if (progressPct) progressPct.textContent = '100%';
+    if (progressLabel) progressLabel.textContent = 'Upload complete';
+
+    currentCvData = {
+      name: file.name,
+      type: ext === 'pdf' ? 'PDF' : 'DOCX',
+      updated: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' · ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+      size: `${Math.max(1, Math.round(file.size / 1024))} KB`,
+      version: currentCvData.version + 1,
+      blobUrl: URL.createObjectURL(file)
+    };
+
+    // Update UI elements
+    const docName = document.getElementById('cv-doc-name');
+    const docType = document.getElementById('cv-doc-type');
+    const docMeta = document.getElementById('cv-doc-meta');
+    const docUpdated = document.getElementById('cv-doc-updated');
+    const modalTitle = document.getElementById('cv-preview-title');
+    const modalMeta = document.getElementById('cv-modal-meta');
+
+    if (docName) docName.textContent = currentCvData.name;
+    if (docType) docType.textContent = currentCvData.type;
+    if (docMeta) docMeta.textContent = `Version ${currentCvData.version} • ${currentCvData.size}`;
+    if (docUpdated) docUpdated.textContent = `Last updated ${currentCvData.updated}`;
+    if (modalTitle) modalTitle.textContent = currentCvData.name;
+    if (modalMeta) modalMeta.textContent = `Version ${currentCvData.version} • Updated ${currentCvData.updated}`;
+
+    showToast('Your CV has been replaced and verified successfully.');
+
+    setTimeout(() => {
+      if (progressBox) progressBox.style.display = 'none';
+    }, 1500);
+  }, 700);
+};
+
+window.openCvPreviewModal = function() {
+  const modal = document.getElementById('modal-cv-preview');
+  if (modal) modal.style.display = 'grid';
+};
+
+window.closeCvPreviewModal = function() {
+  const modal = document.getElementById('modal-cv-preview');
+  if (modal) modal.style.display = 'none';
+};
+
+window.downloadCV = function() {
+  const cvText = `WAYNE MATONGERA
+BSc Computer Information Systems Student
+Africa University | w.matongera@africau.edu | +263 77 456 7821
+Mutare, Zimbabwe | linkedin.com/in/wayne-matongera | github.com/waynematongera
+
+PROFILE
+Computer Information Systems student focused on accessible digital products, mobile development, data-informed solutions, and technology for community impact.
+
+EDUCATION
+BSc Computer Information Systems, Africa University — Expected Nov 2028
+Current GPA: 3.78 / 4.00 (Dean's Honour Roll)
+
+RELEVANT COURSES
+Web Technologies (WTS201), Applied Statistics (STA201), Mobile Applications (CIS202)
+
+ACHIEVEMENTS
+Dean's List — Semester 2, 2025
+Google UX Design Certificate — August 2025
+Inter-University Hackathon — 2nd Place, March 2025
+GDSC Solution Challenge 2025 — 1st Runner Up
+
+SELECTED PROJECTS
+Smart Campus Navigator — Product designer and Flutter developer
+Student Performance Analytics — Data analyst and backend developer
+EcoTrack Web Platform — Frontend lead
+
+LEADERSHIP & COMMUNITY
+Vice President — Women in Technology Club
+Volunteer Mentor — Code for Community
+Core Team Member — Google Developer Student Club
+
+SKILLS
+React, Flutter, SQL, Python, UI/UX Design, Database Management, Teamwork, Leadership
+
+LANGUAGES & INTERESTS
+English, Shona | Digital inclusion, robotics, photography
+
+REFERENCES
+Available upon request:
+Dr. C. T. Chimedza, Ph.D.
+Senior Lecturer & Academic Supervisor
+Faculty of Engineering & Applied Sciences, Africa University
+`;
+
+  const blob = new Blob([cvText], { type: 'text/plain;charset=utf-8' });
+  const url = currentCvData.blobUrl || URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = currentCvData.blobUrl ? currentCvData.name : 'Wayne_Matongera_Academic_CV.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('Downloading official student CV…');
+};
+
+// Modal backdrop click for CV preview
+const cvModal = document.getElementById('modal-cv-preview');
+if (cvModal) {
+  cvModal.addEventListener('click', (e) => {
+    if (e.target === cvModal) closeCvPreviewModal();
+  });
+}
