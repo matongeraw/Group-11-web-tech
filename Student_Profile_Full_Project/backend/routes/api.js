@@ -2,9 +2,11 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { admin, auth, db, firebaseReady } from '../config/firebaseAdmin.js'
 import { allowRoles, requireAuth, requireFirebase, requireToken } from '../middleware/auth.js'
+import management from './management.js'
 const router = Router()
 router.get('/health', (_req, res) => res.json({ status: 'ok', service: 'student-profile-api', firebaseConfigured: firebaseReady }))
 router.get('/me', requireFirebase, requireToken, requireAuth, (req, res) => res.json({ uid: req.user.uid, email: req.user.email, role: req.role, profile: req.profile }))
+router.use(management)
 const profileSchema = z.object({ fullName: z.string().trim().min(2).max(100), studentId: z.string().trim().regex(/^\d{6}$/), email: z.string().email().refine(v => v.toLowerCase().endsWith('@africau.edu'), 'Use an @africau.edu email address.') }).strict()
 router.post('/profile/complete-registration', requireFirebase, requireToken, async (req, res) => {
   const parsed = profileSchema.safeParse({ ...req.body, email: req.user.email })
@@ -16,15 +18,21 @@ router.post('/profile/complete-registration', requireFirebase, requireToken, asy
   await auth.setCustomUserClaims(req.user.uid, { role: 'student' })
   res.status(201).json({ message: 'Student profile created.' })
 })
-router.get('/users', requireFirebase, requireToken, requireAuth, allowRoles('admin', 'lecturer'), async (req, res) => {
+router.get('/users', requireFirebase, requireToken, requireAuth, allowRoles('admin'), async (_req, res) => {
   const snapshot = await db.collection('users').limit(100).get()
   const users = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
-  res.json({ users: req.role === 'lecturer' ? users.filter(user => user.role === 'student') : users })
+  res.json({ users })
 })
 router.patch('/users/:uid/status', requireFirebase, requireToken, requireAuth, allowRoles('admin'), async (req, res) => {
   const parsed = z.object({ status: z.enum(['active', 'suspended']) }).safeParse(req.body)
   if (!parsed.success) return res.status(400).json({ error: 'Status must be active or suspended.' })
-  await db.collection('users').doc(req.params.uid).update({ status: parsed.data.status, updatedAt: admin.firestore.FieldValue.serverTimestamp() })
+  const userRef = db.collection('users').doc(req.params.uid)
+  const studentRef = db.collection('students').doc(req.params.uid)
+  const user = await userRef.get()
+  if (!user.exists) return res.status(404).json({ error: 'User account not found.' })
+  const update = { status: parsed.data.status, updatedAt: admin.firestore.FieldValue.serverTimestamp() }
+  const student = await studentRef.get()
+  await Promise.all([userRef.update(update), ...(student.exists ? [studentRef.update(update)] : [])])
   res.json({ message: 'Account status updated.' })
 })
 router.post('/admin/users/:uid/role', requireFirebase, requireToken, requireAuth, allowRoles('admin'), async (req, res) => {

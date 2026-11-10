@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal | Africa University</title>
+  <link rel="icon" type="image/png" href="assets/africa-university-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Specific adjustments for 1:1 Login Replica */
+    .student-login { display: grid; }
+    .app-shell { display: none; }
+
+    /* CRITICAL: Strict view isolation - ONLY active view is displayed */
+    .screen-view {
+      display: none !important;
+      width: 100%;
+    }
+    .screen-view.active {
+      display: flex !important;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+    }
+    .main-shell main {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .role-badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-left: 8px;
+    }
+    .role-badge-student { background: #e0f2fe; color: #0369a1; }
+    .role-badge-lecturer { background: #fef3c7; color: #92400e; }
+    .role-badge-admin { background: #fee2e2; color: #991b1b; }
+    .demo-role-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .demo-role-tab {
+      flex: 1;
+      padding: 8px 6px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .demo-role-tab.active {
+      background: var(--red);
+      color: #ffffff;
+      border-color: var(--red);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================================
+       1. AUTHENTIC LOGIN SCREEN (Exact 1:1 Replica of Figma Prototype)
+       ===================================================================== -->
+  <div class="student-login" id="login-view">
+    <!-- Left Hero Image Banner -->
+    <section class="login-campus">
+      <img src="assets/africa-university-campus.jpg" alt="Africa University campus" onerror="this.src='assets/africa_uni_campus.png'">
+      <div class="login-campus-shade"></div>
+      <div class="login-campus-content">
+        <div class="login-logo-card">
+          <img src="assets/africa-university-logo.png" alt="Africa University" onerror="this.src='AU_logo.png'">
+        </div>
+        <span class="badge badge-red" style="margin-top: 100px;">STUDENT ACADEMIC PROFILE</span>
+        <h1>Your academic journey,<br>all in one place.</h1>
+        <p>Access your courses, calendar, examination timetable, CGPA progress, achievements, and professional profile securely.</p>
+        <div class="login-features">
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+            <b>Track academic progress</b>
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+            <b>Plan classes and exams</b>
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
+            <b>Build your profile</b>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Login Form Panel -->
+    <main class="login-form-panel">
+      <div class="login-form-card">
+        <span class="login-eyebrow">STUDENT PORTAL</span>
+        <h2 id="login-heading">Welcome back to your student portal.</h2>
+        <p id="login-subheading">Sign in with your student ID or university email to access your profile.</p>
+
+        <!-- Role Select Tabs (Student, Lecturer, Administrator) -->
+        <div class="demo-role-tabs" role="tablist">
+          <button type="button" class="demo-role-tab active" data-role="student" onclick="selectLoginRole('student')">Student</button>
+          <button type="button" class="demo-role-tab" data-role="lecturer" onclick="selectLoginRole('lecturer')">Lecturer</button>
+          <button type="button" class="demo-role-tab" data-role="admin" onclick="selectLoginRole('admin')">Administrator</button>
+        </div>
+
+        <form id="auth-login-form" onsubmit="performLogin(event)">
+          <label>
+            <span id="label-identity">Student ID or university email</span>
+            <div class="login-input">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+              <input type="text" id="login-identity" value="250444" placeholder="250444 or name@africau.edu" required>
+            </div>
+          </label>
+
+          <label style="margin-top: 12px; display: block;">
+            <span>Password</span>
+            <div class="login-input">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="login-password" value="student250444" placeholder="Enter your password" required>
+              <button type="button" id="btn-toggle-password" onclick="togglePasswordVisibility()">Show</button>
+            </div>
+          </label>
+
+          <div class="login-options">
+            <label>
+              <input type="checkbox" checked> Remember me
+            </label>
+            <button type="button" class="login-options" style="color: var(--red); background: none; border: none; font-size: 11px; font-weight: 600;" onclick="showToast('Password reset instructions dispatched to registered email.')">Forgot password?</button>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="btn-login-submit" style="width: 100%; height: 44px; font-size: 13px;">
+            Sign in to student profile
+          </button>
+        </form>
+
+        <!-- Prototype Account Auto-fill Cards -->
+        <div class="demo-login" id="autofill-student-card">
+          <div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16794c" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
+            <span>
+              <strong>Prototype student account</strong>
+              <small>Student ID 250444 &bull; Password: student250444</small>
+            </span>
+          </div>
+          <button type="button" onclick="autoFill('student')">Auto-fill login</button>
+        </div>
+
+        <div class="demo-login" id="autofill-lecturer-card" style="display: none;">
+          <div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
+            <span>
+              <strong>Prototype lecturer account</strong>
+              <small>Lecturer ID 250731 &bull; Dr. C. T. Chimedza</small>
+            </span>
+          </div>
+          <button type="button" onclick="autoFill('lecturer')">Auto-fill login</button>
+        </div>
+
+        <div class="demo-login" id="autofill-admin-card" style="display: none;">
+          <div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
+            <span>
+              <strong>Prototype administrator account</strong>
+              <small>Admin ID 240618 &bull; Academic Registry</small>
+            </span>
+          </div>
+          <button type="button" onclick="autoFill('admin')">Auto-fill login</button>
+        </div>
+
+        <div class="login-privacy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+          <span id="login-privacy-text">Your academic information is protected and available only through your verified student account.</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+  <!-- =====================================================================
+       2. AUTHENTICATED PORTAL APP SHELL
+       ===================================================================== -->
+  <div class="app-shell" id="portal-shell">
+    <!-- Left Dark Sidebar -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="side-brand">
+        <img src="assets/africa-university-logo.png" alt="Africa University" onerror="this.src='AU_logo.png'">
+        <button class="side-close" id="side-close-btn" aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+
+      <span class="nav-label" id="sidebar-role-label">STUDENT PORTAL</span>
+
+      <!-- 1. Student Navigation -->
+      <nav id="nav-student">
+        <button class="nav-btn active" data-route="overview">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Overview</span>
+        </button>
+
+        <button class="nav-btn" data-route="personal-academic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span>Personal &amp; Academic</span>
+        </button>
+
+        <div class="course-nav-group">
+          <button class="nav-btn" data-route="courses" aria-expanded="false" aria-controls="course-submenu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg>
+            <span>Courses</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: auto;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <div class="course-submenu" id="course-submenu">
+            <button class="nav-sub" data-route="calendar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              <span>Calendar</span>
+            </button>
+            <button class="nav-sub" data-route="examination">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+              <span>Examination</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="nav-btn" data-route="academic-progress">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+          <span>Academic Progress</span>
+        </button>
+
+        <button class="nav-btn" data-route="skills-activities">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>
+          <span>Skills &amp; Activities</span>
+        </button>
+
+        <div class="achievements-nav-group">
+          <button class="nav-btn" data-route="achievements" aria-expanded="false" aria-controls="achievements-submenu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
+            <span>Achievements</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: auto;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <div class="achievements-submenu" id="achievements-submenu">
+            <button class="nav-sub" data-route="my-cv">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>My CV</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="nav-btn" data-route="projects">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span>Projects</span>
+        </button>
+
+        <button class="nav-btn" data-route="contact">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span>Contact</span>
+        </button>
+      </nav>
+
+      <!-- 2. Lecturer Navigation (Dedicated individual pages) -->
+      <nav id="nav-lecturer" style="display: none;">
+        <button class="nav-btn active" data-route="faculty-dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Faculty Dashboard</span>
+        </button>
+
+        <button class="nav-btn" data-route="verification-queue">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
+          <span>Verification Queue</span>
+          <span class="badge badge-amber" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">3</span>
+        </button>
+
+        <button class="nav-btn" data-route="reference-requests">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span>Reference Requests</span>
+          <span class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">2</span>
+        </button>
+
+         <button class="nav-btn" data-route="recommendations">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span>Recommendations</span>
+        </button>
+
+        <button class="nav-btn" data-route="faculty-modules">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg>
+          <span>My Taught Modules</span>
+        </button>
+
+        <button class="nav-btn" data-route="supervised-students">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg>
+          <span>Supervised Students</span>
+        </button>
+      </nav>
+
+      <!-- 3. Admin Navigation (Dedicated individual pages) -->
+      <nav id="nav-admin" style="display: none;">
+        <button class="nav-btn active" data-route="admin-dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Registry Dashboard</span>
+        </button>
+
+        <button class="nav-btn" data-route="admin-transcripts">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg>
+          <span>Official Transcripts</span>
+          <span class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">4</span>
+        </button>
+
+        <button class="nav-btn" data-route="admin-id-validation">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span>Student ID Validation</span>
+        </button>
+
+        <button class="nav-btn" data-route="admin-verifiers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Verifier Governance</span>
+        </button>
+      </nav>
+
+      <div class="side-bottom">
+        <button class="logout-btn" onclick="performLogout()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5M15 12H3M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>
+          <span>Log out</span>
+        </button>
+        <div class="mini-user">
+          <img src="assets/wayne-matongera-profile.jpg" alt="Profile" id="mini-user-avatar" onerror="this.src='assets/wayne_avatar.png'">
+          <span>
+            <strong id="mini-user-name">Wayne Matongera</strong>
+            <small id="mini-user-id">250444</small>
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Shell -->
+    <div class="main-shell">
+      <header>
+        <button class="menu-btn" id="menu-btn-open" aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div>
+          <span class="header-kicker" id="top-kicker">STUDENT PORTAL</span>
+          <strong class="capitalize" id="header-title">Overview</strong>
+        </div>
+        <div class="header-actions">
+          <!-- Role switch badge in topbar -->
+          <span class="role-badge-pill role-badge-student" id="topbar-role-badge">Student Mode</span>
+
+          <label class="search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <input placeholder="Search portal..." aria-label="Search portal">
+          </label>
+          <div style="position: relative;">
+            <button class="icon-button" id="btn-notifications-bell" aria-label="Notifications" onclick="toggleNotificationCenter()" title="Notifications (Theophany Bandure - Access &amp; Activity Alerts)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+              <span id="notification-badge-dot"></span>
+            </button>
+            <!-- Dropdown Notification Center (Theophany Bandure - 252012) -->
+            <div id="notification-center-dropdown" style="display: none; position: absolute; right: 0; top: calc(100% + 10px); width: 360px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.15); z-index: 100; overflow: hidden;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); background: #fafafa;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <strong style="font-size: 13px;">Notifications</strong>
+                  <span class="badge badge-red" style="font-size: 9px; padding: 2px 6px;">2 new</span>
+                </div>
+                <button type="button" style="border: 0; background: transparent; color: var(--red); font-size: 11px; font-weight: 600; cursor: pointer;" onclick="markAllNotificationsRead()">Mark all as read</button>
+              </div>
+              <div class="notification-list" style="max-height: 380px; overflow-y: auto;">
+                <div class="notification-item" style="padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.15s;" onclick="navigate('contact')">
+                  <div class="unread-dot" style="margin-top: 5px; flex-shrink: 0;"></div>
+                  <div style="flex: 1;">
+                    <strong style="font-size: 12px; display: block; color: var(--ink);">Profile Viewed (Expiring Link)</strong>
+                    <p style="font-size: 11px; color: var(--muted); margin: 3px 0 4px; line-height: 1.4;">Econet Innovations Recruitment accessed your verified achievements via 7-day token.</p>
+                    <em style="font-size: 10px; color: #94a3b8; font-style: normal;">Today, 14:22 &bull; 4 days remaining</em>
+                  </div>
+                </div>
+                <div class="notification-item" style="padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.15s;" onclick="navigate('achievements')">
+                  <div class="unread-dot" style="margin-top: 5px; flex-shrink: 0;"></div>
+                  <div style="flex: 1;">
+                    <strong style="font-size: 12px; display: block; color: var(--ink);">Credential Verified &amp; Signed</strong>
+                    <p style="font-size: 11px; color: var(--muted); margin: 3px 0 4px; line-height: 1.4;">Dr. C. T. Chimedza verified your GDSC Solution Challenge 1st Runner Up credential.</p>
+                    <em style="font-size: 10px; color: #94a3b8; font-style: normal;">Yesterday, 16:45</em>
+                  </div>
+                </div>
+                <div class="notification-item" style="padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; opacity: 0.75; cursor: pointer; transition: background 0.15s;" onclick="navigate('academic-progress')">
+                  <div style="width: 8px; height: 8px; flex-shrink: 0;"></div>
+                  <div style="flex: 1;">
+                    <strong style="font-size: 12px; display: block; color: var(--ink);">Dean's List Standing Confirmed</strong>
+                    <p style="font-size: 11px; color: var(--muted); margin: 3px 0 4px; line-height: 1.4;">Academic Registry updated Semester 2026-2 official standing to Dean's List (3.78 GPA).</p>
+                    <em style="font-size: 10px; color: #94a3b8; font-style: normal;">2 days ago</em>
+                  </div>
+                </div>
+              </div>
+              <div style="padding: 10px; text-align: center; background: #fafafa; border-top: 1px solid var(--line);">
+                <button type="button" style="border: 0; background: transparent; font-size: 11px; color: var(--muted); cursor: pointer;" onclick="toggleNotificationCenter(); navigate('contact');">View Full Access Audit Trail &rarr;</button>
+              </div>
+            </div>
+          </div>
+          <button class="profile-button" aria-label="Open profile" onclick="if (currentRole === 'student') navigate('personal-academic'); else showToast('Institutional identity managed via Africa University LDAP.');">
+            <img src="assets/wayne-matongera-profile.jpg" alt="Profile" id="header-avatar" onerror="this.src='assets/wayne_avatar.png'">
+          </button>
+        </div>
+      </header>
+
+      <main id="main-content">
+        <!-- VIEW: OVERVIEW -->
+        <div class="page-stack screen-view active" id="view-overview">
+          <section class="hero">
+            <img class="hero-bg" src="assets/africa-university-campus.jpg" alt="Africa University Campus">
+            <div class="hero-shade"></div>
+            <img class="hero-brand" src="assets/africa-university-logo.png" alt="Africa University">
+            <div class="hero-profile">
+              <img class="avatar" src="assets/wayne-matongera-profile.jpg" alt="Profile" id="hero-avatar">
+         <div class="hero-copy">
+  <div class="name-line">
+    <h1 id="hero-name">Wayne Matongera</h1>
+    <span class="badge badge-green" id="hero-status-pill" onclick="toggleStudentAlumni()" style="cursor: pointer;" title="Click to toggle Active Student / Alumni status">Active</span>
+  </div>
+  <p id="hero-programme">BSc. Computer Information Systems &bull; Year 2</p>
+  <span id="hero-id">Student ID: 250444</span>
+</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" id="btn-edit-profile-trigger">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+                  <span>Edit profile</span>
+                </button>
+                <button class="btn btn-primary" id="btn-share-profile-trigger" onclick="openShareModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  <span>Share Profile</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+            <div class="notice">
+              <span class="badge badge-amber">Demo</span>
+              <span>Course, activity, and event information in this prototype is sample content, not verified institutional information.</span>
+            </div>
+
+            <div class="stats-grid">
+              <div class="card">
+                <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg></span>
+                <div><span>CURRENT GPA</span><strong>3.78</strong><small>Top 12% of class</small></div>
+              </div>
+              <div class="card">
+                <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
+                <div><span>COURSES COMPLETED</span><strong>16</strong><small>4 in progress</small></div>
+              </div>
+              <div class="card">
+                <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>
+                <div><span>DEGREE PROGRESS</span><strong>42%</strong><small>Expected 2028</small></div>
+              </div>
+              <div class="card">
+                <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg></span>
+                <div><span>ACHIEVEMENTS</span><strong>6</strong><small>2 this year</small></div>
+              </div>
+            </div>
+
+            <!-- CGPA Line Chart -->
+            <div class="card cgpa-card simple-cgpa">
+              <div class="section-head">
+                <div>
+                  <h2>My Academic Progress (CGPA)</h2>
+                  <p>CGPA progression by completed semester</p>
+                </div>
+              </div>
+              <div class="simple-chart-wrap" style="padding-top: 15px;">
+                <svg class="simple-chart" viewBox="0 0 870 325" role="img">
+                  <g><line class="simple-grid" x1="66" x2="796" y1="28" y2="28" /><text class="simple-axis" x="53" y="31" text-anchor="end">4.0</text></g>
+                  <g><line class="simple-grid" x1="66" x2="796" y1="88" y2="88" /><text class="simple-axis" x="53" y="91" text-anchor="end">3.0</text></g>
+                  <g><line class="simple-grid" x1="66" x2="796" y1="148" y2="148" /><text class="simple-axis" x="53" y="151" text-anchor="end">2.0</text></g>
+                  <g><line class="simple-grid" x1="66" x2="796" y1="208" y2="208" /><text class="simple-axis" x="53" y="211" text-anchor="end">1.0</text></g>
+                  <g><line class="simple-grid" x1="66" x2="796" y1="268" y2="268" /><text class="simple-axis" x="53" y="271" text-anchor="end">0.0</text></g>
+                  <line class="simple-axis-line" x1="66" x2="66" y1="28" y2="268" />
+                  <text class="simple-axis-title" transform="rotate(-90 17 150)" x="17" y="150">CGPA</text>
+                  <polyline class="simple-cgpa-line" points="66,106 248.5,94 431,82 613.5,58 796,41.2" />
+                  <g><line class="simple-tick" x1="66" x2="66" y1="268" y2="272" /><text class="simple-axis semester-label" x="66" y="291" text-anchor="middle">2025-1</text><circle class="simple-point" cx="66" cy="106" r="4.5" /><text class="point-status" x="66" y="94" text-anchor="middle">2.70</text></g>
+                  <g><line class="simple-tick" x1="248.5" x2="248.5" y1="268" y2="272" /><text class="simple-axis semester-label" x="248.5" y="291" text-anchor="middle">2025-2</text><circle class="simple-point" cx="248.5" cy="94" r="4.5" /><text class="point-status" x="248.5" y="82" text-anchor="middle">2.90</text></g>
+                  <g><line class="simple-tick" x1="431" x2="431" y1="268" y2="272" /><text class="simple-axis semester-label" x="431" y="291" text-anchor="middle">2026-1</text><circle class="simple-point good" cx="431" cy="82" r="4.5" /><text class="point-status good" x="431" y="70" text-anchor="middle">3.10 · Good</text></g>
+                  <g><line class="simple-tick" x1="613.5" x2="613.5" y1="268" y2="272" /><text class="simple-axis semester-label" x="613.5" y="291" text-anchor="middle">2026-2</text><circle class="simple-point dean" cx="613.5" cy="58" r="4.5" /><text class="point-status dean" x="613.5" y="46" text-anchor="middle">3.50 · Dean's List</text></g>
+                  <g><line class="simple-tick" x1="796" x2="796" y1="268" y2="272" /><text class="simple-axis semester-label" x="796" y="291" text-anchor="middle">2027-1</text><circle class="simple-point dean active" cx="796" cy="41.2" r="6" /><text class="point-status dean" x="796" y="28" text-anchor="middle">3.78 · Dean's List</text></g>
+                </svg>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="card">
+                <div class="section-head">
+                  <div><h2>This semester</h2><p>Semester 1 &bull; 2025/2026</p></div>
+                  <button class="text-link" onclick="navigate('courses')">View courses &rarr;</button>
+                </div>
+                <div class="list">
+                  <button class="list-row" onclick="navigate('courses')"><span class="course-mark">WT</span><span><strong>Web Technologies</strong><small>WTS201 &bull; 3 credits</small></span><span>&rsaquo;</span></button>
+                  <button class="list-row" onclick="navigate('courses')"><span class="course-mark">ST</span><span><strong>Applied Statistics</strong><small>STA201 &bull; 3 credits</small></span><span>&rsaquo;</span></button>
+                  <button class="list-row" onclick="navigate('courses')"><span class="course-mark">CI</span><span><strong>Mobile Applications</strong><small>CIS202 &bull; 3 credits</small></span><span>&rsaquo;</span></button>
+                </div>
+              </div>
+              <div class="card">
+                <div class="section-head">
+                  <div><h2>Coming up</h2><p>Your next classes and events</p></div>
+                </div>
+                <div class="timeline">
+                  <button><b>10:00</b><span><strong>Web Technologies</strong><small>Today &bull; ICT Lab 3</small></span></button>
+                  <button><b>16:30</b><span><strong>Developer Student Club</strong><small>Friday &bull; ICT Centre</small></span></button>
+                  <button><b>3 new</b><span><strong>Announcements</strong><small>Registration and campus updates</small></span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="quick-grid">
+              <button onclick="navigate('courses')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg><span><strong>Course catalogue</strong><small>Explore all sample modules</small></span>&rarr;</button>
+              <button onclick="navigate('skills-activities')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg><span><strong>Discover activities</strong><small>Clubs, sports, and volunteering</small></span>&rarr;</button>
+              <button onclick="showToast('Timetable schedule view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span><strong>My timetable</strong><small>View this week's schedule</small></span>&rarr;</button>
+            </div>
+        </div>
+
+        <!-- ===============================================================
+             FACULTY VIEW 1: FACULTY DASHBOARD (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-faculty-dashboard">
+          <div class="faculty-header-card">
+            <div class="faculty-badge-row">
+              <div class="faculty-avatar-box">DC</div>
+              <div class="faculty-info-col">
+                <div class="name-line">
+                  <h1>Dr. C. T. Chimedza, Ph.D.</h1>
+                  <span class="badge badge-amber">Senior Lecturer &amp; Supervisor</span>
+                  <span class="badge badge-green" style="background: #14532d; color: #86efac;">Verified Faculty</span>
+                </div>
+                <p>Department of Computing &amp; Information Technology &bull; Faculty of Engineering &amp; Applied Sciences</p>
+                <div class="faculty-meta-tags">
+                  <span>Staff ID: 250731</span>
+                  <span>&bull;</span>
+                  <span>Mutare Main Campus (ICT Block Room 204)</span>
+                  <span>&bull;</span>
+                  <span>chimedzac@africau.edu</span>
+                </div>
+              </div>
+              <div class="faculty-actions-col">
+                <button class="btn btn-primary" onclick="openLetterModal()" style="white-space: nowrap;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+                  <span>New Recommendation Draft</span>
+                </button>
+                <button class="btn btn-secondary" onclick="navigate('verification-queue')" style="white-space: nowrap; background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.25);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
+                  <span>Open Verification Queue (3)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="notice">
+            <span class="badge badge-amber">Faculty Verifier Portal</span>
+            <span>Workshop Section 4.3 &amp; 4.4: Authenticated faculty workspace to verify student claims and review auto-synthesized reference letters.</span>
+          </div>
+
+          <!-- Faculty Metrics (NOT CGPA!) -->
+          <div class="stats-grid">
+            <div class="card clickable" onclick="navigate('verification-queue')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg></span>
+              <div><span>PENDING VERIFICATIONS</span><strong>3</strong><small>Student evidence submissions &rarr;</small></div>
+            </div>
+            <div class="card clickable" onclick="navigate('reference-requests')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+              <div><span>REFERENCE REQUESTS</span><strong>2</strong><small>Auto-compiled letter drafts &rarr;</small></div>
+            </div>
+            <div class="card clickable" onclick="navigate('faculty-modules')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg></span>
+              <div><span>ENROLLED STUDENTS</span><strong>148</strong><small>Across WTS201 &amp; CIS305 &rarr;</small></div>
+            </div>
+            <div class="card clickable" onclick="navigate('supervised-students')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span>
+              <div><span>SUPERVISED INTERNS</span><strong>2</strong><small>Industrial attachment active &rarr;</small></div>
+            </div>
+          </div>
+
+          <!-- Quick Access Navigation Hub -->
+          <div class="quick-grid">
+            <button onclick="navigate('verification-queue')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg><span><strong>Verification Queue</strong><small>3 student credentials awaiting sign-off</small></span>&rarr;</button>
+            <button onclick="navigate('reference-requests')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span><strong>Reference Requests</strong><small>2 letters auto-compiled and ready</small></span>&rarr;</button>
+            <button onclick="navigate('faculty-modules')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg><span><strong>My Taught Modules</strong><small>WTS201 &amp; CIS305 class rosters</small></span>&rarr;</button>
+            <button onclick="navigate('supervised-students')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg><span><strong>Supervised Students</strong><small>Attachment attendance and reviews</small></span>&rarr;</button>
+          </div>
+
+          <!-- Privacy & Need-To-Know Notice (Section 4.6) -->
+          <div style="margin-top: 10px; padding: 14px 18px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #0284c7; flex-shrink: 0;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span><strong>Need-to-Know Privacy Enforced (Workshop Section 4.6):</strong> Faculty verifiers only see credentials submitted for verification or requested letters. Personal academic records outside authorized scope remain strictly confidential.</span>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             FACULTY VIEW 2: VERIFICATION QUEUE (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-verification-queue">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('faculty-dashboard')">&larr; Back to Faculty Dashboard</button>
+            <div class="section-head">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-amber" style="font-weight: 700;">STUDENT VERIFICATION QUEUE</span>
+                  <span style="font-size: 12px; color: #64748b;">(Workshop Section 4.3: &ldquo;Nothing counts until verified&rdquo;)</span>
+                </div>
+                <h2 style="margin-top: 6px;">Pending Student Submissions Awaiting Faculty Sign-Off</h2>
+                <p>Authenticate student course, hackathon, and research credentials. Approved items receive verified digital signatures; rejected items provide feedback.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Review Row 1 -->
+            <div class="review-row card" style="border-left: 4px solid #d97706; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-amber review-status">Pending Faculty Verification</span>
+                  <small style="color: #64748b;">Submitted 2 days ago</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Wayne Matongera (Student ID: 250444 &bull; Level 2.1)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">GDSC Solution Challenge 2025 · 1st Runner Up (Mutare Regional Innovation Showcase)</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Attached Proof: Official Certificate of Award (PDF) &amp; GitHub Source Repository</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="verifyAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Verify &amp; Sign</button>
+                <button type="button" class="btn btn-secondary" onclick="rejectAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Reject with Feedback</button>
+              </div>
+            </div>
+
+            <!-- Review Row 2 -->
+            <div class="review-row card" style="border-left: 4px solid #d97706; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-amber review-status">Pending Faculty Verification</span>
+                  <small style="color: #64748b;">Submitted yesterday</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Natasha Chitembwe (Student ID: 250189 &bull; Level 2.1)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Cisco CCNA: Introduction to Networks (Credential ID: CSCO-912048)</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Attached Proof: Cisco NetAcad Digital Verification Link</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="verifyAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Verify &amp; Sign</button>
+                <button type="button" class="btn btn-secondary" onclick="rejectAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Reject with Feedback</button>
+              </div>
+            </div>
+
+            <!-- Review Row 3 -->
+            <div class="review-row card" style="border-left: 4px solid #d97706; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-amber review-status">Pending Faculty Verification</span>
+                  <small style="color: #64748b;">Submitted 3 days ago</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Kudzai Ndlovu (Student ID: 250312 &bull; Level 2.1)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">1st Place Africa University ICT Innovation Hackathon 2025</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Attached Proof: Dean of FEAS Award Certificate &amp; Prototype Demo</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="verifyAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Verify &amp; Sign</button>
+                <button type="button" class="btn btn-secondary" onclick="rejectAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Reject with Feedback</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             FACULTY VIEW 3: REFERENCE REQUESTS (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-reference-requests">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('faculty-dashboard')">&larr; Back to Faculty Dashboard</button>
+            <div class="section-head">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red" style="font-weight: 700;">ACADEMIC REFERENCE &amp; RECOMMENDATIONS</span>
+                  <span style="font-size: 12px; color: #64748b;">(Workshop Section 4.4: Auto-drafting from verified records)</span>
+                </div>
+                <h2 style="margin-top: 6px;">Recommendation Letter Requests from Supervised Students</h2>
+                <p>The system auto-compiles verified CGPA, course marks, and awards into an official editable draft on Africa University letterhead.</p>
+              </div>
+              <button class="btn btn-primary" onclick="openLetterModal()">+ New Custom Recommendation Draft</button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Letter Request 1 -->
+            <div class="review-row card" style="border-left: 4px solid var(--red); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red review-status">Draft Ready for Review</span>
+                  <small style="color: #64748b;">Opportunity: Google Student Developer Fellowship 2026</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Recommendation Letter for Wayne Matongera (Student ID: 250444)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Auto-Synthesized Evidence: Dean's List (CGPA 3.78 / 4.0), Top 12%, WTS201 Grade A (84%), GDSC 1st Runner Up.</p>
+                <small style="color: #16a34a; font-weight: 600; display: block; margin-top: 4px;">System Turnaround: Generated in 0.4s &bull; Ready for Dr. Chimedza to edit, sign and seal.</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="openLetterModal()" style="font-size: 12px; padding: 7px 16px;">Review &amp; Edit Letter Draft</button>
+                <button type="button" class="btn btn-secondary" onclick="showToast('Request archived with note.')" style="font-size: 12px; padding: 7px 16px;">Decline</button>
+              </div>
+            </div>
+
+            <!-- Letter Request 2 -->
+            <div class="review-row card" style="border-left: 4px solid var(--red); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red review-status">Draft Ready for Review</span>
+                  <small style="color: #64748b;">Opportunity: Old Mutual Zimbabwe Industrial Attachment</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Recommendation Letter for Jordy T. (Student ID: 240512)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Auto-Synthesized Evidence: CGPA 3.65 / 4.0, Mobile Applications Project Lead, Good Academic Standing.</p>
+                <small style="color: #16a34a; font-weight: 600; display: block; margin-top: 4px;">System Turnaround: Ready for review and signature.</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="openLetterModal()" style="font-size: 12px; padding: 7px 16px;">Review &amp; Edit Letter Draft</button>
+                <button type="button" class="btn btn-secondary" onclick="showToast('Request archived with note.')" style="font-size: 12px; padding: 7px 16px;">Decline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             FACULTY VIEW 4: MY TAUGHT MODULES (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-faculty-modules">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('faculty-dashboard')">&larr; Back to Faculty Dashboard</button>
+            <div class="section-head">
+              <div>
+                <h2>My Taught Modules &bull; Semester 1 (2025/2026)</h2>
+                <p>Enrolled student rosters, lecture schedules, and examination moderation</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="list">
+              <div class="list-row" style="cursor: default; padding: 18px 20px;">
+                <span class="course-mark">WT</span>
+                <span style="flex: 1;">
+                  <strong style="font-size: 15px;">WTS201 &bull; Web Technologies</strong>
+                  <small style="display: block; color: #64748b; margin-top: 4px;">64 Students Enrolled &bull; 3 Credits &bull; Lecture: Mon 10:00–12:00 (ICT Lab 3) &bull; Final Exam: 10 Nov (Great Hall)</small>
+                </span>
+                <button class="btn btn-secondary" onclick="showToast('Exported WTS201 attendance and grade roster.')">Export Class List</button>
+              </div>
+              <div class="list-row" style="cursor: default; padding: 18px 20px;">
+                <span class="course-mark">CI</span>
+                <span style="flex: 1;">
+                  <strong style="font-size: 15px;">CIS305 &bull; Database Systems</strong>
+                  <small style="display: block; color: #64748b; margin-top: 4px;">84 Students Enrolled &bull; 3 Credits &bull; Lecture: Wed 14:00–16:00 (ICT Lab 2) &bull; Final Exam: 18 Nov (NB 14)</small>
+                </span>
+                <button class="btn btn-secondary" onclick="showToast('Exported CIS305 attendance and grade roster.')">Export Class List</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             FACULTY VIEW 5: SUPERVISED STUDENTS (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-supervised-students">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('faculty-dashboard')">&larr; Back to Faculty Dashboard</button>
+            <div class="section-head">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-amber" style="font-weight: 700;">ATTACHMENT SUPERVISION</span>
+                  <span style="font-size: 12px; color: #64748b;">(Workshop Section 4.5: Industrial Attachment Monitoring)</span>
+                </div>
+                <h2 style="margin-top: 6px;">Supervised Attachment Students &bull; Industry Host Monitoring</h2>
+                <p>Track attendance, weekly logbooks, assessment reports, and industry recommendations.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card" style="padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-green">Supervisor Assessment: Outstanding</span>
+                  <small style="color: #64748b;">Host: Econet Wireless Zimbabwe</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Wayne Matongera (Student ID: 250444 &bull; Level 2.1)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Role: Software Engineering Intern &bull; Workplace Supervisor: Eng. P. Ndlovu</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Attendance: 98% (42/43 working days on-time) &bull; Weekly Reports: 8/8 Approved</small>
+              </div>
+              <button class="btn btn-secondary" onclick="showToast('Viewing full workplace logbook for Wayne Matongera.')">Workplace Logbook</button>
+            </div>
+
+            <div class="card" style="padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-green">Supervisor Assessment: Good Standing</span>
+                  <small style="color: #64748b;">Host: NetOne Cellular Zimbabwe</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Natasha Chitembwe (Student ID: 250189 &bull; Level 2.1)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Role: Network Operations Intern &bull; Workplace Supervisor: Mrs. S. Moyo</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Attendance: 95% &bull; Weekly Reports: 7/8 Approved</small>
+              </div>
+              <button class="btn btn-secondary" onclick="showToast('Viewing full workplace logbook for Natasha Chitembwe.')">Workplace Logbook</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             ADMIN VIEW 1: REGISTRY DASHBOARD (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-admin-dashboard">
+          <div class="admin-header-card">
+            <div class="faculty-badge-row">
+              <div class="faculty-avatar-box" style="background: linear-gradient(135deg, #dc2626, #991b1b); border-color: #f87171;">AU</div>
+              <div class="faculty-info-col">
+                <div class="name-line">
+                  <h1>Academic Registry &amp; Student Records Authority</h1>
+                  <span class="badge badge-red" style="background: #991b1b; color: white;">Central Institutional Governance</span>
+                  <span class="badge badge-green" style="background: #14532d; color: #86efac;">Statutory Authority</span>
+                </div>
+                <p>Division of Academic Affairs &bull; Africa University Central Records &amp; Transcripts Authority</p>
+                <div class="faculty-meta-tags">
+                  <span>Authority ID: AU-REG-240618</span>
+                  <span>&bull;</span>
+                  <span>Administration Building, Mutare Main Campus</span>
+                  <span>&bull;</span>
+                  <span>registry@africau.edu</span>
+                </div>
+              </div>
+              <div class="faculty-actions-col">
+                <button class="btn btn-primary" onclick="navigate('admin-transcripts')" style="white-space: nowrap;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg>
+                  <span>Transcript Queue (4)</span>
+                </button>
+                <button class="btn btn-secondary" onclick="navigate('admin-verifiers')" style="white-space: nowrap; background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.25);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span>Audit Trail</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="notice">
+            <span class="badge badge-red">Academic Records Authority</span>
+            <span>Workshop Section 4.6 &amp; 7: Formal transcript sealing, institutional verification, student identifier integrity, and RBAC governance.</span>
+          </div>
+
+          <!-- Admin Metrics -->
+          <div class="stats-grid">
+            <div class="card clickable" onclick="navigate('admin-transcripts')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span>
+              <div><span>TRANSCRIPT REQUESTS</span><strong>4</strong><small>Pending official digital seal &rarr;</small></div>
+            </div>
+            <div class="card clickable" onclick="navigate('admin-id-validation')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg></span>
+              <div><span>REGISTERED STUDENTS</span><strong>1,240</strong><small>Active across all faculties &rarr;</small></div>
+            </div>
+            <div class="card clickable" onclick="navigate('admin-verifiers')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+              <div><span>ACTIVE VERIFIERS</span><strong>5</strong><small>Computing, Math, Business, Sports, Chaplaincy &rarr;</small></div>
+            </div>
+            <div class="card clickable" onclick="navigate('admin-id-validation')">
+              <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
+              <div><span>ID COMPLIANCE</span><strong>100%</strong><small>Enforced format (YYNNNN) &rarr;</small></div>
+            </div>
+          </div>
+
+          <!-- Quick Access Navigation Hub -->
+          <div class="quick-grid">
+            <button onclick="navigate('admin-transcripts')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg><span><strong>Official Transcripts</strong><small>Seal and export transcripts</small></span>&rarr;</button>
+            <button onclick="navigate('admin-id-validation')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span><strong>Student ID Validation</strong><small>1,240 verified student accounts</small></span>&rarr;</button>
+            <button onclick="navigate('admin-verifiers')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span><strong>Verifier Governance</strong><small>RBAC privilege matrix and audit</small></span>&rarr;</button>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             ADMIN VIEW 2: OFFICIAL TRANSCRIPTS (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-admin-transcripts">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('admin-dashboard')">&larr; Back to Registry Dashboard</button>
+            <div class="section-head">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red" style="font-weight: 700;">OFFICIAL TRANSCRIPT ISSUANCE QUEUE</span>
+                  <span style="font-size: 12px; color: #64748b;">(Workshop Section 4.6 &amp; 7)</span>
+                </div>
+                <h2 style="margin-top: 6px;">Institutional Academic Records for Postgraduate &amp; Overseas Export</h2>
+                <p>Apply Africa University&rsquo;s cryptographic seal and generate verifiable transcripts for overseas institutions (e.g. Australia).</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Transcript Item 1 -->
+            <div class="review-row card" style="border-left: 4px solid #dc2626; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red review-status">Pending Registry Seal</span>
+                  <small style="color: #64748b;">Requested by Student 250444</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Official Academic Transcript &bull; Wayne Matongera (Student ID: 250444)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Recipient: Australian University Admissions / Postgraduate Credit Transfer</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Academic Audit: 16 Completed Modules &bull; 3.78 CGPA &bull; Fees Status: Cleared &bull; Disciplinary Record: Clean</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="sealTranscript(this)" style="font-size: 12px; padding: 7px 16px;">Approve &amp; Digitally Seal</button>
+                <button type="button" class="btn btn-secondary" onclick="showToast('Transcript held pending departmental clearance.')" style="font-size: 12px; padding: 7px 16px;">Hold</button>
+              </div>
+            </div>
+
+            <!-- Transcript Item 2 -->
+            <div class="review-row card" style="border-left: 4px solid #dc2626; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red review-status">Pending Registry Seal</span>
+                  <small style="color: #64748b;">Requested by Student 240112</small>
+                </div>
+                <h3 style="font-size: 16px; margin: 8px 0 3px;">Official Academic Transcript &bull; Tendai Moyo (Student ID: 240112)</h3>
+                <p style="font-size: 13px; color: #475569; margin: 0;">Recipient: Chevening Scholarship Secretariat &bull; Foreign &amp; Commonwealth Office</p>
+                <small style="color: #64748b; display: block; margin-top: 4px;">Academic Audit: 32 Completed Modules &bull; 3.89 CGPA &bull; Fees Status: Cleared</small>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-primary" onclick="sealTranscript(this)" style="font-size: 12px; padding: 7px 16px;">Approve &amp; Digitally Seal</button>
+                <button type="button" class="btn btn-secondary" onclick="showToast('Transcript held.')" style="font-size: 12px; padding: 7px 16px;">Hold</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             ADMIN VIEW 3: STUDENT ID VALIDATION (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-admin-id-validation">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('admin-dashboard')">&larr; Back to Registry Dashboard</button>
+            <div class="section-head">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red" style="font-weight: 700;">STUDENT ID INTEGRITY AUDIT</span>
+                  <span style="font-size: 12px; color: #64748b;">(Workshop Section 4.1 &amp; 7)</span>
+                </div>
+                <h2 style="margin-top: 6px;">Student Identifier &amp; Records Format Compliance</h2>
+                <p>Enforcement of statutory Africa University format YYNNNN (Year prefix + 4-digit student sequence).</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+            <div class="card" style="padding: 16px;">
+              <small style="color: #64748b; font-weight: 700; font-size: 10px;">TOTAL ACTIVE RECORDS</small>
+              <div style="font-size: 22px; font-weight: 700; color: #1e293b; margin: 4px 0;">1,240 Verified</div>
+              <small style="color: #16a34a; font-weight: 600;">100% compliant with format YYNNNN</small>
+            </div>
+            <div class="card" style="padding: 16px;">
+              <small style="color: #64748b; font-weight: 700; font-size: 10px;">FORMAT ANOMALIES</small>
+              <div style="font-size: 22px; font-weight: 700; color: #16a34a; margin: 4px 0;">0 Detected</div>
+              <small style="color: #64748b;">All legacy identifiers migrated</small>
+            </div>
+            <div class="card" style="padding: 16px;">
+              <small style="color: #64748b; font-weight: 700; font-size: 10px;">CURRENT INTAKE</small>
+              <div style="font-size: 22px; font-weight: 700; color: #0284c7; margin: 4px 0;">Class of 2025</div>
+              <small style="color: #64748b;">Prefix: 25XXXX (e.g. 250444)</small>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 14px;">
+            <div class="section-head">
+              <h2>Recent Sample Student Audit Roster</h2>
+            </div>
+            <div class="list" style="margin-top: 12px;">
+              <div class="list-row" style="cursor: default; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>Wayne Matongera</strong><small style="display: block; color: #64748b;">Student ID: 250444 &bull; BSc. Computer Information Systems (Level 2.1)</small></span>
+                <span class="badge badge-green">Valid &bull; YYNNNN Compliant</span>
+              </div>
+              <div class="list-row" style="cursor: default; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>Natasha Chitembwe</strong><small style="display: block; color: #64748b;">Student ID: 250189 &bull; BSc. Computer Information Systems (Level 2.1)</small></span>
+                <span class="badge badge-green">Valid &bull; YYNNNN Compliant</span>
+              </div>
+              <div class="list-row" style="cursor: default; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>Tendai Moyo</strong><small style="display: block; color: #64748b;">Student ID: 240112 &bull; Bachelor of Accounting (Level 3.1)</small></span>
+                <span class="badge badge-green">Valid &bull; YYNNNN Compliant</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             ADMIN VIEW 4: VERIFIER GOVERNANCE (INDIVIDUAL PAGE)
+             =============================================================== -->
+        <div class="page-stack screen-view" id="view-admin-verifiers">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('admin-dashboard')">&larr; Back to Registry Dashboard</button>
+            <div class="section-head">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge badge-red" style="font-weight: 700;">GOVERNANCE &amp; RBAC</span>
+                  <span style="font-size: 12px; color: #64748b;">(Workshop Section 4.3: Shared Verification Model)</span>
+                </div>
+                <h2 style="margin-top: 6px;">Authorized Departmental Verifier Matrix</h2>
+                <p>Statutory delegation of verification powers across academic and non-academic domains.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="list">
+              <div class="list-row" style="cursor: default; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <strong>Faculty of Engineering &amp; Applied Sciences</strong>
+                  <small style="color: #64748b; display: block; margin-top: 2px;">Designated Verifier: Dr. C. T. Chimedza &bull; Scope: Academic Awards, Computing Hackathons, Course Honors</small>
+                </div>
+                <span class="badge badge-green">Active &bull; Authorized</span>
+              </div>
+              <div class="list-row" style="cursor: default; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <strong>Directorate of Sports &amp; Recreation</strong>
+                  <small style="color: #64748b; display: block; margin-top: 2px;">Designated Verifier: Coach T. Sibanda &bull; Scope: Inter-University Athletics, Regional Tournaments</small>
+                </div>
+                <span class="badge badge-green">Active &bull; Authorized</span>
+              </div>
+              <div class="list-row" style="cursor: default; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <strong>Chaplaincy &amp; Community Outreach</strong>
+                  <small style="color: #64748b; display: block; margin-top: 2px;">Designated Verifier: Rev. M. Dube &bull; Scope: Volunteer Initiatives, Leadership Service, Faith-based Projects</small>
+                </div>
+                <span class="badge badge-green">Active &bull; Authorized</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 18px; border-left: 4px solid #0284c7;">
+            <div class="section-head">
+              <div>
+                <h2>Tamper-Proof Audit Trail (Firestore Cloud Log)</h2>
+                <p>Cryptographic hash verification logs recording all verification and transcript sealing actions.</p>
+              </div>
+              <span class="badge badge-green">100% SHA-256 Verified</span>
+            </div>
+            <div class="list" style="margin-top: 12px; font-family: monospace; font-size: 11px;">
+              <div class="list-row" style="cursor: default; padding: 10px 14px;">
+                <span style="color: #0284c7;">[AUDIT 2026-11-05 18:42]</span>
+                <span style="flex: 1;">ACTION: VERIFY_ACHIEVEMENT | ACTOR: Dr. Chimedza (Staff 250731) | TARGET: Wayne Matongera (250444) | HASH: a7f89b...e21</span>
+              </div>
+              <div class="list-row" style="cursor: default; padding: 10px 14px;">
+                <span style="color: #0284c7;">[AUDIT 2026-11-05 17:15]</span>
+                <span style="flex: 1;">ACTION: TRANSCRIPT_SEAL | ACTOR: Registry Admin (Auth 240618) | TARGET: Tendai Moyo (240112) | HASH: 4e91c0...93d</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: PERSONAL & ACADEMIC -->
+        <div class="page-stack screen-view" id="view-personal-academic">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('overview')">&larr; Back to overview</button>
+            <div class="section-head">
+              <div><h2>Personal &amp; Academic Information</h2><p>Your student profile and university record</p></div>
+              <button class="btn btn-primary" onclick="openEditModal()">Edit profile</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><h2>Personal information</h2></div>
+            <div class="info-grid">
+              <div class="info-row"><span class="icon-box">&#128197;</span><span><small>Date of birth</small><strong>14 September 2003</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#127891;</span><span><small>Student ID</small><strong>250444</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#127758;</span><span><small>Nationality</small><strong>Zimbabwean</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#128222;</span><span><small>Phone number</small><strong>+263 77 456 7821</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#9993;</span><span><small>Email address</small><strong>w.matongera@africau.edu</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#128205;</span><span><small>Residence</small><strong>Room i24, Boys Residency</strong></span></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top: 20px;">
+            <div class="section-head"><h2>Academic information</h2></div>
+            <div class="detail-grid">
+              <div><small>Programme</small><strong>BSc. Computer Information Systems</strong></div>
+              <div><small>Department</small><strong>Computing &amp; Technology</strong></div>
+              <div><small>Academic level</small><strong>Undergraduate &bull; Level 2.1</strong></div>
+              <div><small>Standing</small><strong class="success-text">Good standing (3.78 GPA)</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: COURSES -->
+        <div class="page-stack screen-view" id="view-courses">
+          <div class="section-head">
+            <div><h2>Course Catalogue &amp; Enrolment</h2><p>Registered and scheduled modules</p></div>
+            <button class="btn btn-primary" onclick="showToast('Official transcript requested.')">Request Official Transcript</button>
+          </div>
+          <div class="card table-card" style="margin-top: 15px;">
+            <div class="course-table">
+              <div class="table-head"><span>Course</span><span>Lecturer</span><span>Credits</span><span>Status</span><span></span></div>
+              <div class="table-row"><div class="course-name"><span class="course-mark">WT</span><span><strong>Web Technologies</strong><small>WTS201</small></span></div><span>Dr. Elena Mensah</span><span>3.0</span><span><span class="badge badge-red">Core · Current</span></span><span>&rsaquo;</span></div>
+              <div class="table-row"><div class="course-name"><span class="course-mark">ST</span><span><strong>Applied Statistics</strong><small>STA201</small></span></div><span>Prof. David Cole</span><span>3.0</span><span><span class="badge badge-red">Core · Current</span></span><span>&rsaquo;</span></div>
+              <div class="table-row"><div class="course-name"><span class="course-mark">CI</span><span><strong>Mobile Applications</strong><small>CIS202</small></span></div><span>Mrs. R. Mutasa</span><span>3.0</span><span><span class="badge badge-red">Core · Current</span></span><span>&rsaquo;</span></div>
+              <div class="table-row"><div class="course-name"><span class="course-mark">CS</span><span><strong>Data Structures</strong><small>CSC201</small></span></div><span>Dr. P. Nyathi</span><span>4.0</span><span><span class="badge badge-green">Completed · A</span></span><span>&rsaquo;</span></div>
+            </div>
+          </div>
+
+         <!-- Pending Assignments (Natasha) -->
+          <div class="card" id="assignments-card" style="margin-top: 20px;">
+            <div class="section-head">
+              <div>
+                <h2>Assignments</h2>
+                <p>Pending coursework across your current modules</p>
+              </div>
+              <span style="display: flex; gap: 8px; align-items: center;">
+                <span class="badge badge-amber" id="assign-pending-count">0 pending</span>
+                <span class="badge badge-red" id="assign-overdue-count" style="display: none;">0 overdue</span>
+              </span>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin: 12px 0;">
+              <button type="button" class="btn btn-primary" data-assign-filter="pending" onclick="setAssignFilter('pending')" style="font-size: 11px; padding: 5px 12px;">Pending</button>
+              <button type="button" class="btn btn-secondary" data-assign-filter="submitted" onclick="setAssignFilter('submitted')" style="font-size: 11px; padding: 5px 12px;">Submitted</button>
+              <button type="button" class="btn btn-secondary" data-assign-filter="all" onclick="setAssignFilter('all')" style="font-size: 11px; padding: 5px 12px;">All</button>
+            </div>
+
+            <div id="assign-list" style="display: flex; flex-direction: column; gap: 10px;">
+
+              <div class="assign-row" data-offset="-1" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">WT</span>
+                  <span><strong>Responsive Portfolio Website</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="WTS201 &bull; Web Technologies &bull; 20 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="2" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">CI</span>
+                  <span><strong>Prototype Screens in Figma</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="CIS202 &bull; Mobile Applications &bull; 15 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="5" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">ST</span>
+                  <span><strong>Regression Analysis Worksheet</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="STA201 &bull; Applied Statistics &bull; 10 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="9" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">CS</span>
+                  <span><strong>Linked List &amp; Stack Implementation</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="CSC201 &bull; Data Structures &bull; 25 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="-6" data-status="submitted" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #16a34a; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">WT</span>
+                  <span><strong>JavaScript Form Validation Lab</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="WTS201 &bull; Web Technologies &bull; 10 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-secondary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+            </div>
+
+            <script>
+              (function () {
+                var KEY = 'auAssignmentStatus';
+                var filter = 'pending';
+                var rows = document.querySelectorAll('#assign-list .assign-row');
+
+                // restore saved statuses
+                try {
+                  var saved = JSON.parse(localStorage.getItem(KEY)) || {};
+                  rows.forEach(function (r, i) { if (saved[i]) r.setAttribute('data-status', saved[i]); });
+                } catch (e) {}
+
+                function dueDate(offset) {
+                  var d = new Date();
+                  d.setHours(0, 0, 0, 0);
+                  d.setDate(d.getDate() + offset);
+                  return d;
+                }
+
+                function refresh() {
+                  var pending = 0, overdue = 0;
+                  rows.forEach(function (r) {
+                    var offset = parseInt(r.getAttribute('data-offset'), 10);
+                    var status = r.getAttribute('data-status');
+                    var badge = r.querySelector('.assign-badge');
+                    var btn = r.querySelector('.assign-btn');
+                    var meta = r.querySelector('.assign-meta');
+                    var dateText = dueDate(offset).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+                    meta.innerHTML = meta.getAttribute('data-info') + ' &bull; Due ' + dateText;
+
+                    if (status === 'submitted') {
+                      badge.className = 'badge badge-green assign-badge';
+                      badge.textContent = 'Submitted';
+                      btn.className = 'btn btn-secondary assign-btn';
+                      btn.textContent = 'Undo';
+                      r.style.borderLeftColor = '#16a34a';
+                    } else {
+                      pending++;
+                      btn.className = 'btn btn-primary assign-btn';
+                      btn.textContent = 'Mark as submitted';
+                      if (offset < 0) {
+                        overdue++;
+                        badge.className = 'badge badge-red assign-badge';
+                        badge.textContent = 'Overdue by ' + Math.abs(offset) + (Math.abs(offset) === 1 ? ' day' : ' days');
+                        r.style.borderLeftColor = '#dc2626';
+                      } else if (offset === 0) {
+                        badge.className = 'badge badge-red assign-badge';
+                        badge.textContent = 'Due today';
+                        r.style.borderLeftColor = '#dc2626';
+                      } else if (offset <= 3) {
+                        badge.className = 'badge badge-amber assign-badge';
+                        badge.textContent = 'Due in ' + offset + (offset === 1 ? ' day' : ' days');
+                        r.style.borderLeftColor = '#d97706';
+                      } else {
+                        badge.className = 'badge badge-gray assign-badge';
+                        badge.textContent = 'Due in ' + offset + ' days';
+                        r.style.borderLeftColor = '#d97706';
+                      }
+                    }
+                    r.style.display = (filter === 'all' || filter === status) ? 'flex' : 'none';
+                  });
+
+                  document.getElementById('assign-pending-count').textContent = pending + ' pending';
+                  var o = document.getElementById('assign-overdue-count');
+                  o.textContent = overdue + ' overdue';
+                  o.style.display = overdue ? 'inline-flex' : 'none';
+
+                  document.querySelectorAll('[data-assign-filter]').forEach(function (b) {
+                    b.className = 'btn ' + (b.getAttribute('data-assign-filter') === filter ? 'btn-primary' : 'btn-secondary');
+                  });
+                }
+
+                window.setAssignFilter = function (f) { filter = f; refresh(); };
+
+                window.toggleAssignment = function (btn) {
+                  var row = btn.closest('.assign-row');
+                  var now = row.getAttribute('data-status') === 'pending' ? 'submitted' : 'pending';
+                  row.setAttribute('data-status', now);
+                  try {
+                    var s = {};
+                    rows.forEach(function (r, i) { s[i] = r.getAttribute('data-status'); });
+                    localStorage.setItem(KEY, JSON.stringify(s));
+                  } catch (e) {}
+                  refresh();
+                  if (typeof showToast === 'function') {
+                    showToast(now === 'submitted' ? 'Assignment marked as submitted.' : 'Assignment moved back to pending.');
+                  }
+                };
+
+                refresh();
+              })();
+            </script>
+          </div>
+        </div>
+
+        <!-- VIEW: COURSE CALENDAR -->
+        <div class="page-stack screen-view" id="view-calendar">
+          <div class="page-head">
+            <button class="back-link" type="button" onclick="navigate('courses')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              Back
+            </button>
+            <div class="section-head">
+              <div><h2>Calendar</h2><p>Student Profile &rarr; Courses &rarr; Calendar</p></div>
+              <button class="today-button" type="button" id="calendar-today">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+                Today
+              </button>
+            </div>
+          </div>
+
+          <div class="calendar-source-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+            <p>University events are fictional prototype records and are not institutionally verified. Zimbabwe public holiday dates are loaded from <a href="https://date.nager.at/" target="_blank" rel="noopener noreferrer">Nager.Date</a>; confirm official observances with the relevant authorities.</p>
+          </div>
+          <p class="holiday-source-status" id="holiday-source-status" role="status" aria-live="polite">Loading Zimbabwe public holidays…</p>
+
+          <div class="event-legend" aria-label="Calendar event categories">
+            <span><i class="institution"></i>Institution-approved</span>
+            <span><i class="pending"></i>Proposed / pending</span>
+            <span><i class="academic"></i>Academic</span>
+            <span><i class="holiday"></i>Zimbabwe public holiday</span>
+            <span><i class="today"></i>Today</span>
+          </div>
+
+          <div class="calendar-layout">
+            <section class="card calendar-card interactive-calendar" aria-label="Monthly calendar">
+              <div class="calendar-head">
+                <button type="button" id="calendar-prev" aria-label="Previous month">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <div><h2 id="calendar-month">November 2026</h2><p id="calendar-event-count">7 events scheduled</p></div>
+                <button type="button" id="calendar-next" aria-label="Next month">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+              </div>
+              <div class="calendar-days" id="calendar-days" role="grid" aria-label="Calendar dates"></div>
+            </section>
+
+            <aside class="card day-agenda" aria-live="polite">
+              <div class="section-head">
+                <div><h2 id="agenda-date">14 November</h2><p id="agenda-count">1 scheduled event</p></div>
+              </div>
+              <div id="agenda-list"></div>
+              <button class="text-link" type="button" onclick="navigate('examination')">
+                View examination timetable
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </aside>
+          </div>
+          <div class="calendar-tooltip" id="calendar-tooltip" role="tooltip" hidden></div>
+          <div class="calendar-event-modal" id="calendar-event-modal" hidden>
+            <section class="calendar-event-dialog" role="dialog" aria-modal="true" aria-labelledby="calendar-event-dialog-title" tabindex="-1">
+              <button class="calendar-event-close" id="calendar-event-close" type="button" aria-label="Close event details">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg>
+              </button>
+              <span class="header-kicker">CALENDAR EVENT DETAILS</span>
+              <h2 id="calendar-event-dialog-title">Scheduled events</h2>
+              <div id="calendar-event-details"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- VIEW: EXAMINATIONS -->
+        <div class="page-stack screen-view" id="view-examination">
+          <div class="page-head">
+            <button class="back-link" type="button" onclick="navigate('courses')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              Back
+            </button>
+            <div class="section-head">
+              <div><h2>Examinations</h2><p>Student Profile &rarr; Courses &rarr; Examination</p></div>
+            </div>
+          </div>
+
+          <div class="exam-summary-grid">
+            <div class="card">
+              <span class="stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M7 8h10M7 12h7"/></svg></span>
+              <div><small>Upcoming exams</small><strong>3</strong><span>November 2026</span></div>
+            </div>
+            <div class="card">
+              <span class="stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
+              <div><small>Previous pass rate</small><strong>100%</strong><span>4 of 4 passed</span></div>
+            </div>
+            <div class="card">
+              <span class="stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <div><small>Next exam</small><strong>10 Nov</strong><span>Web Technologies</span></div>
+            </div>
+          </div>
+
+          <section class="card exam-card">
+            <div class="section-head">
+              <div><h2>Final examination timetable</h2><p>Semester 1 &middot; 2026/2027</p></div>
+              <span class="badge badge-amber">Timetable published</span>
+            </div>
+            <div class="exam-table">
+              <div class="exam-head"><span>Date</span><span>Course</span><span>Time</span><span>Venue</span><span>Status</span></div>
+              <div class="exam-row">
+                <span><b>10</b><small>Nov 2026</small></span>
+                <span><strong>Web Technologies</strong><small>WTS201</small></span>
+                <span>09:00&ndash;12:00</span><span>Great Hall</span><span class="badge badge-green">Scheduled</span>
+              </div>
+              <div class="exam-row">
+                <span><b>12</b><small>Nov 2026</small></span>
+                <span><strong>Applied Statistics</strong><small>STA201</small></span>
+                <span>14:00&ndash;17:00</span><span>New Building 14</span><span class="badge badge-green">Scheduled</span>
+              </div>
+              <div class="exam-row">
+                <span><b>15</b><small>Nov 2026</small></span>
+                <span><strong>Mobile Applications</strong><small>CIS202</small></span>
+                <span>09:00&ndash;12:00</span><span>ICT Lab 2</span><span class="badge badge-green">Scheduled</span>
+              </div>
+            </div>
+          </section>
+          <div class="exam-note">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+            <p>Arrive at least 30 minutes before each examination and bring your student ID. Confirm any timetable updates with the Academic Registry.</p>
+          </div>
+        </div>
+
+        <!-- VIEW: ACADEMIC PROGRESS -->
+        <div class="page-stack screen-view" id="view-academic-progress">
+          <section class="progress-hero">
+            <div>
+              <span class="eyebrow">DEGREE PROGRESSION</span>
+              <h2>On track for graduation in 2028.</h2>
+              <p>You have completed 16 out of 38 required modules. Maintain your Dean's List performance through Level 3.1 &amp; Level 3.2.</p>
+              <div class="big-bar"><span style="width: 42%;"></span></div>
+              <div class="bar-labels"><span>16 courses completed</span><span>42% completed</span><span>Expected Nov 2028</span></div>
+            </div>
+            <div class="progress-number"><strong>42%</strong><span>DEGREE</span></div>
+          </section>
+        </div>
+
+        <!-- VIEW: SKILLS & ACTIVITIES -->
+        <div class="page-stack screen-view" id="view-skills-activities">
+          <section class="card skills-panel" aria-labelledby="skills-heading">
+            <div class="section-head">
+              <div>
+                <span class="skills-eyebrow">CAPABILITIES</span>
+                <h2 id="skills-heading">Skills</h2>
+                <p>Technical strengths and people skills, with self-reported proficiency.</p>
+              </div>
+            </div>
+            <div class="skills-category">
+              <h3>Technical skills</h3>
+              <div class="skills-grid">
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>HTML5 &amp; CSS3</h4><span class="skill-level">Advanced</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="HTML5 and CSS3 proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85"><span style="width: 85%"></span></div>
+                  <div class="skill-card-footer"><span>85% · Self-assessed</span><a href="#/projects">Related projects <span aria-hidden="true">&rarr;</span></a></div>
+                </article>
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>JavaScript (ES6+)</h4><span class="skill-level">Proficient</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="JavaScript proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><span style="width: 75%"></span></div>
+                  <div class="skill-card-footer"><span>75% · Self-assessed</span><a href="#/projects">Related projects <span aria-hidden="true">&rarr;</span></a></div>
+                </article>
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>React &amp; TypeScript</h4><span class="skill-level">Developing</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="React and TypeScript proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><span style="width: 60%"></span></div>
+                  <div class="skill-card-footer"><span>60% · Self-assessed</span><a href="#/projects">Related projects <span aria-hidden="true">&rarr;</span></a></div>
+                </article>
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>Python &amp; PostgreSQL</h4><span class="skill-level">Developing</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="Python and PostgreSQL proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="55"><span style="width: 55%"></span></div>
+                  <div class="skill-card-footer"><span>55% · Self-assessed</span><span class="skill-no-evidence">No evidence linked</span></div>
+                </article>
+              </div>
+            </div>
+            <div class="skills-category">
+              <h3>Soft skills</h3>
+              <div class="soft-skills-grid">
+                <article class="soft-skill"><span aria-hidden="true">01</span><div><h4>Communication</h4><p>Sharing ideas clearly in team and presentation settings.</p></div><strong>Proficient</strong></article>
+                <article class="soft-skill"><span aria-hidden="true">02</span><div><h4>Teamwork</h4><p>Collaborating, listening, and contributing to shared goals.</p></div><strong>Advanced</strong></article>
+                <article class="soft-skill"><span aria-hidden="true">03</span><div><h4>Problem solving</h4><p>Breaking down challenges and testing practical solutions.</p></div><strong>Proficient</strong></article>
+              </div>
+            </div>
+            <p class="skills-disclaimer">Skill levels are self-reported examples and have not been independently assessed.</p>
+          </section>
+
+          <section class="card activities-panel" aria-labelledby="activities-heading">
+            <div class="activities-header">
+              <div>
+                <span class="skills-eyebrow">BEYOND THE CLASSROOM</span>
+                <h2 id="activities-heading">Activities &amp; involvement</h2>
+                <p>Explore roles, contributions, and achievements.</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="activity-add-button">+ Add activity</button>
+            </div>
+            <aside class="activity-demo-notice" aria-label="Demonstration data notice">
+              <strong>Demonstration data only</strong>
+              <span>These sample activities and Pending, Verified, and Rejected labels are for interface demonstration. They are not officially verified, are not connected to a database, and edits last only until you leave or refresh this page.</span>
+            </aside>
+            <div class="activity-filters" role="search" aria-label="Search and filter activities">
+              <label class="activity-search"><span class="sr-only">Search activities</span><input id="activity-search" type="search" placeholder="Search activities, roles, or organizations"></label>
+              <label><span class="sr-only">Filter by category</span><select id="activity-category-filter">
+                <option value="">All categories</option><option value="Leadership">Leadership</option><option value="Technology">Technology</option><option value="Community service">Community service</option><option value="Sports">Sports</option><option value="Arts &amp; culture">Arts &amp; culture</option>
+              </select></label>
+              <label><span class="sr-only">Filter by demonstration status</span><select id="activity-status-filter">
+                <option value="">All demo statuses</option><option value="Pending">Pending</option><option value="Verified">Verified</option><option value="Rejected">Rejected</option>
+              </select></label>
+            </div>
+            <p class="activity-results" id="activity-results" aria-live="polite"></p>
+            <div class="activity-grid" id="activity-list" aria-live="polite"></div>
+            <p class="activity-empty" id="activity-empty" hidden>No activities match these filters. Try another search or add an activity.</p>
+          </section>
+        </div>
+
+        <!-- VIEW: ACHIEVEMENTS -->
+        <div class="page-stack screen-view" id="view-achievements">
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="section-head">
+              <div>
+                <h2>Verified Credentials &amp; Achievements</h2>
+                <p>Request a letter from your lecturer, manage your CV, or log a new milestone for verification.</p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary" onclick="navigate('my-cv')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  <span>My CV</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="openRequestModal()">+ Request Recommendation</button>
+                <button type="button" class="btn btn-primary" id="btn-open-add-achievement" onclick="openAddAchievementModal()">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  + Log New Achievement
+                </button>
+              </div>
+            </div>
+            <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
+          </div>
+          <div class="achievement-grid">
+            <div class="card"><div class="medal">&#127894;</div><span class="badge badge-green">Verified</span><h3>Dean's Honour Roll</h3><p>Recognised for semester GPA performance (3.78).</p></div>
+            <div class="card"><div class="medal">&#127942;</div><span class="badge badge-green">Verified</span><h3>GDSC Solution Challenge 2025</h3><p>1st Runner Up for campus accessibility prototype.</p></div>
+            <div class="card"><div class="medal">&#128220;</div><span class="badge badge-green">Verified</span><h3>Cisco CCNA Certification</h3><p>Completed CCNA Introduction to Networks.</p></div>
+          </div>
+        </div>
+
+        <!-- VIEW: MY CV (Achievements -> My CV) -->
+        <div class="page-stack screen-view" id="view-my-cv">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('achievements')">&larr; Back to achievements</button>
+            <div class="section-head">
+              <div>
+                <h2>My CV</h2>
+                <p>Student Profile &rarr; Achievements &rarr; My CV</p>
+              </div>
+              <span class="badge badge-green" id="cv-status-badge">Current CV uploaded</span>
+            </div>
+          </div>
+
+          <div class="card cv-shell">
+            <div id="cv-uploaded-container">
+              <div class="cv-summary">
+                <span class="cv-document-icon uploaded">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  <b id="cv-doc-type">PDF</b>
+                </span>
+                <div>
+                  <div class="cv-title-line">
+                    <h2 id="cv-doc-name">Wayne_Matongera_Academic_CV.pdf</h2>
+                    <span class="badge badge-green">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      Uploaded
+                    </span>
+                  </div>
+                  <p id="cv-doc-meta">Version 1 &bull; 624 KB</p>
+                  <span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="cv-doc-updated">Last updated 20 Oct 2026 &bull; 09:30</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Interactive Document Preview Mini-Paper -->
+              <div class="cv-preview-card" onclick="openCvPreviewModal()" style="cursor: pointer;" title="Click to open full CV preview">
+                <div class="cv-paper">
+                  <header>
+                    <img src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
+                    <span>
+                      <strong>WAYNE MATONGERA</strong>
+                      <small>Computer Information Systems Student</small>
+                    </span>
+                  </header>
+                  <div></div>
+                  <div></div>
+                  <div class="short"></div>
+                  <h3>PROFILE</h3>
+                  <div></div>
+                  <div></div>
+                  <h3>EDUCATION &amp; EXPERIENCE</h3>
+                  <div></div>
+                  <div></div>
+                  <div class="short"></div>
+                </div>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Document preview
+                </span>
+              </div>
+
+              <div class="cv-action-row">
+                <button type="button" class="btn btn-secondary" onclick="openCvPreviewModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  View CV
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="downloadCV()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download CV
+                </button>
+                <button type="button" class="btn btn-primary" onclick="triggerCvUpload()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+                  Replace CV
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Progress Bar (Animated) -->
+            <div class="cv-upload-progress" id="cv-upload-progress-box" style="display: none; margin-top: 18px;">
+              <div>
+                <strong id="cv-upload-label">Uploading CV&hellip;</strong>
+                <span id="cv-upload-pct">0%</span>
+              </div>
+              <progress max="100" value="0" id="cv-progress-bar"></progress>
+            </div>
+
+            <!-- Error message container if file invalid -->
+            <div class="cv-error" id="cv-error-box" style="display: none; margin-top: 15px;" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span>
+                <strong>Upload failed: </strong>
+                <span id="cv-error-text">Unsupported file format.</span>
+              </span>
+            </div>
+
+            <!-- Hidden File Input -->
+            <input type="file" id="cv-file-input" class="cv-file-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleCvFileSelect(event)">
+          </div>
+        </div>
+        <!-- VIEW: RECOMMENDATIONS (Natasha Nyamutsaka - 250426) -->
+        <section class="screen-view" id="view-recommendations" aria-labelledby="heading-recommendations">
+          <div class="screen-header">
+            <div>
+              <div class="screen-eyebrow">FAIR & EVIDENCE-BASED REFERENCES</div>
+              <h2 class="screen-title" id="heading-recommendations">Recommendation Letter Engine</h2>
+            </div>
+            <div class="screen-actions">
+              
+            </div>
+          </div>
+          
+          <!-- Recommendation Hero Card -->
+          <div class="welcome-card" style="background: linear-gradient(135deg, #151515 0%, #2a151b 100%);">
+            <div class="welcome-content">
+              <span class="eyebrow" style="color: #fca5a5;">INSTANT LETTER SYNTHESIS</span>
+              <h2>Cut letter writing turnaround from 10 days to minutes.</h2>
+              <p>The system auto-compiles your Dean's List standing, cumulative GPA, and faculty-verified achievements into an editable draft for your lecturer.</p>
+            </div>
+          </div>
+            <article class="card" style="margin-top: 2rem;">
+              <div class="card-header">
+                <h3 class="card-title">Incoming Student Requests</h3>
+              </div>
+              <div id="incoming-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
+            </article>
+          <!-- Generated Letter Preview Area -->
+          <article class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+              <h3 class="card-title">Simulated Recommendation Draft (AU Official Letterhead)</h3>
+              <button type="button" class="btn btn-secondary" onclick="window.print()">Print Official Letter</button>
+            </div>
+            <div class="recommendation-letter-box" id="recommendation-letter-preview" style="background: #fafafa; border: 1px solid #e2e8f0; padding: 2rem; font-family: var(--font-heading); line-height: 1.8;">
+              <div style="border-bottom: 2px solid var(--au-red); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <strong style="color: var(--au-red); font-size: 1.25rem;">AFRICA UNIVERSITY &bull; FACULTY OF ENGINEERING</strong>
+                <p style="font-size: 0.8125rem; font-family: var(--font-body); color: var(--text-muted); margin: 0;">Academic Reference &amp; Verified Credential Statement</p>
+              </div>
+              <p><strong>To the Admissions / Selection Committee,</strong></p>
+              <p>I am pleased to provide this official academic recommendation for <strong>Wayne Matongera (Student ID: AU250444)</strong>, currently enrolled in the Bachelor of Science (Honours) in Computer Science program at Africa University.</p>
+              <p>Wayne has maintained an exemplary academic record with a cumulative GPA of <strong>3.84 / 4.00</strong>, earning a confirmed position on the <strong>Dean's Honour Roll</strong>. Through verified coursework in Web Technologies (WTS201) and Data Structures (CSC201), he has demonstrated superior analytical ability and technical execution.</p>
+              <p>Beyond classroom excellence, the Africa University Student Verification Registry confirms his leadership as <strong>Vice Lead of the Google Developer Student Club (GDSC)</strong> and <strong>1st Runner Up in the Campus Solution Challenge 2025</strong>.</p>
+              <p>I recommend him without reservation.</p>
+              <div style="margin-top: 2rem;">
+                <strong>Dr. C. T. Chimedza, Ph.D.</strong><br>
+                <span style="font-size: 0.875rem; color: var(--text-muted);">Senior Lecturer &amp; Academic Supervisor &bull; Africa University</span>
+              </div>
+            </div>
+          </article>
+            <article class="card" style="margin-top: 2rem;">
+              <div class="card-header">
+                <h3 class="card-title">My Requests</h3>
+              </div>
+              <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+                <p id="my-requests-empty" style="font-size: 13px; color: var(--muted);">No requests yet. Click "Request New Recommendation" to start.</p>
+              </div>
+            </article>
+        </section>
+        <!-- VIEW: PROJECTS -->
+        <div class="page-stack screen-view" id="view-projects">
+          <div class="project-grid">
+            <div class="card">
+              <div class="project-cover cover-1"><span>01</span></div>
+              <div class="project-body">
+                <h3>Africa University Student Profile Portal</h3>
+                <p>Interactive student passport portal prototype designed in Figma Make and coded in HTML, CSS &amp; JavaScript.</p>
+                <small>Technologies: HTML5 · CSS3 · TypeScript · Figma</small>
+                <div class="project-actions"><a href="https://github.com/matongeraw/Group-11-web-tech" target="_blank" class="btn btn-primary" style="text-decoration:none;">GitHub Repo &rarr;</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: CONTACT -->
+        <div class="page-stack screen-view" id="view-contact">
+          <div class="contact-grid">
+            <div class="card"><small>INSTITUTIONAL EMAIL</small><strong>w.matongera@africau.edu</strong><a href="mailto:w.matongera@africau.edu" class="btn btn-secondary" style="margin-top:10px;">Send email</a></div>
+            <div class="card"><small>LINKEDIN PROFILE</small><strong>linkedin.com/in/wayne-matongera</strong><a href="https://linkedin.com" target="_blank" class="btn btn-secondary" style="margin-top:10px;">Connect</a></div>
+          </div>
+
+          <!-- Theophany Bandure (252012) Component: Privacy & Access Audit Trail -->
+          <div class="card" style="margin-top: 20px;">
+            <div class="section-head">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--red-soft); color: var(--red); display: grid; place-items: center; flex-shrink: 0;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                </div>
+                <div>
+                  <h2 style="font-size: 16px; margin: 0;">Expiring Share Links &amp; Real-Time Access Audit Trail</h2>
+                  <p style="font-size: 11px; color: var(--muted); margin: 3px 0 0;">Workshop Section 4.6 &amp; 4.7: "Who Viewed My Profile" &bull; Revoke active tokens at any moment.</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="btn-open-share-modal" onclick="openShareModal()">
+                + Create Time-Limited Link
+              </button>
+            </div>
+
+            <p style="font-size: 12px; color: var(--muted); margin-top: 12px;">
+              You own and control access to your academic records. Active links grant time-bounded read-only access to your verified portfolio and invalidate automatically on expiration.
+            </p>
+
+            <!-- Access Audit Table -->
+            <div class="table-responsive" style="margin-top: 16px; overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
+                <thead>
+                  <tr style="border-bottom: 2px solid var(--line); color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+                    <th style="padding: 10px 12px;">Viewer Entity / Organization</th>
+                    <th style="padding: 10px 12px;">Access Scope</th>
+                    <th style="padding: 10px 12px;">Time Accessed</th>
+                    <th style="padding: 10px 12px;">Status</th>
+                    <th style="padding: 10px 12px; text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 12px;">
+                      <strong>Econet Innovations Recruitment</strong>
+                      <small style="display: block; color: var(--muted); font-size: 10px;">Token: au_sec_9942a78f</small>
+                    </td>
+                    <td style="padding: 12px; color: var(--muted);">Verified Achievements &amp; Projects</td>
+                    <td style="padding: 12px;">Today, 14:22</td>
+                    <td style="padding: 12px;"><span class="badge badge-green">Active (Expires in 4 days)</span></td>
+                    <td style="padding: 12px; text-align: right;">
+                      <button type="button" class="btn btn-secondary" style="font-size: 10px; padding: 4px 10px; color: var(--red); border-color: #fca5a5;" onclick="revokeAccess(this, 'Econet Innovations Recruitment')">Revoke</button>
+                    </td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 12px;">
+                      <strong>Google Developer Student Clubs Fellowship</strong>
+                      <small style="display: block; color: var(--muted); font-size: 10px;">Token: au_sec_318b76c1</small>
+                    </td>
+                    <td style="padding: 12px; color: var(--muted);">Academic Standing, CGPA &amp; Projects</td>
+                    <td style="padding: 12px;">Yesterday, 11:08</td>
+                    <td style="padding: 12px;"><span class="badge badge-green">Active (Expires in 11 days)</span></td>
+                    <td style="padding: 12px; text-align: right;">
+                      <button type="button" class="btn btn-secondary" style="font-size: 10px; padding: 4px 10px; color: var(--red); border-color: #fca5a5;" onclick="revokeAccess(this, 'Google Developer Student Clubs Fellowship')">Revoke</button>
+                    </td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 12px;">
+                      <strong>University of Cape Town Admissions</strong>
+                      <small style="display: block; color: var(--muted); font-size: 10px;">Token: au_sec_04f128bc</small>
+                    </td>
+                    <td style="padding: 12px; color: var(--muted);">Full Academic Standing &amp; Transcript</td>
+                    <td style="padding: 12px;">01 Nov, 09:15</td>
+                    <td style="padding: 12px;"><span class="badge badge-gray">Expired</span></td>
+                    <td style="padding: 12px; text-align: right; color: var(--muted);">&mdash;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <span>&copy; 2026 Africa University &bull; Interactive prototype</span>
+        <span>Sample content &bull; Accessibility &bull; Student Support</span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-scrim" id="modal-edit-profile" style="display: none;">
+    <div class="modal">
+      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+      <h2>Edit Profile</h2>
+      <form id="edit-profile-form" style="margin-top: 15px;">
+        <label class="field"><span>Full Name</span><input type="text" id="input-edit-name" value="Wayne Matongera" required></label>
+        <label class="field"><span>Programme &bull; Year</span><input type="text" id="input-edit-programme" value="BSc. Computer Information Systems · Year 2" required></label>
+        <label class="field"><span>Student ID</span><input type="text" id="input-edit-id" value="250444" required></label>
+        <label class="field">
+          <span>Student / Alumni Status</span>
+          <select id="input-edit-status" style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Active" selected>Active Student (Undergraduate)</option>
+            <option value="Alumni">Alumni / Graduate</option>
+          </select>
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Recommendation Letter Drafting Modal (For Lecturers) -->
+  <div class="modal-scrim" id="modal-recommendation-letter" style="display: none;">
+    <div class="modal" style="max-width: 650px;">
+      <button class="modal-close" onclick="closeLetterModal()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <span class="badge badge-red">Africa University Letterhead</span>
+        <span style="font-size: 12px; color: #64748b;">Confidential Faculty Recommendation</span>
+      </div>
+      <h2>Faculty Recommendation Letter</h2>
+      <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Compiled automatically from Wayne Matongera's verified student passport. Edit as required before signing.</p>
+      
+      <form id="recommendation-letter-form" onsubmit="dispatchRecommendationLetter(event)" style="margin-top: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <label class="field">
+            <span>Student Name</span>
+            <input type="text" value="Wayne Matongera" readonly style="background: #f8fafc;">
+          </label>
+          <label class="field">
+            <span>Student ID / CGPA</span>
+            <input type="text" value="250444 · CGPA 3.78 (Dean's List)" readonly style="background: #f8fafc;">
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Target Recipient / Opportunity</span>
+          <input type="text" value="Selection Committee, Google Student Developer Fellowship 2026" required>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Letter Body (Auto-synthesized evidence draft)</span>
+          <textarea id="recommendation-letter-body" rows="9" style="width: 100%; font-family: inherit; font-size: 13px; line-height: 1.6; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px;">To Whom It May Concern,
+
+I am writing this letter in enthusiastic support of Wayne Matongera (Student ID: 250444) for the Google Student Developer Fellowship 2026. As Senior Lecturer in the Department of Computing and Technology at Africa University, I have observed Wayne's academic excellence and technical leadership firsthand.
+
+Wayne is currently in Year 2 of his BSc in Computer Information Systems and ranks in the top 12% of his cohort with a Cumulative GPA of 3.78, earning consecutive placements on the Dean's Honour Roll. In my Web Technologies course (WTS201), he earned an exceptional grade of 84% (Grade A), showcasing mastery in semantic accessibility and interface architecture.
+
+Beyond the classroom, Wayne achieved 1st Runner Up in the regional Solution Challenge and serves as Vice President of the Women in Technology Club. His verified project portfolio demonstrates real-world software engineering capabilities.
+
+I give Wayne Matongera my highest possible recommendation without reservation.
+
+Sincerely,
+Dr. C. T. Chimedza, Ph.D.
+Senior Lecturer & Academic Supervisor
+Faculty of Engineering & Applied Sciences, Africa University</textarea>
+        </label>
+
+        <div class="form-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeLetterModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Sign &amp; Dispatch Sealed PDF</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Shareable Portfolio Link Generator (Theophany Bandure - Student ID 252012) -->
+  <div class="modal-scrim" id="modal-share-link" style="display: none;">
+    <div class="modal" style="max-width: 520px;">
+      <button class="modal-close" id="modal-share-close" onclick="closeShareModal()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span class="badge badge-green">Workshop Section 4.6</span>
+        <span style="font-size: 12px; color: var(--muted);">Data Minimisation &amp; Access Control</span>
+      </div>
+      <h2>Generate Expiring Profile Link</h2>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+        Generate a time-limited, verifiable cryptographic token URL for prospective employers or graduate admissions.
+      </p>
+
+      <form id="share-link-form" onsubmit="generateShareLink(event)" style="margin-top: 16px;">
+        <label class="field">
+          <span>Link Expiration Duration</span>
+          <select id="share-expiry-select" class="form-select" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 12px; background: white;">
+            <option value="24h">Expires in 24 Hours (Single-Day Interview)</option>
+            <option value="7d" selected>Expires in 7 Days (Standard Recruitment Review)</option>
+            <option value="30d">Expires in 30 Days (Graduate School Admissions)</option>
+            <option value="manual">Active Until Manually Revoked</option>
+          </select>
+        </label>
+
+        <div style="margin-top: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--ink); display: block; margin-bottom: 8px;">
+            AUDIENCE DATA MINIMISATION SCOPE
+          </span>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+            <input type="checkbox" checked disabled>
+            <span>Verified Achievements &amp; Certifications (Enforced AU Digital Signatures)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+            <input type="checkbox" id="share-scope-gpa" checked>
+            <span>Cumulative GPA &amp; Academic Honours (3.78 Dean's List)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer;">
+            <input type="checkbox" id="share-scope-contact">
+            <span>Include Private Contact Details (Phone, Room Address)</span>
+          </label>
+        </div>
+
+        <div id="share-link-result" style="display: none; margin-top: 14px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 11px; color: #166534;">Cryptographic Token Link Active:</strong>
+            <span class="badge badge-green" style="font-size: 9px;">Verified</span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="share-link-input" readonly style="flex: 1; padding: 8px 10px; border: 1px solid #86efac; border-radius: 6px; font-size: 11px; font-family: monospace; background: white; color: #1e293b;">
+            <button type="button" class="btn btn-secondary" id="btn-copy-token" onclick="copyShareLink()" style="font-size: 11px; padding: 8px 12px;">Copy</button>
+          </div>
+          <small style="display: block; font-size: 10px; color: #15803d; margin-top: 6px;">Token invalidates automatically when expired or revoked.</small>
+        </div>
+
+        <div class="form-actions" style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" id="modal-share-cancel" onclick="closeShareModal()">Close</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-share">Generate Secure Link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+    <div class="modal-scrim" id="modal-request-letter" style="display: none;">
+      <div class="modal" style="max-width: 560px;">
+        <button class="modal-close" type="button" onclick="closeRequestModal()">&times;</button>
+        <h2>Request a Recommendation Letter</h2>
+        <form id="request-letter-form" style="margin-top: 15px;">
+          <label class="field">
+            <span>Purpose</span>
+            <select id="letter-purpose" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+              <option value="Academic Reference">Academic Reference</option>
+              <option value="Master's Degree">Master's Degree</option>
+              <option value="Industrial Attachment">Industrial Attachment</option>
+              <option value="Scholarship">Scholarship</option>
+            </select>
+          </label>
+          <label class="field" style="margin-top: 10px;">
+            <span>Target Institution / Organization</span>
+            <input type="text" id="letter-target" placeholder="e.g. University of Cape Town" required>
+          </label>
+          <label class="field" style="margin-top: 10px;">
+            <span>Personal Statement / Key Points</span>
+            <textarea id="letter-statement" rows="3" style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 12px;"></textarea>
+          </label>
+          <div style="margin-top: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+            <span style="font-size: 11px; font-weight: 700; display: block; margin-bottom: 8px;">ATTACH VERIFIED ACHIEVEMENTS</span>
+            <label style="display: flex; gap: 8px; font-size: 12px; margin-bottom: 6px;"><input type="checkbox" name="letter-achievement" value="Dean's Honour Roll" checked> Dean's Honour Roll</label>
+            <label style="display: flex; gap: 8px; font-size: 12px; margin-bottom: 6px;"><input type="checkbox" name="letter-achievement" value="1st Runner Up, GDSC Solution Challenge 2025" checked> GDSC Solution Challenge 2025 (1st Runner Up)</label>
+            <label style="display: flex; gap: 8px; font-size: 12px;"><input type="checkbox" name="letter-achievement" value="Cisco CCNA: Introduction to Networks"> Cisco CCNA Certification</label>
+          </div>
+          <div class="form-actions" style="margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeRequestModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Send to Lecturer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <div class="modal-scrim activity-modal-scrim" id="activity-detail-modal" style="display: none;" aria-hidden="true">
+    <section class="modal activity-modal" role="dialog" aria-modal="true" aria-labelledby="activity-detail-title" tabindex="-1">
+      <button type="button" class="modal-close" id="activity-detail-close" aria-label="Close activity details">&times;</button>
+      <div id="activity-detail-content"></div>
+    </section>
+  </div>
+
+  <div class="modal-scrim activity-modal-scrim" id="activity-form-modal" style="display: none;" aria-hidden="true">
+    <section class="modal activity-modal" role="dialog" aria-modal="true" aria-labelledby="activity-form-title" tabindex="-1">
+      <button type="button" class="modal-close" id="activity-form-close" aria-label="Close activity form">&times;</button>
+      <span class="skills-eyebrow">DEMONSTRATION ENTRY</span>
+      <h2 id="activity-form-title">Add activity</h2>
+      <p class="activity-form-note">This sample entry is held in page memory only. Its status does not represent institutional verification.</p>
+      <form id="activity-form" class="activity-form">
+        <input type="hidden" id="activity-id">
+        <label class="field"><span>Activity name</span><input id="activity-name" name="name" type="text" maxlength="80" required></label>
+        <div class="activity-form-row">
+          <label class="field"><span>Category</span><select id="activity-category" name="category" required>
+            <option value="">Choose category</option><option>Leadership</option><option>Technology</option><option>Community service</option><option>Sports</option><option>Arts &amp; culture</option>
+          </select></label>
+          <label class="field"><span>Organization</span><input id="activity-organization" name="organization" type="text" maxlength="100" required></label>
+        </div>
+        <label class="field"><span>Student role</span><input id="activity-role" name="role" type="text" maxlength="80" required></label>
+        <div class="activity-form-row">
+          <label class="field"><span>Start date</span><input id="activity-start" name="start" type="date" required></label>
+          <label class="field"><span>End date <small>(leave blank if ongoing)</small></span><input id="activity-end" name="end" type="date"></label>
+        </div>
+        <label class="field"><span>Description</span><textarea id="activity-description" name="description" rows="3" maxlength="500" required></textarea></label>
+        <label class="field"><span>Achievements <small>(one per line)</small></span><textarea id="activity-achievements" name="achievements" rows="3" maxlength="500" placeholder="Describe contributions or outcomes"></textarea></label>
+        <label class="field"><span>Demonstration status</span><select id="activity-status" name="status" required>
+          <option>Pending</option><option>Verified</option><option>Rejected</option>
+        </select></label>
+        <p class="activity-form-note">Status is editable demonstration content only; it is not backed by a real database or verification service.</p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="activity-form-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="activity-form-submit">Add activity</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="toast-root"></div>
+
+  <script src="script.js"></script>
+  <!-- Modal: Log New Achievement -->
+  <div class="modal-scrim" id="modal-add-achievement" style="display: none;">
+    <div class="modal" style="max-width: 540px;">
+      <button class="modal-close" type="button" onclick="closeAddAchievementModal()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span class="badge badge-amber">Workshop Section 4.1</span>
+        <span style="font-size: 12px; color: var(--muted);">Student Self-Reporting & Verification</span>
+      </div>
+      <h2>Log New Student Achievement</h2>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+        Submit credentials, awards, or certs for faculty verifier approval. Unverified items remain marked pending.
+      </p>
+
+      <form id="form-log-achievement" onsubmit="handleAchievementSubmit(event)" style="margin-top: 15px;">
+        <label class="field">
+          <span>Achievement Title *</span>
+          <input type="text" id="achieve-title" placeholder="e.g. 1st Place National Hackathon" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Category *</span>
+          <select id="achieve-category" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Academic">Academic Awards & Honors</option>
+            <option value="Leadership">Student Leadership & Governance</option>
+            <option value="Certifications">Industry Certifications</option>
+            <option value="Innovation">Projects & Innovation</option>
+            <option value="Sports">Sports & Athletics</option>
+            <option value="Volunteering">Community Engagement & Volunteering</option>
+          </select>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Date Completed *</span>
+          <input type="date" id="achieve-date" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Impact Level</span>
+          <select id="achieve-level" style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Major">Major (National / International recognition)</option>
+            <option value="Moderate">Moderate (University-wide impact)</option>
+            <option value="Minor">Minor (Departmental / Class activity)</option>
+          </select>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Evidence Description or Document URL *</span>
+          <textarea id="achieve-evidence" rows="3" placeholder="Describe certificate or paste link..." required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 12px;"></textarea>
+        </label>
+
+        <div class="form-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddAchievementModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit for Verification</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Full CV Preview (Figma Make Replica) -->
+  <div class="modal-scrim" id="modal-cv-preview" style="display: none;">
+    <div class="modal cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-preview-title">
+      <button class="modal-close" onclick="closeCvPreviewModal()" aria-label="Close preview">&times;</button>
+      
+      <div class="cv-modal-head">
+        <span class="cv-document-icon uploaded">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <b>PDF</b>
+        </span>
+        <div>
+          <h2 id="cv-preview-title">Wayne_Matongera_Academic_CV.pdf</h2>
+          <p id="cv-modal-meta">Version 1 &bull; Updated 20 Oct 2026</p>
+        </div>
+      </div>
+
+      <div class="cv-full-preview">
+        <div class="cv-person">
+          <img src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
+          <div>
+            <h1>Wayne Matongera</h1>
+            <p>BSc Computer Information Systems Student</p>
+            <span>w.matongera@africau.edu &bull; +263 77 456 7821 &bull; Mutare, Zimbabwe</span>
+            <span>linkedin.com/in/wayne-matongera &bull; github.com/waynematongera</span>
+          </div>
+        </div>
+
+        <section>
+          <h3>Professional profile</h3>
+          <p>Computer Information Systems student focused on accessible digital products, mobile development, data-informed solutions, and technology for community impact.</p>
+        </section>
+
+        <section>
+          <h3>Education</h3>
+          <strong>Africa University</strong>
+          <p>BSc Computer Information Systems &bull; Current GPA 3.78 / 4.00 &bull; Expected Nov 2028</p>
+        </section>
+
+        <section>
+          <h3>Relevant courses</h3>
+          <div class="cv-course-list">
+            <span>WTS201 &bull; Web Technologies</span>
+            <span>STA201 &bull; Applied Statistics</span>
+            <span>CIS202 &bull; Mobile Applications</span>
+          </div>
+        </section>
+
+        <section>
+          <h3>Achievements</h3>
+          <ul>
+            <li>Dean&rsquo;s List &bull; Semester 2, 2025 (GPA 3.78)</li>
+            <li>Google UX Design Certificate &bull; August 2025</li>
+            <li>Inter-University Hackathon &bull; 2nd Place, March 2025</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Selected projects</h3>
+          <p><strong>Smart Campus Navigator</strong> &mdash; Product designer and Flutter developer<br>
+          <strong>Student Performance Analytics</strong> &mdash; Data analyst and backend developer<br>
+          <strong>EcoTrack Web Platform</strong> &mdash; Frontend lead</p>
+        </section>
+
+        <section>
+          <h3>Leadership &amp; community</h3>
+          <ul>
+            <li>Vice President &bull; Women in Technology Club</li>
+            <li>Volunteer Mentor &bull; Code for Community</li>
+            <li>Core Team Member &bull; Google Developer Student Club</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Skills</h3>
+          <div class="tags">
+            <span>React</span><span>Flutter</span><span>SQL</span><span>Python</span><span>UX Design</span><span>Leadership</span>
+          </div>
+        </section>
+
+        <section class="cv-details-grid">
+          <div>
+            <h3>Languages</h3>
+            <p>English &bull; Shona</p>
+          </div>
+          <div>
+            <h3>Professional interests</h3>
+            <p>Digital inclusion &bull; Robotics &bull; Photography</p>
+          </div>
+        </section>
+
+        <p class="cv-reference">References available upon request (Dr. C. T. Chimedza, Senior Lecturer &amp; Academic Supervisor)</p>
+      </div>
+
+      <div class="form-actions" style="margin-top: 16px;">
+        <button type="button" class="btn btn-secondary" onclick="closeCvPreviewModal()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="downloadCV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download latest
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
