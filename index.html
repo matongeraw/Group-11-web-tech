@@ -1098,6 +1098,183 @@
               <div class="table-row"><div class="course-name"><span class="course-mark">CS</span><span><strong>Data Structures</strong><small>CSC201</small></span></div><span>Dr. P. Nyathi</span><span>4.0</span><span><span class="badge badge-green">Completed · A</span></span><span>&rsaquo;</span></div>
             </div>
           </div>
+
+         <!-- Pending Assignments (Natasha) -->
+          <div class="card" id="assignments-card" style="margin-top: 20px;">
+            <div class="section-head">
+              <div>
+                <h2>Assignments</h2>
+                <p>Pending coursework across your current modules</p>
+              </div>
+              <span style="display: flex; gap: 8px; align-items: center;">
+                <span class="badge badge-amber" id="assign-pending-count">0 pending</span>
+                <span class="badge badge-red" id="assign-overdue-count" style="display: none;">0 overdue</span>
+              </span>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin: 12px 0;">
+              <button type="button" class="btn btn-primary" data-assign-filter="pending" onclick="setAssignFilter('pending')" style="font-size: 11px; padding: 5px 12px;">Pending</button>
+              <button type="button" class="btn btn-secondary" data-assign-filter="submitted" onclick="setAssignFilter('submitted')" style="font-size: 11px; padding: 5px 12px;">Submitted</button>
+              <button type="button" class="btn btn-secondary" data-assign-filter="all" onclick="setAssignFilter('all')" style="font-size: 11px; padding: 5px 12px;">All</button>
+            </div>
+
+            <div id="assign-list" style="display: flex; flex-direction: column; gap: 10px;">
+
+              <div class="assign-row" data-offset="-1" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">WT</span>
+                  <span><strong>Responsive Portfolio Website</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="WTS201 &bull; Web Technologies &bull; 20 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="2" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">CI</span>
+                  <span><strong>Prototype Screens in Figma</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="CIS202 &bull; Mobile Applications &bull; 15 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="5" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">ST</span>
+                  <span><strong>Regression Analysis Worksheet</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="STA201 &bull; Applied Statistics &bull; 10 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="9" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">CS</span>
+                  <span><strong>Linked List &amp; Stack Implementation</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="CSC201 &bull; Data Structures &bull; 25 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="-6" data-status="submitted" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #16a34a; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">WT</span>
+                  <span><strong>JavaScript Form Validation Lab</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="WTS201 &bull; Web Technologies &bull; 10 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-secondary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+            </div>
+
+            <script>
+              (function () {
+                var KEY = 'auAssignmentStatus';
+                var filter = 'pending';
+                var rows = document.querySelectorAll('#assign-list .assign-row');
+
+                // restore saved statuses
+                try {
+                  var saved = JSON.parse(localStorage.getItem(KEY)) || {};
+                  rows.forEach(function (r, i) { if (saved[i]) r.setAttribute('data-status', saved[i]); });
+                } catch (e) {}
+
+                function dueDate(offset) {
+                  var d = new Date();
+                  d.setHours(0, 0, 0, 0);
+                  d.setDate(d.getDate() + offset);
+                  return d;
+                }
+
+                function refresh() {
+                  var pending = 0, overdue = 0;
+                  rows.forEach(function (r) {
+                    var offset = parseInt(r.getAttribute('data-offset'), 10);
+                    var status = r.getAttribute('data-status');
+                    var badge = r.querySelector('.assign-badge');
+                    var btn = r.querySelector('.assign-btn');
+                    var meta = r.querySelector('.assign-meta');
+                    var dateText = dueDate(offset).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+                    meta.innerHTML = meta.getAttribute('data-info') + ' &bull; Due ' + dateText;
+
+                    if (status === 'submitted') {
+                      badge.className = 'badge badge-green assign-badge';
+                      badge.textContent = 'Submitted';
+                      btn.className = 'btn btn-secondary assign-btn';
+                      btn.textContent = 'Undo';
+                      r.style.borderLeftColor = '#16a34a';
+                    } else {
+                      pending++;
+                      btn.className = 'btn btn-primary assign-btn';
+                      btn.textContent = 'Mark as submitted';
+                      if (offset < 0) {
+                        overdue++;
+                        badge.className = 'badge badge-red assign-badge';
+                        badge.textContent = 'Overdue by ' + Math.abs(offset) + (Math.abs(offset) === 1 ? ' day' : ' days');
+                        r.style.borderLeftColor = '#dc2626';
+                      } else if (offset === 0) {
+                        badge.className = 'badge badge-red assign-badge';
+                        badge.textContent = 'Due today';
+                        r.style.borderLeftColor = '#dc2626';
+                      } else if (offset <= 3) {
+                        badge.className = 'badge badge-amber assign-badge';
+                        badge.textContent = 'Due in ' + offset + (offset === 1 ? ' day' : ' days');
+                        r.style.borderLeftColor = '#d97706';
+                      } else {
+                        badge.className = 'badge badge-gray assign-badge';
+                        badge.textContent = 'Due in ' + offset + ' days';
+                        r.style.borderLeftColor = '#d97706';
+                      }
+                    }
+                    r.style.display = (filter === 'all' || filter === status) ? 'flex' : 'none';
+                  });
+
+                  document.getElementById('assign-pending-count').textContent = pending + ' pending';
+                  var o = document.getElementById('assign-overdue-count');
+                  o.textContent = overdue + ' overdue';
+                  o.style.display = overdue ? 'inline-flex' : 'none';
+
+                  document.querySelectorAll('[data-assign-filter]').forEach(function (b) {
+                    b.className = 'btn ' + (b.getAttribute('data-assign-filter') === filter ? 'btn-primary' : 'btn-secondary');
+                  });
+                }
+
+                window.setAssignFilter = function (f) { filter = f; refresh(); };
+
+                window.toggleAssignment = function (btn) {
+                  var row = btn.closest('.assign-row');
+                  var now = row.getAttribute('data-status') === 'pending' ? 'submitted' : 'pending';
+                  row.setAttribute('data-status', now);
+                  try {
+                    var s = {};
+                    rows.forEach(function (r, i) { s[i] = r.getAttribute('data-status'); });
+                    localStorage.setItem(KEY, JSON.stringify(s));
+                  } catch (e) {}
+                  refresh();
+                  if (typeof showToast === 'function') {
+                    showToast(now === 'submitted' ? 'Assignment marked as submitted.' : 'Assignment moved back to pending.');
+                  }
+                };
+
+                refresh();
+              })();
+            </script>
+          </div>
         </div>
 
         <!-- VIEW: COURSE CALENDAR -->
