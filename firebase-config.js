@@ -13,7 +13,14 @@
    or any "private key" into this file.
    ===================================================================== */
 
-window.AU_FIREBASE_CONFIG = null;
+window.AU_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCPkIpul8_PYKWq-QO63D6qoupEcB6qc_Y",
+  authDomain: "au-student-portal.firebaseapp.com",
+  projectId: "au-student-portal",
+  storageBucket: "au-student-portal.firebasestorage.app",
+  messagingSenderId: "397094899470",
+  appId: "1:397094899470:web:53e63d015c2f0c77a6d15f"
+};
 
 /* Example - replace `null` above with your own values, like this:
 
