@@ -90,10 +90,38 @@ function dateKey(date:Date){return `${date.getFullYear()}-${String(date.getMonth
 function zimbabweHolidays(year:number):CalendarEvent[]{const easter=easterSunday(year),offset=(days:number)=>{const date=new Date(easter);date.setDate(date.getDate()+days);return dateKey(date)},heroes=(()=>{const date=new Date(year,7,1);const days=(8-date.getDay())%7;date.setDate(1+days);return date})(),holiday=(id:string,title:string,date:string,description:string):CalendarEvent=>({id:`${id}-${year}`,title,date,description,location:"Zimbabwe",category:"National Holiday",approval:"Official public holiday",organizer:"Government of Zimbabwe",instructions:"University opening and service arrangements should be confirmed through official institutional notices."});const defence=new Date(heroes);defence.setDate(heroes.getDate()+1);return [holiday("new-year","New Year’s Day",`${year}-01-01`,"Public holiday marking the beginning of the calendar year."),holiday("youth-day","Robert Gabriel Mugabe National Youth Day",`${year}-02-21`,"Zimbabwean public holiday recognizing the role of young people in national development."),holiday("good-friday","Good Friday",offset(-2),"Christian public holiday observed on the Friday before Easter Sunday."),holiday("easter-monday","Easter Monday",offset(1),"Christian public holiday observed on the Monday after Easter Sunday."),holiday("independence","Independence Day",`${year}-04-18`,"National holiday commemorating Zimbabwe’s independence."),holiday("workers-day","Workers’ Day",`${year}-05-01`,"Public holiday recognizing workers and their contribution."),holiday("africa-day","Africa Day",`${year}-05-25`,"Public holiday celebrating African unity and the founding of the Organisation of African Unity."),holiday("heroes-day","Heroes’ Day",dateKey(heroes),"National holiday honoring Zimbabwe’s national heroes."),holiday("defence-forces","Defence Forces Day",dateKey(defence),"National holiday recognizing the Zimbabwe Defence Forces."),holiday("unity-day","Unity Day",`${year}-12-22`,"National holiday commemorating the Unity Accord."),holiday("christmas","Christmas Day",`${year}-12-25`,"Christian public holiday celebrating Christmas Day."),holiday("boxing-day","Boxing Day",`${year}-12-26`,"Public holiday observed on the day after Christmas.")]}
 function CourseCalendar(){const today=new Date();const [viewDate,setViewDate]=useState(new Date(2026,10,1));const [selected,setSelected]=useState(14);const [hovered,setHovered]=useState<number|null>(null);const [detail,setDetail]=useState<CalendarEvent|null>(null);const year=viewDate.getFullYear(),monthIndex=viewDate.getMonth(),monthName=viewDate.toLocaleString("en-GB",{month:"long"});const monthEvents=[...prototypeCalendarEvents,...zimbabweHolidays(year)].filter(event=>event.date.startsWith(`${year}-${String(monthIndex+1).padStart(2,"0")}`));const byDay=monthEvents.reduce<Record<number,CalendarEvent[]>>((all,event)=>{const day=Number(event.date.slice(-2));all[day]=[...(all[day]||[]),event];return all},{});const daysInMonth=new Date(year,monthIndex+1,0).getDate();const firstDay=(new Date(year,monthIndex,1).getDay()+6)%7;const days=Array.from({length:daysInMonth},(_,i)=>i+1);const changeMonth=(delta:number)=>{const next=new Date(year,monthIndex+delta,1);setViewDate(next);setSelected(1);setHovered(null)};const goToday=()=>{setViewDate(new Date(today.getFullYear(),today.getMonth(),1));setSelected(today.getDate());setHovered(null)};const selectedEvents=byDay[selected]||[];const categoryTone=(event:CalendarEvent)=>event.category==="National Holiday"?"holiday":event.category==="University Event"?event.approval==="Pending"?"pending":"institution":"academic";return <div className="page-stack"><PageHead title="Course Calendar" subtitle="Verified schedules and fictional prototype university events" back={()=>location.hash="/courses"} action={<button className="today-button" onClick={goToday}><Icon name="calendar"/> Today</button>}/><div className="calendar-source-note"><Icon name="check"/><p>University events are fictional prototype records and show approval status. Zimbabwe holiday dates are generated for the selected year from statutory date patterns; production must use a maintained official source.</p></div><div className="event-legend"><span><i className="institution"/>Institution-approved</span><span><i className="pending"/>Proposed / pending</span><span><i className="holiday"/>National holiday</span><span><i className="academic"/>Academic</span><span><i className="today"/>Today</span></div><div className="calendar-layout"><Card className="calendar-card interactive-calendar"><div className="calendar-head"><button onClick={()=>changeMonth(-1)} aria-label="Previous month"><Icon name="chevron"/></button><div><h2>{monthName} {year}</h2><p>{monthEvents.length} event{monthEvents.length===1?"":"s"} scheduled</p></div><button onClick={()=>changeMonth(1)} aria-label="Next month"><Icon name="chevron"/></button></div><div className="calendar-weekdays">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day=><span key={day}>{day}</span>)}</div><div className="calendar-days">{Array.from({length:firstDay},(_,i)=><span key={`blank-${i}`}/>) }{days.map(day=>{const events=byDay[day]||[],isToday=today.getFullYear()===year&&today.getMonth()===monthIndex&&today.getDate()===day;return <button key={day} className={`${selected===day?"selected":""} ${events.length?"has-event":""} ${isToday?"current-day":""}`} onClick={()=>{setSelected(day);if(events.length>0)setDetail(events[0])}} onMouseEnter={()=>events.length&&setHovered(day)} onMouseLeave={()=>setHovered(null)} onFocus={()=>events.length&&setHovered(day)} onBlur={()=>setHovered(null)} aria-label={`${day} ${monthName} ${year}${events.length?`, ${events.length} event${events.length>1?"s":""}`:""}`}><b>{day}</b>{events.length>0&&<div className="event-dots">{Array.from(new Set(events.map(categoryTone))).slice(0,4).map(tone=><i className={tone} key={tone}/>)}{events.length>3&&<em>+{events.length-3}</em>}</div>}{hovered===day&&events.length>0&&<div className="calendar-tooltip" role="tooltip"><strong>{events.length===1?events[0].title:`${events.length} events scheduled`}</strong>{events.length===1?<><span>{events[0].category} · {events[0].approval}</span><p>{events[0].description}</p></>:<><ul>{events.slice(0,3).map(event=><li key={event.id}>{event.title}</li>)}</ul>{events.length>3&&<span>Plus {events.length-3} more</span>}</>}</div>}</button>})}</div></Card><Card className="day-agenda"><SectionHead title={`${selected} ${monthName}`} subtitle={selectedEvents.length?`${selectedEvents.length} scheduled event${selectedEvents.length>1?"s":""}`:"No scheduled events"}/>{selectedEvents.length?selectedEvents.map(event=><button className="agenda-event" key={event.id} onClick={()=>setDetail(event)}><span className={`event-symbol ${categoryTone(event)}`}><Icon name={event.category==="National Holiday"?"award":event.category==="Academic"?"book":"users"}/></span><div><strong>{event.title}</strong><small>{event.start?`${event.start}${event.end?`–${event.end}`:""} · `:""}{event.category}</small><Badge tone={event.approval==="Approved"?"green":event.approval==="Pending"?"amber":"gray"}>{event.approval}</Badge></div><Icon name="chevron"/></button>):<div className="agenda-empty"><Icon name="calendar"/><p>No academic, institutional, or national events are scheduled for this date.</p></div>}<button className="text-link" onClick={()=>location.hash="/examination"}>View examination timetable <Icon name="arrow"/></button></Card></div>{detail&&<div className="modal-scrim" onMouseDown={()=>setDetail(null)}><div className="modal event-modal" role="dialog" aria-modal="true" aria-labelledby="event-detail-title" onMouseDown={event=>event.stopPropagation()}><button className="modal-close" onClick={()=>setDetail(null)} aria-label="Close event details"><Icon name="close"/></button><div className={`event-modal-icon ${categoryTone(detail)}`}><Icon name={detail.category==="National Holiday"?"award":detail.category==="Academic"?"book":"users"}/></div><Badge tone={detail.approval==="Approved"?"green":detail.approval==="Pending"?"amber":"gray"}>{detail.approval}</Badge><h2 id="event-detail-title">{detail.title}</h2><p className="event-description">{detail.description}</p><dl className="event-details"><div><dt>Date</dt><dd>{new Date(`${detail.date}T12:00:00`).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</dd></div><div><dt>Time</dt><dd>{detail.start?`${detail.start}${detail.end?`–${detail.end}`:""}`:"All day"}</dd></div><div><dt>Location</dt><dd>{detail.location}</dd></div><div><dt>Category</dt><dd>{detail.category}</dd></div><div><dt>Organizer</dt><dd>{detail.organizer}</dd></div><div><dt>Instructions</dt><dd>{detail.instructions}</dd></div></dl><div className="form-actions"><Button onClick={()=>setDetail(null)}>Close</Button></div></div></div>}</div>}
 function ExaminationPage(){return <div className="page-stack"><PageHead title="Examinations" subtitle="Student Profile → Courses → Examination" back={()=>location.hash="/courses"}/><div className="exam-summary-grid"><Card><span className="stat-icon"><Icon name="book"/></span><div><small>UPCOMING EXAMS</small><strong>{examSchedule.length}</strong><span>November 2026</span></div></Card><Card><span className="stat-icon"><Icon name="check"/></span><div><small>PREVIOUS PASS RATE</small><strong>100%</strong><span>4 of 4 passed</span></div></Card><Card><span className="stat-icon"><Icon name="clock"/></span><div><small>NEXT EXAM</small><strong>10 Nov</strong><span>Web Technologies</span></div></Card></div><Card className="exam-card"><SectionHead title="Final examination timetable" subtitle="Semester 1 · 2026/2027" action={<Badge tone="amber">Timetable published</Badge>}/><div className="exam-table"><div className="exam-head"><span>Date</span><span>Course</span><span>Time</span><span>Venue</span><span>Status</span></div>{examSchedule.map(exam=><div className="exam-row" key={exam.code}><span><b>{exam.date.split(" ")[0]}</b><small>{exam.date.slice(3)}</small></span><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span>{exam.time}</span><span>{exam.venue}</span><Badge tone="amber">Upcoming</Badge></div>)}</div><div className="exam-note"><Icon name="clock"/><p>Arrive at least 30 minutes before each examination with your student ID and approved stationery. Confirm venue changes 24 hours before the paper.</p></div></Card><div className="two-col"><Card><SectionHead title="Examination guidance"/><ul className="check-list"><li><Icon name="check"/>Bring your valid student identification card</li><li><Icon name="check"/>Review permitted materials for each course</li><li><Icon name="check"/>Check the academic calendar for timetable updates</li><li><Icon name="check"/>Contact Student Support if you have an approved accommodation</li></ul></Card><Card><SectionHead title="Quick links"/><div className="exam-links"><button onClick={()=>location.hash="/calendar"}><Icon name="calendar"/><span><strong>Academic calendar</strong><small>Review classes, deadlines, and exam dates</small></span><Icon name="arrow"/></button><button onClick={()=>location.hash="/academic-progress"}><Icon name="chart"/><span><strong>Previous results</strong><small>View exam marks, grades, and pass status</small></span><Icon name="arrow"/></button></div></Card></div></div>}
-function Progress(){return <div className="page-stack"><PageHead title="Academic Progress" subtitle="Track your journey, examination schedule, and results"/><Card className="progress-hero"><div><span className="eyebrow">Overall degree completion</span><h2>You’re 42% toward graduation</h2><p>Great progress, Wayne. Keep building momentum toward your degree.</p><div className="big-bar"><span/></div><div className="bar-labels"><span>Enrolled 2025</span><b>Expected graduation · June 2028</b></div></div><div className="progress-number"><strong>42%</strong><span>Complete</span></div></Card><div className="four-metrics">{[["Completed","16","Courses"],["Current","4","Courses"],["Outstanding","19","Courses"],["Credits earned","48","of 120"]].map(x=><Card key={x[0]}><span>{x[0]}</span><strong>{x[1]}</strong><small>{x[2]}</small></Card>)}</div><Card><SectionHead title="Course progress" subtitle="Current and recently completed modules"/><div className="course-progress">{[["Web Technologies",78],["Applied Statistics",100],["Mobile Applications",42],["Database Systems",90]].map(([n,s])=><div key={n}><span><strong>{n}</strong><b>{s}%</b></span><progress max="100" value={s as number}/></div>)}</div></Card><Card className="exam-card"><SectionHead title="Upcoming exam timetable" subtitle="Semester 1 · Final examinations" action={<button className="text-link" onClick={()=>location.hash="/calendar"}>Open calendar <Icon name="calendar"/></button>}/><div className="exam-table"><div className="exam-head"><span>Date</span><span>Course</span><span>Time</span><span>Venue</span><span>Status</span></div>{examSchedule.map(exam=><div className="exam-row" key={exam.code}><span><b>{exam.date.split(" ")[0]}</b><small>{exam.date.slice(3)}</small></span><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span>{exam.time}</span><span>{exam.venue}</span><Badge tone="amber">Upcoming</Badge></div>)}</div><div className="exam-note"><Icon name="clock"/><p>Examination venues may change. Confirm your timetable 24 hours before each paper and arrive 30 minutes early.</p></div></Card><Card className="exam-card"><SectionHead title="Previous examination results" subtitle="Verified marks from completed examinations" action={<div className="pass-key"><span/> Pass mark: 50%</div>}/><div className="results-table"><div className="results-head"><span>Course</span><span>Exam mark</span><span>Pass grade</span><span>Grade</span><span>Result</span></div>{previousExams.map(exam=><div className="results-row" key={exam.code}><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span className="mark"><b>{exam.mark}%</b><progress max="100" value={exam.mark}/></span><span>{exam.pass}%</span><strong>{exam.grade}</strong><Badge tone={exam.mark>=exam.pass?"green":"red"}>{exam.mark>=exam.pass?"Passed":"Failed"}</Badge></div>)}</div></Card></div>}
+function Progress(){return <div className="page-stack"><PageHead title="Academic Progress" subtitle="Track your journey, examination schedule, and results"/><Card className="progress-hero"><div><span className="eyebrow">Overall degree completion</span><h2>You’re 42% toward graduation</h2><p>Great progress, Nothando. Keep building momentum toward your degree.</p><div className="big-bar"><span/></div><div className="bar-labels"><span>Enrolled 2025</span><b>Expected graduation · June 2028</b></div></div><div className="progress-number"><strong>42%</strong><span>Complete</span></div></Card><div className="four-metrics">{[["Completed","16","Courses"],["Current","4","Courses"],["Outstanding","19","Courses"],["Credits earned","48","of 120"]].map(x=><Card key={x[0]}><span>{x[0]}</span><strong>{x[1]}</strong><small>{x[2]}</small></Card>)}</div><Card><SectionHead title="Course progress" subtitle="Current and recently completed modules"/><div className="course-progress">{[["Web Technologies",78],["Applied Statistics",100],["Mobile Applications",42],["Database Systems",90]].map(([n,s])=><div key={n}><span><strong>{n}</strong><b>{s}%</b></span><progress max="100" value={s as number}/></div>)}</div></Card><Card className="exam-card"><SectionHead title="Upcoming exam timetable" subtitle="Semester 1 · Final examinations" action={<button className="text-link" onClick={()=>location.hash="/calendar"}>Open calendar <Icon name="calendar"/></button>}/><div className="exam-table"><div className="exam-head"><span>Date</span><span>Course</span><span>Time</span><span>Venue</span><span>Status</span></div>{examSchedule.map(exam=><div className="exam-row" key={exam.code}><span><b>{exam.date.split(" ")[0]}</b><small>{exam.date.slice(3)}</small></span><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span>{exam.time}</span><span>{exam.venue}</span><Badge tone="amber">Upcoming</Badge></div>)}</div><div className="exam-note"><Icon name="clock"/><p>Examination venues may change. Confirm your timetable 24 hours before each paper and arrive 30 minutes early.</p></div></Card><Card className="exam-card"><SectionHead title="Previous examination results" subtitle="Verified marks from completed examinations" action={<div className="pass-key"><span/> Pass mark: 50%</div>}/><div className="results-table"><div className="results-head"><span>Course</span><span>Exam mark</span><span>Pass grade</span><span>Grade</span><span>Result</span></div>{previousExams.map(exam=><div className="results-row" key={exam.code}><span><strong>{exam.course}</strong><small>{exam.code}</small></span><span className="mark"><b>{exam.mark}%</b><progress max="100" value={exam.mark}/></span><span>{exam.pass}%</span><strong>{exam.grade}</strong><Badge tone={exam.mark>=exam.pass?"green":"red"}>{exam.mark>=exam.pass?"Passed":"Failed"}</Badge></div>)}</div></Card><Card className="support-card" style={{ display: "flex", gap: "1rem", alignItems: "center" }}><Icon name="user" size={32} /><div><strong>Assigned Academic Advisor</strong><p style={{ margin: "0.25rem 0" }}>Dr. Elena Mensah — Department of Computing & Technology</p><small>Office hours: Tuesdays & Thursdays 14:00–16:00 · ICT Hub Room 12</small></div></Card></div>}
 function Achievements({go}:{go:(p:string)=>void}){
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [achievementList, setAchievementList] = useState(achievements);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const [achievementList, setAchievementList] = useState([
+    {
+      title: "Dean's List",
+      type: "Academic",
+      date: "Semester 2 · 2025",
+      detail: "Recognises students who maintained exceptional academic performance across a full semester.",
+      status: "Verified",
+      rejectionReason: ""
+    },
+    {
+      title: "Google UX Design Certificate",
+      type: "Certifications",
+      date: "August 2025",
+      detail: "Completed a professional programme covering user research, interaction design, and prototyping.",
+      status: "Verified",
+      rejectionReason: ""
+    },
+    {
+      title: "Community Outreach Lead",
+      type: "Leadership",
+      date: "September 2025",
+      detail: "Led local digital literacy workshop.",
+      status: "Changes Requested / Rejected",
+      rejectionReason: "Please upload an official letter from the program coordinator confirming your contact hours."
+    }
+  ]);
+
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Academic");
   const [date, setDate] = useState("");
@@ -107,7 +135,8 @@ function Achievements({go}:{go:(p:string)=>void}){
       type: category,
       date: date || "Pending Review",
       detail: `Evidence: ${evidence} (Impact Level: ${level})`,
-      status: "Pending Review"
+      status: "Pending Review",
+      rejectionReason: ""
     };
     setAchievementList([newAchievement, ...achievementList]);
     setIsModalOpen(false);
@@ -115,6 +144,10 @@ function Achievements({go}:{go:(p:string)=>void}){
     setEvidence("");
     setDate("");
   };
+
+  const filteredList = achievementList.filter(
+    (a) => selectedCategory === "All" || a.type === selectedCategory
+  );
 
   return (
     <div className="page-stack">
@@ -132,18 +165,47 @@ function Achievements({go}:{go:(p:string)=>void}){
         }
       />
       
+      {/* Category Filter Buttons */}
+      <div className="segmented" style={{ marginBottom: "1.5rem" }} role="group" aria-label="Achievement Category Filter">
+        {["All", "Academic", "Leadership", "Certifications", "Innovation", "Sports", "Volunteering"].map((cat) => (
+          <button
+            key={cat}
+            className={selectedCategory === cat ? "active" : ""}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       <div className="achievement-grid">
-        {achievementList.map((a, i) => (
+        {filteredList.map((a, i) => (
           <Card key={i} className="clickable" onClick={() => go(`achievement/${i}`)}>
             <div className="card-top">
               <span className="medal"><Icon name={i === 0 ? "trophy" : i === 1 ? "award" : "spark"} /></span>
-              <Badge tone={a.status === "Pending Review" ? "amber" : "green"}>
+              <Badge 
+                tone={
+                  a.status === "Pending Review" 
+                    ? "amber" 
+                    : a.status === "Changes Requested / Rejected" 
+                    ? "red" 
+                    : "green"
+                }
+              >
                 <Icon name="check" size={12} /> {a.status || "Verified"}
               </Badge>
             </div>
             <span className="eyebrow">{a.type}</span>
             <h3>{a.title}</h3>
             <p><Icon name="calendar" /> {a.date}</p>
+
+            {/* Rejection Feedback Callout Box */}
+            {a.status === "Changes Requested / Rejected" && a.rejectionReason && (
+              <div style={{ marginTop: "0.75rem", padding: "0.75rem", background: "#fef2f2", borderLeft: "3px solid #ef4444", borderRadius: "4px", fontSize: "0.8125rem", color: "#991b1b" }}>
+                <strong>Verifier Feedback:</strong> {a.rejectionReason}
+              </div>
+            )}
+
             <span className="text-link">View credential <Icon name="arrow" /></span>
           </Card>
         ))}
