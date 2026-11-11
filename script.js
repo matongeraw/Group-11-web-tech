@@ -1928,13 +1928,13 @@ document.addEventListener('DOMContentLoaded', () => {
       { ts: daysAgo(4), action: 'LOGBOOK_APPROVE', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Week 8 logbook' },
       { ts: daysAgo(3), action: 'VERIFIER_RENEW', actor: REGISTRAR, target: 'Coach T. Sibanda', note: 'Sports & Recreation – renewed to Dec 2027' },
       { ts: daysAgo(2), action: 'REJECT_ACHIEVEMENT', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Community Outreach Lead – coordinator letter missing' }
-    ].map(a => ({ ...a, ts: iso(a.ts), hash: hash(a.ts + a.action + a.target) })),
+    ].map((a, i) => ({ id: 'seed-' + (i + 1), ...a, ts: iso(a.ts), hash: hash(a.ts + a.action + a.target) })),
     verifications: () => [
-      { id: 'v1', sid: '250444', title: 'GDSC Solution Challenge 2025 · 1st Runner Up', issuer: 'Google Developer Student Clubs · Mutare Regional Innovation Showcase', category: 'Innovation', proof: [['Certificate_of_Award.pdf', 'PDF · 412 KB'], ['github.com/wmatongera/gdsc-solution', 'Source repository']], submitted: daysAgo(2), status: 'pending' },
-      { id: 'v2', sid: '250189', title: 'Cisco CCNA: Introduction to Networks', issuer: 'Cisco Networking Academy · Credential ID CSCO-912048', category: 'Certifications', proof: [['NetAcad digital badge', 'Verification link']], submitted: daysAgo(1), status: 'pending' },
-      { id: 'v3', sid: '250312', title: '1st Place · Africa University ICT Innovation Hackathon 2025', issuer: 'Dean of Engineering & Applied Sciences', category: 'Innovation', proof: [['FEAS_Award_Certificate.pdf', 'PDF · 288 KB'], ['Prototype demo video', 'MP4 · 2 min']], submitted: daysAgo(5), status: 'pending' },
-      { id: 'v4', sid: '250444', title: 'Google UX Design Certificate', issuer: 'Google / Coursera', category: 'Certifications', proof: [['Coursera certificate', 'Verification link']], submitted: '2026-11-01T09:00:00', status: 'verified', decided: '2026-11-05T18:42:00' },
-      { id: 'v5', sid: '250444', title: 'Community Outreach Lead', issuer: 'Mutare Digital Literacy Programme', category: 'Leadership', proof: [['Photo evidence', 'JPG · 3 files']], submitted: daysAgo(6), status: 'rejected', decided: daysAgo(2), reason: 'Missing official evidence: Please upload an official letter from the programme coordinator confirming your contact hours.' }
+      { id: 'v1', sid: '250444', title: 'GDSC Solution Challenge 2025 · 1st Runner Up', issuer: 'Google Developer Student Clubs · Mutare Regional Innovation Showcase', category: 'Innovation', proof: [{ name: 'Certificate_of_Award.pdf', type: 'PDF · 412 KB' }, { name: 'github.com/wmatongera/gdsc-solution', type: 'Source repository' }], submitted: daysAgo(2), status: 'pending' },
+      { id: 'v2', sid: '250189', title: 'Cisco CCNA: Introduction to Networks', issuer: 'Cisco Networking Academy · Credential ID CSCO-912048', category: 'Certifications', proof: [{ name: 'NetAcad digital badge', type: 'Verification link' }], submitted: daysAgo(1), status: 'pending' },
+      { id: 'v3', sid: '250312', title: '1st Place · Africa University ICT Innovation Hackathon 2025', issuer: 'Dean of Engineering & Applied Sciences', category: 'Innovation', proof: [{ name: 'FEAS_Award_Certificate.pdf', type: 'PDF · 288 KB' }, { name: 'Prototype demo video', type: 'MP4 · 2 min' }], submitted: daysAgo(5), status: 'pending' },
+      { id: 'v4', sid: '250444', title: 'Google UX Design Certificate', issuer: 'Google / Coursera', category: 'Certifications', proof: [{ name: 'Coursera certificate', type: 'Verification link' }], submitted: '2026-11-01T09:00:00', status: 'verified', decided: '2026-11-05T18:42:00' },
+      { id: 'v5', sid: '250444', title: 'Community Outreach Lead', issuer: 'Mutare Digital Literacy Programme', category: 'Leadership', proof: [{ name: 'Photo evidence', type: 'JPG · 3 files' }], submitted: daysAgo(6), status: 'rejected', decided: daysAgo(2), reason: 'Missing official evidence: Please upload an official letter from the programme coordinator confirming your contact hours.' }
     ],
     references: () => [
       { id: 'r1', sid: '250444', opportunity: 'Google Student Developer Fellowship 2026', recipient: 'Google Student Programs Selection Committee', evidence: "Dean's List (CGPA 3.78 / 4.0), Top 12%, WTS201 Grade A (84%), GDSC 1st Runner Up", due: iso(Date.now() + 3 * DAY), status: 'draft' },
@@ -1969,13 +1969,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   const state = {};
-  Object.keys(STAFF_KEYS).forEach(k => { state[k] = load(STAFF_KEYS[k], seeds[k]); });
+  // Older saved data: give audit entries ids and store proof as objects (the database needs both).
+  const migrate = () => {
+    let auditChanged = false, proofChanged = false;
+    state.audit.forEach(a => { if (!a.id) { a.id = 'a-' + hash(a.ts + a.action + a.target + (a.note || '')).replace(/\./g, '') + '-' + new Date(a.ts).getTime(); auditChanged = true; } });
+    state.verifications.forEach(v => { if (Array.isArray(v.proof) && v.proof.some(Array.isArray)) { v.proof = v.proof.map(p => Array.isArray(p) ? { name: p[0], type: p[1] } : p); proofChanged = true; } });
+    if (auditChanged) save(STAFF_KEYS.audit, state.audit);
+    if (proofChanged) save(STAFF_KEYS.verifications, state.verifications);
+  };
+  const loadState = () => { Object.keys(STAFF_KEYS).forEach(k => { state[k] = load(STAFF_KEYS[k], seeds[k]); }); migrate(); };
+  loadState();
   const persist = k => save(STAFF_KEYS[k], state[k]);
 
   /* ---------- audit trail ---------- */
   window.appendAudit = function (action, actor, target, note) {
     const ts = iso(Date.now());
-    state.audit.push({ ts, action, actor, target, note: note || '', hash: hash(ts + action + target + (note || '')) });
+    const h = hash(ts + action + target + (note || ''));
+    state.audit.push({ id: 'a' + Date.now() + '-' + h.slice(0, 6), ts, action, actor, target, note: note || '', hash: h });
     persist('audit');
   };
   const ACTION_LABEL = {
@@ -1983,7 +1993,7 @@ document.addEventListener('DOMContentLoaded', () => {
     LETTER_DECLINE: 'Declined letter request', LETTER_CREATE: 'Created letter draft', TRANSCRIPT_SEAL: 'Sealed transcript',
     TRANSCRIPT_HOLD: 'Placed transcript on hold', TRANSCRIPT_RELEASE: 'Released transcript hold', VERIFIER_ADD: 'Added verifier',
     VERIFIER_SUSPEND: 'Suspended verifier', VERIFIER_REINSTATE: 'Reinstated verifier', VERIFIER_REVOKE: 'Revoked verifier',
-    VERIFIER_RENEW: 'Renewed verifier', LOGBOOK_APPROVE: 'Approved logbook week', LOGBOOK_RETURN: 'Returned logbook week', CLASS_EXPORT: 'Exported class list'
+    VERIFIER_RENEW: 'Renewed verifier', DEMO_RESET: 'Reset demo data', LOGBOOK_APPROVE: 'Approved logbook week', LOGBOOK_RETURN: 'Returned logbook week', CLASS_EXPORT: 'Exported class list'
   };
 
   /* ---------- modal ---------- */
@@ -2075,7 +2085,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="staff-item-meta">${badge(tone, label)}${overdue ? badge('red', 'Overdue · 3-day target') : ''}<small>Submitted ${ago(v.submitted)} · ${esc(v.category)}</small></div>
           <h3>${esc(s.name)} <span>(ID ${v.sid} · ${esc(s.level)})</span></h3>
           <p>${esc(v.title)}</p>
-          <small>${esc(v.issuer)} · Proof: ${v.proof.map(p => esc(p[0])).join(', ')}</small>
+          <small>${esc(v.issuer)} · Proof: ${v.proof.map(p => esc(p.name)).join(', ')}</small>
           ${v.status === 'rejected' ? `<div class="staff-note red"><strong>Feedback sent:</strong> ${esc(v.reason)}</div>` : ''}
           ${v.status === 'verified' ? `<div class="staff-note green">Verified ${fmtDate(v.decided)} · signature recorded in audit trail</div>` : ''}
         </div>
@@ -2091,7 +2101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal(`${modalHead('Verification review', esc(v.title), esc(v.issuer))}
       ${studentSummary(v.sid)}
       <h3 class="staff-h3">Attached proof</h3>
-      <div class="proof-list">${v.proof.map(([n, t]) => `<div class="proof-card"><span class="proof-icon">${t.startsWith('PDF') ? 'PDF' : t.startsWith('MP4') ? '▶' : t.startsWith('JPG') ? 'IMG' : '🔗'}</span><div><strong>${esc(n)}</strong><small>${esc(t)} · submitted ${fmtDate(v.submitted)}</small></div><button type="button" class="text-link" onclick="showToast('Opening ${esc(n).replace(/'/g, '')} (sample preview)')">Open</button></div>`).join('')}</div>
+      <div class="proof-list">${v.proof.map(({ name: n, type: t }) => `<div class="proof-card"><span class="proof-icon">${t.startsWith('PDF') ? 'PDF' : t.startsWith('MP4') ? '▶' : t.startsWith('JPG') ? 'IMG' : '🔗'}</span><div><strong>${esc(n)}</strong><small>${esc(t)} · submitted ${fmtDate(v.submitted)}</small></div><button type="button" class="text-link" onclick="showToast('Opening ${esc(n).replace(/'/g, '')} (sample preview)')">Open</button></div>`).join('')}</div>
       <h3 class="staff-h3">Verification checklist</h3>
       <div class="check-list-staff">
         <label><input type="checkbox" class="vchk"${pending ? '' : ' checked disabled'}> Issuer and date match the claim</label>
@@ -2451,12 +2461,14 @@ document.addEventListener('DOMContentLoaded', () => {
     el.innerHTML = list.length ? list.map(a => `<div class="audit-row"><span class="audit-ts">[${fmtStamp(a.ts)}]</span><span class="audit-body"><b>${a.action}</b> · ${esc(a.actor)} → ${esc(a.target)}${a.note ? ` · <span class="muted">${esc(a.note)}</span>` : ''}</span><span class="audit-hash">${a.hash}</span></div>`).join('') : empty('No audit entries match these filters.');
   };
   window.staffResetDemo = () => {
-    openModal(`${modalHead('Demo data', 'Reset staff demo data?', 'Restores the original sample verifications, letters, transcripts, verifiers, logbooks and audit trail on this browser.')}
+    openModal(`${modalHead('Demo data', 'Reset staff demo data?', 'Restores the original sample verifications, letters, transcripts, verifiers and logbooks. With the cloud database connected this resets them for everyone, and the audit trail is kept.')}
       <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="button" class="btn btn-primary" onclick="staffConfirmReset()">Reset</button></div>`);
   };
   window.staffConfirmReset = () => {
-    Object.keys(STAFF_KEYS).forEach(k => { state[k] = seeds[k](); persist(k); });
-    closeModal(); renderAll(); toast('Staff demo data reset.');
+    const cloud = !!(window.auDB && window.auDB.isCloud());   // the cloud audit trail is append-only
+    Object.keys(STAFF_KEYS).forEach(k => { if (cloud && k === 'audit') return; state[k] = seeds[k](); persist(k); });
+    if (cloud) appendAudit('DEMO_RESET', 'Registry Admin (Auth 240618)', 'Staff demo data', 'Queues, letters, verifiers and logbooks restored');
+    closeModal(); renderAll(); toast(cloud ? 'Staff demo data reset for everyone. The audit trail is kept.' : 'Staff demo data reset.');
   };
 
   /* ---------- dashboards ---------- */
@@ -2534,6 +2546,21 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTranscripts(); renderVerifiers(); renderAudit(); renderFacultyDash(); renderAdminDash();
   }
   window.staffRenderAll = renderAll;
+
+  /* ---------- database sync hooks: another device changed something ---------- */
+  window.addEventListener('au-db-change', e => {
+    const key = e.detail && e.detail.key;
+    if (Object.values(STAFF_KEYS).includes(key)) { loadState(); renderAll(); }
+    if (key === 'auRecommendationRequests') { if (typeof renderRequests === 'function') renderRequests(); renderAll(); }
+    if (key === 'auAssignmentStatus') {
+      try {
+        const saved = JSON.parse(localStorage.getItem(key)) || {};
+        document.querySelectorAll('#assign-list .assign-row').forEach((r, i) => { if (saved[i]) r.setAttribute('data-status', saved[i]); });
+        const active = [...document.querySelectorAll('[data-assign-filter]')].find(b => b.classList.contains('btn-primary'));
+        if (typeof setAssignFilter === 'function') setAssignFilter(active ? active.getAttribute('data-assign-filter') : 'pending');
+      } catch (err) {}
+    }
+  });
 
   document.addEventListener('DOMContentLoaded', () => {
     buildToolbars(); renderAll();
