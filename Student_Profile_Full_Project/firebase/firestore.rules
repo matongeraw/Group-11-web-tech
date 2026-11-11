@@ -1,7 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+development
  feat/react-firebase-foundation
+
+ main
     function signedIn() {
       return request.auth != null;
     }
@@ -96,6 +99,7 @@ service cloud.firestore {
         && request.resource.data.status == 'pending';
     }
 
+ development
     match /users/{uid} {
       allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow list: if isAdmin();
@@ -223,6 +227,107 @@ development
       allow write: if false;
     }
 
+
+    match /users/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /studentProfiles/{uid} {
+      allow read: if canReadStudent(uid);
+      allow create: if canEditOwnProfile(uid)
+        && request.resource.data.keys().hasAll(['uid', 'visibility']);
+      allow update: if canEditOwnProfile(uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'programme', 'yearOfStudy', 'bio', 'visibility', 'updatedAt'
+        ]);
+      allow delete: if false;
+
+      match /skills/{skillId} {
+        allow read: if canReadStudent(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && validSkillSubmission();
+        allow update: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && resource.data.status == 'pending'
+          && validSkillSubmission();
+        allow delete: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && resource.data.status == 'pending';
+      }
+
+      match /activities/{activityId} {
+        allow read: if canReadStudent(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && validActivitySubmission();
+        allow update: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && resource.data.status == 'pending'
+          && validActivitySubmission();
+        allow delete: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && resource.data.status == 'pending';
+      }
+
+      match /achievements/{achievementId} {
+        allow read: if canReadStudent(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && validAchievementSubmission();
+        allow update: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && resource.data.status == 'pending'
+          && validAchievementSubmission();
+        allow delete: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && resource.data.status == 'pending';
+      }
+    }
+
+    match /students/{uid} {
+      allow get: if canReadStudent(uid);
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /lecturers/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /reviewAssignments/{studentUid}/reviewers/{lecturerUid} {
+      allow get: if isAdmin()
+        || (signedIn() && request.auth.uid == lecturerUid && currentRole() == 'lecturer');
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /verificationRecords/{recordId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.studentUid == request.auth.uid && activeUser(request.auth.uid))
+        || isAssignedLecturer(resource.data.studentUid);
+      allow write: if false;
+    }
+
+    match /recommendationRequests/{requestId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.studentUid == request.auth.uid && activeUser(request.auth.uid))
+        || (signedIn() && resource.data.assignedLecturerUid == request.auth.uid && currentRole() == 'lecturer');
+      allow write: if false;
+    }
+
+ main
     match /profileShares/{shareId} {
       allow read: if isAdmin()
         || (signedIn() && resource.data.ownerUid == request.auth.uid && activeUser(request.auth.uid));
@@ -247,6 +352,7 @@ development
         && request.resource.data.createdBy == request.auth.uid
         && request.resource.data.keys().hasOnly(['title', 'message', 'audience', 'createdBy', 'createdAt']);
       allow update, delete: if isAdmin();
+development
     }
  feat/react-firebase-foundation
 
@@ -293,8 +399,12 @@ development
         isAssignedStudent(resource.data.classId)
       );
       allow write: if isAdmin();
+
+ main
     }
+
     match /documents/{id} {
+ development
       allow read: if signedIn() && (
         resource.data.ownerUid == request.auth.uid ||
         isAdmin() ||
@@ -304,6 +414,26 @@ development
       allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
       allow update, delete: if signedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
  development
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid && activeUser(request.auth.uid))
+        || isAssignedLecturer(resource.data.ownerUid);
+      allow create, update, delete: if false;
+    }
+
+    match /activity_logs/{id} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /system_settings/{id} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+ main
     }
   }
 }

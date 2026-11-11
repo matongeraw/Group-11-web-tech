@@ -1,5 +1,8 @@
 import { Router } from 'express'
+ development
  feat/react-firebase-foundation
+
+ main
 import { createApiController } from '../controllers/apiController.js'
 import { createFirestoreRepository } from '../data-access/firestoreRepository.js'
 import { createAuthMiddleware } from '../middleware/auth.js'
@@ -33,6 +36,7 @@ export function createApiRouter({ auth, db, admin, firebaseReady }) {
 
   return router
 }
+ development
 
 import { z } from 'zod'
 import { admin, auth, db, firebaseReady } from '../config/firebaseAdmin.js'
@@ -86,3 +90,5 @@ router.post('/admin/notifications', requireFirebase, requireToken, requireAuth, 
 })
 export default router
  development
+
+ main

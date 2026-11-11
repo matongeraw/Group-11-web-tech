@@ -45,9 +45,14 @@ Live project configuration is intentionally not part of this phase. Before conne
 For a separately authorized non-production project only, configure Firebase Authentication email/password, authorized domains, Firestore, and Storage through Firebase Console. Deploy the reviewed `firebase/firestore.rules`, `firebase/firestore.indexes.json`, and `firebase/storage.rules` only after confirming the target project and approval.
 
 ## 5. Configure Firebase Admin for a future non-production backend
+ development
 
 Use an institution-approved service account and store its key **outside this repository**. Set `GOOGLE_APPLICATION_CREDENTIALS` to its path in a private environment or use the hosting provider's secret manager. Alternatively, set `FIREBASE_SERVICE_ACCOUNT_JSON` as a secret. Never commit credentials or put them in frontend code.
 
+
+Use an institution-approved service account and store its key **outside this repository**. Set `GOOGLE_APPLICATION_CREDENTIALS` to its path in a private environment or use the hosting provider's secret manager. Alternatively, set `FIREBASE_SERVICE_ACCOUNT_JSON` as a secret. Never commit credentials or put them in frontend code.
+
+ main
 The local emulator profile does not use either credential variable. Do not mix emulator hosts or a `demo-` project ID with live project credentials.
 
 ```powershell
@@ -78,6 +83,7 @@ The role-aware interface includes administrator and lecturer dashboards. Admin e
 |---|---|---|
 | GET | `/api/health` | Public health status |
 | GET | `/api/me` | Authenticated active user |
+ development
  feat/react-firebase-foundation
 | POST | `/api/profile/complete-registration` | Verified institutional-email token; new UID only; creates pending account |
 | GET | `/api/users` | Admin or lecturer assigned to the listed active students |
@@ -85,6 +91,10 @@ The role-aware interface includes administrator and lecturer dashboards. Admin e
 | POST | `/api/profile/complete-registration` | Firebase-authenticated new user |
 | GET | `/api/users` | Admin |
  development
+
+| POST | `/api/profile/complete-registration` | Verified institutional-email token; new UID only; creates pending account |
+| GET | `/api/users` | Admin or lecturer assigned to the listed active students |
+ main
 | PATCH | `/api/users/:uid/status` | Admin |
 | POST | `/api/admin/users/:uid/role` | Admin |
 | POST | `/api/admin/notifications` | Admin or lecturer |
@@ -102,6 +112,7 @@ The role-aware interface includes administrator and lecturer dashboards. Admin e
 
 Authenticated endpoints require `Authorization: Bearer <Firebase ID token>`.
 
+ development
  feat/react-firebase-foundation
 ## 9. GitHub publishing
 
@@ -109,6 +120,9 @@ New institutional events are created with `pending` status. An administrator mus
 
 ## 10. GitHub publishing
  development
+
+## 9. GitHub publishing
+main
 
 ```powershell
 git init
