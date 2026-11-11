@@ -1,6 +1,166 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+ feat/react-firebase-foundation
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function hasUser(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid));
+    }
+
+    function activeUser(uid) {
+      return signedIn()
+        && hasUser(uid)
+        && get(/databases/$(database)/documents/users/$(uid)).data.status == 'active';
+    }
+
+    function currentRole() {
+      return activeUser(request.auth.uid)
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : null;
+    }
+
+    function isAdmin() {
+      return currentRole() == 'admin';
+    }
+
+    function isAssignedLecturer(studentUid) {
+      return currentRole() == 'lecturer'
+        && exists(/databases/$(database)/documents/reviewAssignments/$(studentUid)/reviewers/$(request.auth.uid))
+        && get(/databases/$(database)/documents/reviewAssignments/$(studentUid)/reviewers/$(request.auth.uid)).data.status == 'active';
+    }
+
+    function canReadStudent(studentUid) {
+      return isAdmin()
+        || (activeUser(studentUid)
+          && request.auth.uid == studentUid
+          && get(/databases/$(database)/documents/users/$(studentUid)).data.role == 'student')
+        || isAssignedLecturer(studentUid);
+    }
+
+    function canEditOwnProfile(studentUid) {
+      return signedIn()
+        && request.auth.uid == studentUid
+        && activeUser(studentUid)
+        && get(/databases/$(database)/documents/users/$(studentUid)).data.role == 'student'
+        && request.resource.data.keys().hasOnly([
+          'uid', 'displayName', 'programme', 'yearOfStudy', 'bio', 'visibility',
+          'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.uid == studentUid
+        && request.resource.data.visibility in ['private', 'assigned'];
+    }
+
+    function validSkillSubmission() {
+      return request.resource.data.keys().hasOnly([
+          'name', 'category', 'proficiency', 'evidencePath', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll(['name', 'category', 'proficiency', 'status'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.category is string
+        && request.resource.data.proficiency in ['beginner', 'intermediate', 'advanced']
+        && request.resource.data.status == 'pending';
+    }
+
+    function validActivitySubmission() {
+      return request.resource.data.keys().hasOnly([
+          'name', 'category', 'organization', 'role', 'startDate', 'endDate',
+          'description', 'achievements', 'evidencePaths', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'name', 'category', 'organization', 'role', 'startDate', 'description', 'status'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 2000
+        && request.resource.data.status == 'pending';
+    }
+
+    function validAchievementSubmission() {
+      return request.resource.data.keys().hasOnly([
+          'title', 'category', 'issuer', 'date', 'description', 'evidencePaths',
+          'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll(['title', 'category', 'description', 'status'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 2000
+        && request.resource.data.status == 'pending';
+    }
+
+    match /users/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /studentProfiles/{uid} {
+      allow read: if canReadStudent(uid);
+      allow create: if canEditOwnProfile(uid)
+        && request.resource.data.keys().hasAll(['uid', 'visibility']);
+      allow update: if canEditOwnProfile(uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'programme', 'yearOfStudy', 'bio', 'visibility', 'updatedAt'
+        ]);
+      allow delete: if false;
+
+      match /skills/{skillId} {
+        allow read: if canReadStudent(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && validSkillSubmission();
+        allow update: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && resource.data.status == 'pending'
+          && validSkillSubmission();
+        allow delete: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && resource.data.status == 'pending';
+      }
+
+      match /activities/{activityId} {
+        allow read: if canReadStudent(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && validActivitySubmission();
+        allow update: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && resource.data.status == 'pending'
+          && validActivitySubmission();
+        allow delete: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && resource.data.status == 'pending';
+      }
+
+      match /achievements/{achievementId} {
+        allow read: if canReadStudent(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && validAchievementSubmission();
+        allow update: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && get(/databases/$(database)/documents/users/$(uid)).data.role == 'student'
+          && resource.data.status == 'pending'
+          && validAchievementSubmission();
+        allow delete: if signedIn() && request.auth.uid == uid
+          && activeUser(uid)
+          && resource.data.status == 'pending';
+      }
+
     function signedIn() { return request.auth != null; }
     function role() { return signedIn() ? request.auth.token.role : null; }
     function isAdmin() { return role() == 'admin'; }
@@ -22,19 +182,94 @@ service cloud.firestore {
       allow create: if signedIn() && request.auth.uid == uid && request.resource.data.role == 'student' && request.resource.data.status == 'active';
       allow update: if signedIn() && request.auth.uid == uid && request.resource.data.role == resource.data.role && request.resource.data.status == resource.data.status;
       allow delete: if isAdmin();
+ development
     }
+
     match /students/{uid} {
+ feat/react-firebase-foundation
+      allow get: if canReadStudent(uid);
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow write: if isAdmin();
+development
     }
+
     match /lecturers/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow write: if isAdmin();
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
     }
+
+    match /reviewAssignments/{studentUid}/reviewers/{lecturerUid} {
+      allow get: if isAdmin()
+        || (signedIn() && request.auth.uid == lecturerUid && currentRole() == 'lecturer');
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /verificationRecords/{recordId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.studentUid == request.auth.uid && activeUser(request.auth.uid))
+        || isAssignedLecturer(resource.data.studentUid);
+      allow write: if false;
+    }
+
+    match /recommendationRequests/{requestId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.studentUid == request.auth.uid && activeUser(request.auth.uid))
+        || (signedIn() && resource.data.assignedLecturerUid == request.auth.uid && currentRole() == 'lecturer');
+      allow write: if false;
+    }
+
+    match /profileShares/{shareId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid && activeUser(request.auth.uid));
+      allow write: if false;
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
     match /notifications/{id} {
-      allow read: if signedIn();
-      allow create, update, delete: if isAdmin() || isLecturer();
+      allow read: if signedIn()
+        && activeUser(request.auth.uid)
+        && (isAdmin()
+          || resource.data.audience == 'all'
+          || (currentRole() == 'student' && resource.data.audience == 'students')
+          || (currentRole() == 'lecturer' && resource.data.audience == 'lecturers'));
+      allow create: if signedIn()
+        && activeUser(request.auth.uid)
+        && currentRole() in ['admin', 'lecturer']
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.keys().hasOnly(['title', 'message', 'audience', 'createdBy', 'createdAt']);
+      allow update, delete: if isAdmin();
     }
+ feat/react-firebase-foundation
+
+    match /documents/{id} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid && activeUser(request.auth.uid))
+        || isAssignedLecturer(resource.data.ownerUid);
+      allow create, update, delete: if false;
+    }
+
+    match /activity_logs/{id} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /system_settings/{id} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+
     match /events/{id} {
       allow read: if signedIn() && (isAdmin() || resource.data.status == 'approved');
       allow create, update, delete: if isAdmin();
@@ -68,9 +303,7 @@ service cloud.firestore {
       );
       allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
       allow update, delete: if signedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+ development
     }
-    match /activity_logs/{id} { allow read: if isAdmin(); allow create: if signedIn(); allow update, delete: if false; }
-    match /system_settings/{id} { allow read: if signedIn(); allow write: if isAdmin(); }
-    match /{document=**} { allow read, write: if false; }
   }
 }

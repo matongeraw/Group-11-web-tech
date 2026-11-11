@@ -4,27 +4,36 @@ Responsive student profile portal based on the supplied Figma Make prototype. Th
 
 ## Current implementation status
 
+feat/react-firebase-foundation
+- **Frontend:** React + TypeScript + Vite. The supplied Figma prototype is retained, including its navigation, student profile sections, courses, progress, activities, achievements, projects, contact, calendar and notifications.
+- **Authentication:** Firebase email/password sign-in, verified institutional email, account creation, and password reset. Self-registration creates a pending account; an administrator must confirm institutional identity before activation.
+- **Backend:** Express API with revoked-token checks, current Firestore role/status authorization, input validation, rate limiting, security headers and role-protected endpoints. Lecturer student listings are limited to active review assignments.
+- **Roles:** `student`, `lecturer`, and `admin` are stored as Firebase custom claims and mirrored in Firestore. Admin-only role/status management is enforced by the API, not just by hiding interface controls.
+- **Database and storage:** Firestore and Storage rules deny privileged writes from clients, protect verification records, and restrict evidence to owners, admins, and assigned lecturers. Firebase Emulator Suite configuration and automated authorization tests use the isolated `demo-myau-passport` project.
+- **API architecture:** Routes, controllers, middleware, validators, services, and Firestore data access are separated. Typed frontend models, a runtime-validated API client, and a reusable async loading/success/empty/error state hook are available for incremental migration.
+
 - **Frontend:** React + TypeScript + Vite. The student portal retains its existing navigation and profile sections. Admin and lecturer accounts receive role-specific management pages; the student calendar reads approved events from the API and Zimbabwe public holidays from Nager.Date.
 - **Authentication:** Firebase email/password sign-in, account creation for student users, and password reset. Only `@africau.edu` addresses are accepted in the UI.
 - **Backend:** Express API with Firebase Admin token verification, input validation, rate limiting, security headers and role-protected endpoints.
 - **Roles:** `student`, `lecturer`, and `admin` are stored as Firebase custom claims and mirrored in Firestore. Admin-only role/status management is enforced by the API, not just by hiding interface controls.
 - **Database and storage:** Firestore and Storage rules are included. Firebase configuration and credentials are not included.
 - **Management workflows:** Administrators manage event approvals, student and lecturer profiles, class assignments, courses/programmes and timetables. Lecturers can view only their assigned classes and enrolled students.
+ development
 
 ## Important prototype limitations
 
 The Figma design contains sample academic records, example courses, dates, CGPA values and activity information. These are retained as clearly labelled prototype content and are **not verified Africa University records**. Student profile, achievements, documents and other legacy profile pages still include prototype content and are not all persisted to Firestore. Calendar sample entries are fictional, visibly unverified, and used only when no approved event records are available. Do not treat demo values as official academic results.
 
-No Firebase project credentials were supplied, so Firebase connectivity, registration, login, database writes, Storage uploads and role permissions have not been tested against a live project. The API health endpoint reports whether the backend can initialize Firebase.
+No production Firebase project is configured. Firebase connectivity, registration, login, database writes, Storage uploads and role permissions have not been tested against a live project. Local emulator tests use generated test users only. The API health endpoint reports whether the backend can initialize Firebase; a true value does not prove live service connectivity.
 
 ## Quick start
 
-1. Install Node.js 20 LTS or newer.
+1. Install Node.js 20 or 22 LTS and Java 21 LTS for Firebase emulators. Firebase CLI dependencies currently warn on Node.js 24.
 2. Extract this ZIP and open the `Student_Profile_Full_Project` folder in VS Code.
 3. Run `npm install`.
-4. Copy `.env.example` to `.env` and add the Firebase web app configuration values.
-5. Configure backend Firebase Admin credentials as described in `INSTALLATION.md`.
-6. Run `npm run dev:full`.
+4. Copy `.env.emulator.example` to `.env`; it contains demo-only settings and no real credentials.
+5. In one terminal run `npm run emulators`.
+6. In a second terminal run `npm run dev:full`.
 7. Open `http://localhost:5173`.
 
-See [INSTALLATION.md](INSTALLATION.md) for full Firebase setup, user roles, testing and deployment.
+Run `npm test` to start the demo Auth, Firestore, and Storage emulators and execute the backend and security authorization tests without real Firebase credentials. See [INSTALLATION.md](INSTALLATION.md) for local setup and future deployment notes.
