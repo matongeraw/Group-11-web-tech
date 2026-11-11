@@ -1687,33 +1687,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const TYPE_LABEL = { core: 'Core', elective: 'Elective', university: 'University-wide' };
 
   const semesters = [
-    { code: '2025-1', level: 'Level 1.1', modules: [
-      { code: 'CIS101', name: 'Programming Fundamentals', credits: 4, mark: 76, grade: 'A-', type: 'core' },
-      { code: 'CIS103', name: 'Introduction to Information Systems', credits: 3, mark: 62, grade: 'B-', type: 'core' },
-      { code: 'MTH101', name: 'Discrete Mathematics', credits: 3, mark: 57, grade: 'C+', type: 'core' },
-      { code: 'UNI101', name: 'Communication Skills', credits: 4, mark: 53, grade: 'C', type: 'university' }
+    { code: '2025-1', level: 'Semester 1', modules: [
+      { code: 'CIS101', name: 'Programming Fundamentals', credits: 4, mark: 82, grade: 'A', type: 'core' },
+      { code: 'CIS103', name: 'Introduction to Information Systems', credits: 3, mark: 80, grade: 'A', type: 'core' },
+      { code: 'MTH101', name: 'Discrete Mathematics', credits: 3, mark: 72, grade: 'B+', type: 'core' },
+      { code: 'UNI101', name: 'Communication Skills', credits: 4, mark: 71, grade: 'B+', type: 'university' }
     ]},
-    { code: '2025-2', level: 'Level 1.2', modules: [
-      { code: 'CIS104', name: 'Object-Oriented Programming', credits: 3, mark: 82, grade: 'A', type: 'core' },
-      { code: 'CIS106', name: 'Computer Architecture', credits: 3, mark: 67, grade: 'B', type: 'core' },
-      { code: 'MTH102', name: 'Linear Algebra', credits: 3, mark: 56, grade: 'C+', type: 'core' },
-      { code: 'UNI102', name: 'Introduction to African Studies', credits: 3, mark: 58, grade: 'C+', type: 'university' }
+    { code: '2025-2', level: 'Semester 2', modules: [
+      { code: 'CIS104', name: 'Object-Oriented Programming', credits: 3, mark: 85, grade: 'A', type: 'core' },
+      { code: 'CIS106', name: 'Computer Architecture', credits: 3, mark: 81, grade: 'A', type: 'core' },
+      { code: 'MTH102', name: 'Linear Algebra', credits: 3, mark: 76, grade: 'A-', type: 'core' },
+      { code: 'UNI102', name: 'Introduction to African Studies', credits: 3, mark: 73, grade: 'B+', type: 'university' }
     ]},
-    { code: '2026-1', level: 'Level 2.1', modules: [
-      { code: 'CIS201', name: 'Data Structures & Algorithms', credits: 3, mark: 85, grade: 'A', type: 'core' },
-      { code: 'CIS203', name: 'Database Systems', credits: 4, mark: 72, grade: 'B+', type: 'core' },
-      { code: 'CIS205', name: 'Systems Analysis & Design', credits: 3, mark: 66, grade: 'B', type: 'core' },
-      { code: 'MTH201', name: 'Probability Theory', credits: 4, mark: 55, grade: 'C+', type: 'elective' }
+    { code: '2026-1', level: 'Semester 3', modules: [
+      { code: 'CIS201', name: 'Data Structures & Algorithms', credits: 3, mark: 88, grade: 'A', type: 'core' },
+      { code: 'CIS203', name: 'Database Systems', credits: 4, mark: 83, grade: 'A', type: 'core' },
+      { code: 'CIS205', name: 'Systems Analysis & Design', credits: 3, mark: 80, grade: 'A', type: 'core' },
+      { code: 'MTH201', name: 'Probability Theory', credits: 4, mark: 70, grade: 'B+', type: 'elective' }
     ]},
-    { code: '2026-2', level: 'Level 2.2', modules: [
-      { code: 'CIS206', name: 'Software Engineering', credits: 3, mark: 88, grade: 'A', type: 'core' },
-      { code: 'CIS208', name: 'Computer Networks', credits: 3, mark: 81, grade: 'A', type: 'elective' },
-      { code: 'CIS210', name: 'Human-Computer Interaction', credits: 3, mark: 73, grade: 'B+', type: 'elective' },
-      { code: 'UNI201', name: 'Leadership & Ethics', credits: 3, mark: 63, grade: 'B-', type: 'university' }
+    { code: '2026-2', level: 'Semester 4', modules: [
+      { code: 'CIS206', name: 'Software Engineering', credits: 3, mark: 90, grade: 'A', type: 'core' },
+      { code: 'CIS208', name: 'Computer Networks', credits: 3, mark: 84, grade: 'A', type: 'elective' },
+      { code: 'CIS210', name: 'Human-Computer Interaction', credits: 3, mark: 82, grade: 'A', type: 'elective' },
+      { code: 'UNI201', name: 'Leadership & Ethics', credits: 3, mark: 77, grade: 'A-', type: 'university' }
     ]}
   ];
 
-  const current = { code: '2027-1', level: 'Level 3.1', modules: [
+  const current = { code: '2027-1', level: 'Current semester', modules: [
     { code: 'WTS201', name: 'Web Technologies', credits: 3, mark: 84, grade: 'A', type: 'core', done: 70,
       assess: [['Assignment 1', true], ['Lab portfolio', true], ['Project', true], ['Final exam · 10 Nov', false]] },
     { code: 'STA201', name: 'Applied Statistics', credits: 3, mark: 81, grade: 'A', type: 'core', done: 60,
@@ -1807,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div><small>Best completed semester</small><strong>${best.code} &middot; ${fmt(best.gpa)}</strong></div>
     <div><small>Improvement</small><strong>+${fmt(latest.gpa - firstGPA)} GPA in ${done.length - 1} semesters</strong></div>
     <div><small>Projected CGPA after this semester</small><strong>${fmt(prov.cgpa)}</strong></div>`;
-  document.getElementById('ap-trend-table').innerHTML = `<table class="ap-table"><thead><tr><th>Semester</th><th>Level</th><th class="num">Credits</th><th class="num">Semester GPA</th><th class="num">CGPA</th><th>Standing</th></tr></thead><tbody>${
+  document.getElementById('ap-trend-table').innerHTML = `<table class="ap-table"><thead><tr><th>Semester</th><th>Term</th><th class="num">Credits</th><th class="num">Semester GPA</th><th class="num">CGPA</th><th>Standing</th></tr></thead><tbody>${
     series.map(s => `<tr><td>${s.code}${s.provisional ? ' *' : ''}</td><td>${s.level}</td><td class="num">${s.credits}</td><td class="num">${fmt(s.gpa)}</td><td class="num">${fmt(s.cgpa)}</td><td>${s.standing}</td></tr>`).join('')
   }</tbody></table><p style="font-size:10px;color:var(--muted)">* Provisional, based on coursework to date.</p>`;
 
@@ -1820,18 +1820,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const reqs = [
     { name: 'Total credits', d: earned, p: inProg, total: TOTAL_CREDITS, unit: 'credits', note: `${TOTAL_CREDITS - earned} credits still needed` },
     { name: 'Core modules', d: countType('core', completedMods), p: curCore, total: 26, unit: 'modules', note: `${curCore} in progress this semester` },
-    { name: 'Electives', d: countType('elective', completedMods), p: 0, total: 8, unit: 'modules', note: 'Choose 5 more from the Level 3–4 elective list' },
+    { name: 'Electives', d: countType('elective', completedMods), p: 0, total: 8, unit: 'modules', note: 'Choose 5 more from the senior elective list' },
     { name: 'University-wide courses', d: countType('university', completedMods), p: 0, total: 4, unit: 'modules', note: 'UNI301 Entrepreneurship remaining' },
     { name: 'Community service', d: 32, p: 0, total: 40, unit: 'hours', note: '8 hours left · log hours under Skills & Activities' }
   ];
   const checks = [
     { name: 'Minimum CGPA 2.00', ok: latest.cgpa >= 2, text: `Met · current CGPA ${fmt(latest.cgpa)}` },
-    { name: 'Industrial attachment', ok: false, text: 'Scheduled for Level 3.2 · placement form opens Jan 2027' },
-    { name: 'Capstone project', ok: false, text: 'Level 4 · supervisor allocation in 2027/28' }
+    { name: 'Industrial attachment', state: 'progress', text: 'In progress · Econet Wireless Zimbabwe · 8 weekly logbooks approved' },
+    { name: 'Capstone project', ok: false, text: 'Final year · supervisor allocation in 2027/28' }
   ];
   document.getElementById('ap-requirements').innerHTML =
     reqs.map(r => `<div class="ap-req"><div><strong>${r.name}</strong><b>${r.d}${r.p ? ` (+${r.p})` : ''} / ${r.total} ${r.unit}</b></div>${bar(r.d, r.p, r.total)}<small>${Math.round(r.d / r.total * 100)}% complete &middot; ${r.note}</small></div>`).join('') +
-    checks.map(c => `<div class="ap-req"><div><strong>${c.name}</strong><span class="badge ${c.ok ? 'badge-green' : 'badge-gray'}">${c.ok ? '&#10003; Met' : 'Not started'}</span></div><small>${c.text}</small></div>`).join('');
+    checks.map(c => `<div class="ap-req"><div><strong>${c.name}</strong><span class="badge ${c.ok ? 'badge-green' : c.state === 'progress' ? 'badge-amber' : 'badge-gray'}">${c.ok ? '&#10003; Met' : c.state === 'progress' ? 'In progress' : 'Not started'}</span></div><small>${c.text}</small></div>`).join('');
 
   /* ---------- credit accumulation ---------- */
   const seg = (cls, n) => `<span class="${cls}" style="width:${n / TOTAL_CREDITS * 100}%" title="${n} credits"></span>`;
@@ -1878,3 +1878,666 @@ document.addEventListener('DOMContentLoaded', () => {
     semEl.querySelectorAll('details').forEach((d, i) => { d.open = open[i]; });
   }));
 });
+
+/* =====================================================================
+   STAFF PORTAL WORKFLOWS — Lecturer (Faculty) & Admin (Registry)
+   Shared sample data, audit trail, live badge counts, review modals,
+   search/filter/sort, class insight, logbooks and verifier governance.
+   All state is sample data saved in localStorage (see STAFF_KEYS).
+   ===================================================================== */
+(function () {
+  const STAFF_KEYS = {
+    audit: 'auAuditTrail', verifications: 'auVerificationQueue', references: 'auReferenceDrafts',
+    transcripts: 'auTranscriptQueue', verifiers: 'auVerifiers', logbooks: 'auLogbooks'
+  };
+  const LECTURER = 'Dr. C. T. Chimedza (Staff 250731)';
+  const REGISTRAR = 'Registry Admin (Auth 240618)';
+  const CURRENT_SEMESTER = 'Semester 1 · 2026/2027';
+  const DAY = 86400000;
+
+  /* ---------- shared student records (one source of truth) ---------- */
+  const STUDENTS = {
+    '250444': { name: 'Wayne Matongera', programme: 'BSc Computer Information Systems', level: 'Level 2.1', cgpa: 3.78, standing: "Dean's List", modules: 16 },
+    '250189': { name: 'Natasha Chitembwe', programme: 'BSc Computer Information Systems', level: 'Level 2.1', cgpa: 3.52, standing: "Dean's List", modules: 16 },
+    '250312': { name: 'Kudzai Ndlovu', programme: 'BSc Computer Science', level: 'Level 2.1', cgpa: 3.41, standing: 'Good standing', modules: 16 },
+    '240112': { name: 'Tendai Moyo', programme: 'Bachelor of Accounting', level: 'Level 3.1', cgpa: 3.89, standing: "Dean's List", modules: 32 },
+    '240512': { name: 'Jordy Tafadzwa', programme: 'BSc Computer Information Systems', level: 'Level 3.1', cgpa: 3.65, standing: 'Good standing', modules: 24 }
+  };
+  window.AU_STUDENTS = STUDENTS;
+  window.AU_CURRENT_SEMESTER = CURRENT_SEMESTER;
+  const stu = id => STUDENTS[id] || { name: 'Student ' + id, programme: '—', level: '—', cgpa: 0, standing: '—', modules: 0 };
+
+  /* ---------- helpers ---------- */
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const load = (k, seed) => { try { const v = JSON.parse(localStorage.getItem(k)); if (Array.isArray(v)) return v; } catch (e) {} const s = seed(); save(k, s); return s; };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const iso = d => new Date(d).toISOString();
+  const daysAgo = n => iso(Date.now() - n * DAY);
+  const fmtDate = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const fmtStamp = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')} ${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`; };
+  const ago = d => { const n = Math.floor((Date.now() - new Date(d)) / DAY); return n <= 0 ? 'today' : n === 1 ? 'yesterday' : `${n} days ago`; };
+  const hash = str => { let h1 = 0x811c9dc5, h2 = 0x1b873593; for (let i = 0; i < str.length; i++) { h1 = Math.imul(h1 ^ str.charCodeAt(i), 16777619); h2 = Math.imul(h2 ^ str.charCodeAt(i), 2246822507); } const hx = ((h1 >>> 0).toString(16) + (h2 >>> 0).toString(16)).padEnd(16, '0'); return hx.slice(0, 6) + '...' + hx.slice(-3); };
+  const toast = m => (typeof showToast === 'function' ? showToast(m) : null);
+  const badge = (tone, text) => `<span class="badge badge-${tone}">${text}</span>`;
+
+  /* ---------- seed data ---------- */
+  const seeds = {
+    audit: () => [
+      { ts: '2026-11-05T17:15:00', action: 'TRANSCRIPT_SEAL', actor: REGISTRAR, target: 'Tendai Moyo (240112)', note: 'Prior transcript to Rhodes Scholarship Trust' },
+      { ts: '2026-11-05T18:42:00', action: 'VERIFY_ACHIEVEMENT', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Google UX Design Certificate' },
+      { ts: daysAgo(4), action: 'LOGBOOK_APPROVE', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Week 8 logbook' },
+      { ts: daysAgo(3), action: 'VERIFIER_RENEW', actor: REGISTRAR, target: 'Coach T. Sibanda', note: 'Sports & Recreation – renewed to Dec 2027' },
+      { ts: daysAgo(2), action: 'REJECT_ACHIEVEMENT', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Community Outreach Lead – coordinator letter missing' }
+    ].map(a => ({ ...a, ts: iso(a.ts), hash: hash(a.ts + a.action + a.target) })),
+    verifications: () => [
+      { id: 'v1', sid: '250444', title: 'GDSC Solution Challenge 2025 · 1st Runner Up', issuer: 'Google Developer Student Clubs · Mutare Regional Innovation Showcase', category: 'Innovation', proof: [['Certificate_of_Award.pdf', 'PDF · 412 KB'], ['github.com/wmatongera/gdsc-solution', 'Source repository']], submitted: daysAgo(2), status: 'pending' },
+      { id: 'v2', sid: '250189', title: 'Cisco CCNA: Introduction to Networks', issuer: 'Cisco Networking Academy · Credential ID CSCO-912048', category: 'Certifications', proof: [['NetAcad digital badge', 'Verification link']], submitted: daysAgo(1), status: 'pending' },
+      { id: 'v3', sid: '250312', title: '1st Place · Africa University ICT Innovation Hackathon 2025', issuer: 'Dean of Engineering & Applied Sciences', category: 'Innovation', proof: [['FEAS_Award_Certificate.pdf', 'PDF · 288 KB'], ['Prototype demo video', 'MP4 · 2 min']], submitted: daysAgo(5), status: 'pending' },
+      { id: 'v4', sid: '250444', title: 'Google UX Design Certificate', issuer: 'Google / Coursera', category: 'Certifications', proof: [['Coursera certificate', 'Verification link']], submitted: '2026-11-01T09:00:00', status: 'verified', decided: '2026-11-05T18:42:00' },
+      { id: 'v5', sid: '250444', title: 'Community Outreach Lead', issuer: 'Mutare Digital Literacy Programme', category: 'Leadership', proof: [['Photo evidence', 'JPG · 3 files']], submitted: daysAgo(6), status: 'rejected', decided: daysAgo(2), reason: 'Missing official evidence: Please upload an official letter from the programme coordinator confirming your contact hours.' }
+    ],
+    references: () => [
+      { id: 'r1', sid: '250444', opportunity: 'Google Student Developer Fellowship 2026', recipient: 'Google Student Programs Selection Committee', evidence: "Dean's List (CGPA 3.78 / 4.0), Top 12%, WTS201 Grade A (84%), GDSC 1st Runner Up", due: iso(Date.now() + 3 * DAY), status: 'draft' },
+      { id: 'r2', sid: '240512', opportunity: 'Old Mutual Zimbabwe Industrial Attachment', recipient: 'Old Mutual Zimbabwe Graduate Recruitment', evidence: 'CGPA 3.65 / 4.0, Mobile Applications Project Lead, Good academic standing', due: iso(Date.now() - 1 * DAY), status: 'draft' }
+    ],
+    transcripts: () => [
+      { id: 't1', sid: '250444', recipient: 'Australian University Admissions · Postgraduate credit transfer', requested: daysAgo(2), fees: 'Cleared', discipline: 'Clean', status: 'pending' },
+      { id: 't2', sid: '240112', recipient: 'Chevening Scholarship Secretariat · Foreign & Commonwealth Office', requested: daysAgo(1), fees: 'Cleared', discipline: 'Clean', status: 'pending' },
+      { id: 't3', sid: '250189', recipient: 'Rhodes University · Honours application', requested: daysAgo(4), fees: 'Outstanding balance US$120', discipline: 'Clean', status: 'pending' },
+      { id: 't4', sid: '250312', recipient: 'Deloitte Zimbabwe · Vacation internship', requested: daysAgo(6), fees: 'Cleared', discipline: 'Clean', status: 'held', holdReason: 'Awaiting departmental confirmation of a module mark change (CIS205)' },
+      { id: 't0', sid: '240112', recipient: 'Rhodes Scholarship Trust', requested: '2026-11-03T09:00:00', fees: 'Cleared', discipline: 'Clean', status: 'sealed', sealed: '2026-11-05T17:15:00' }
+    ],
+    verifiers: () => [
+      { id: 'vf1', unit: 'Faculty of Engineering & Applied Sciences', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu', scope: 'Academic awards, computing hackathons, course honours', expiry: '2027-07-31', status: 'active' },
+      { id: 'vf2', unit: 'Department of Mathematics & Statistics', name: 'Dr. R. Mlambo', email: 'mlambor@africau.edu', scope: 'Mathematics olympiads, statistics competitions', expiry: '2027-03-31', status: 'active' },
+      { id: 'vf3', unit: 'College of Business, Peace, Leadership & Governance', name: 'Prof. L. Chikwanha', email: 'chikwanhal@africau.edu', scope: 'Business plan competitions, internships, leadership programmes', expiry: '2026-12-15', status: 'active' },
+      { id: 'vf4', unit: 'Directorate of Sports & Recreation', name: 'Coach T. Sibanda', email: 'sibandat@africau.edu', scope: 'Inter-university athletics, regional tournaments', expiry: '2027-12-31', status: 'active' },
+      { id: 'vf5', unit: 'Chaplaincy & Community Outreach', name: 'Rev. M. Dube', email: 'dubem@africau.edu', scope: 'Volunteer initiatives, leadership service, faith-based projects', expiry: '2027-06-30', status: 'active' }
+    ],
+    logbooks: () => {
+      const tasks = {
+        '250444': ['Onboarding, dev environment and code standards', 'Bug fixes on the customer self-service portal', 'REST endpoint for airtime bundle history', 'Unit tests and CI pipeline fixes', 'Accessibility review of the mobile web app', 'Payment status notifications feature', 'Load testing and performance tuning', 'Sprint demo and documentation hand-over'],
+        '250189': ['Induction and NOC safety briefing', 'Monitoring dashboards and alert triage', 'Router configuration under supervision', 'Fibre fault ticket analysis', 'VLAN audit for regional offices', 'Network capacity report draft', 'Shadowing core network maintenance', 'Incident report write-up']
+      };
+      const out = [];
+      Object.entries(tasks).forEach(([sid, list]) => list.forEach((t, i) => out.push({
+        sid, week: i + 1, from: iso(new Date(2026, 8, 14 + i * 7)), tasks: t, hours: 38 + ((i * 7 + sid.length) % 5),
+        comment: i === 7 && sid === '250189' ? '' : ['Good progress.', 'Shows initiative.', 'Solid, well documented work.', 'Excellent attention to detail.'][i % 4],
+        status: sid === '250189' && i === 7 ? 'pending' : 'approved'
+      })));
+      return out;
+    }
+  };
+  const state = {};
+  Object.keys(STAFF_KEYS).forEach(k => { state[k] = load(STAFF_KEYS[k], seeds[k]); });
+  const persist = k => save(STAFF_KEYS[k], state[k]);
+
+  /* ---------- audit trail ---------- */
+  window.appendAudit = function (action, actor, target, note) {
+    const ts = iso(Date.now());
+    state.audit.push({ ts, action, actor, target, note: note || '', hash: hash(ts + action + target + (note || '')) });
+    persist('audit');
+  };
+  const ACTION_LABEL = {
+    VERIFY_ACHIEVEMENT: 'Verified achievement', REJECT_ACHIEVEMENT: 'Rejected achievement', LETTER_SIGN: 'Signed recommendation letter',
+    LETTER_DECLINE: 'Declined letter request', LETTER_CREATE: 'Created letter draft', TRANSCRIPT_SEAL: 'Sealed transcript',
+    TRANSCRIPT_HOLD: 'Placed transcript on hold', TRANSCRIPT_RELEASE: 'Released transcript hold', VERIFIER_ADD: 'Added verifier',
+    VERIFIER_SUSPEND: 'Suspended verifier', VERIFIER_REINSTATE: 'Reinstated verifier', VERIFIER_REVOKE: 'Revoked verifier',
+    VERIFIER_RENEW: 'Renewed verifier', LOGBOOK_APPROVE: 'Approved logbook week', LOGBOOK_RETURN: 'Returned logbook week', CLASS_EXPORT: 'Exported class list'
+  };
+
+  /* ---------- modal ---------- */
+  let modalEl;
+  const openModal = (html, wide) => {
+    if (!modalEl) {
+      modalEl = document.createElement('div');
+      modalEl.className = 'modal-scrim staff-modal-scrim';
+      modalEl.style.display = 'none';
+      modalEl.innerHTML = '<div class="modal staff-modal" role="dialog" aria-modal="true" aria-labelledby="staff-modal-title"><button type="button" class="modal-close" aria-label="Close" onclick="staffCloseModal()">&times;</button><div id="staff-modal-body"></div></div>';
+      modalEl.addEventListener('mousedown', e => { if (e.target === modalEl) closeModal(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalEl.style.display !== 'none') closeModal(); });
+      document.body.appendChild(modalEl);
+    }
+    modalEl.querySelector('.staff-modal').classList.toggle('wide', !!wide);
+    document.getElementById('staff-modal-body').innerHTML = html;
+    modalEl.style.display = 'grid';
+    setTimeout(() => modalEl.querySelector('textarea, input, select, button.btn')?.focus(), 30);
+  };
+  const closeModal = () => { if (modalEl) modalEl.style.display = 'none'; };
+  window.staffCloseModal = closeModal;
+  const modalHead = (eyebrow, title, sub) => `<span class="eyebrow">${eyebrow}</span><h2 id="staff-modal-title" style="margin:6px 0 4px">${title}</h2>${sub ? `<p class="staff-modal-sub">${sub}</p>` : ''}`;
+  const studentSummary = sid => { const s = stu(sid); return `<div class="staff-summary"><div><small>Student</small><strong>${esc(s.name)}</strong><span>ID ${sid}</span></div><div><small>Programme</small><strong>${esc(s.programme)}</strong><span>${esc(s.level)}</span></div><div><small>CGPA</small><strong>${s.cgpa.toFixed(2)}</strong><span>${esc(s.standing)}</span></div></div>`; };
+
+  /* ---------- toolbars: search / filter / sort ---------- */
+  const TOOLBARS = {
+    verifications: { placeholder: 'Search student, ID or achievement', statuses: [['all', 'All statuses'], ['pending', 'Pending'], ['verified', 'Verified'], ['rejected', 'Changes requested']], def: 'pending' },
+    references: { placeholder: 'Search student or opportunity', statuses: [['all', 'All statuses'], ['draft', 'Draft ready'], ['signed', 'Signed'], ['declined', 'Declined']], def: 'all' },
+    transcripts: { placeholder: 'Search student, ID or recipient', statuses: [['all', 'All statuses'], ['pending', 'Pending seal'], ['held', 'On hold'], ['sealed', 'Sealed']], def: 'all' },
+    audit: { placeholder: 'Search target or note', statuses: null, def: 'all' }
+  };
+  const tb = {};
+  const buildToolbars = () => document.querySelectorAll('.staff-toolbar[data-list]').forEach(el => {
+    const key = el.dataset.list, cfg = TOOLBARS[key]; if (!cfg || el.dataset.ready) return;
+    tb[key] = { q: '', status: cfg.def, sort: 'newest', actor: 'all', date: '' };
+    let html = `<label class="staff-search"><span class="sr-only">Search</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" data-f="q" placeholder="${cfg.placeholder}"></label>`;
+    if (cfg.statuses) html += `<select data-f="status" aria-label="Filter by status">${cfg.statuses.map(([v, l]) => `<option value="${v}"${v === cfg.def ? ' selected' : ''}>${l}</option>`).join('')}</select>`;
+    if (key === 'audit') html += `<select data-f="status" aria-label="Filter by action"><option value="all">All actions</option>${Object.entries(ACTION_LABEL).map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select><select data-f="actor" aria-label="Filter by actor"><option value="all">All actors</option><option value="${LECTURER}">Dr. Chimedza</option><option value="${REGISTRAR}">Registry Admin</option></select><input type="date" data-f="date" aria-label="Filter by date">`;
+    html += `<select data-f="sort" aria-label="Sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select><span class="staff-count" data-count></span>`;
+    el.innerHTML = html; el.dataset.ready = '1';
+    el.addEventListener('input', e => { const f = e.target.dataset.f; if (!f) return; tb[key][f] = e.target.value; renderAll(); });
+  });
+  const applyTb = (key, list, dateOf, textOf, statusOf) => {
+    const t = tb[key] || { q: '', status: 'all', sort: 'newest', actor: 'all', date: '' };
+    const q = t.q.trim().toLowerCase();
+    let out = list.filter(x => (t.status === 'all' || statusOf(x) === t.status) && (!q || textOf(x).toLowerCase().includes(q)));
+    if (key === 'audit') out = out.filter(x => (t.actor === 'all' || x.actor === t.actor) && (!t.date || fmtStamp(x.ts).startsWith(t.date)));
+    out.sort((a, b) => (new Date(dateOf(b)) - new Date(dateOf(a))) * (t.sort === 'oldest' ? -1 : 1));
+    const c = document.querySelector(`.staff-toolbar[data-list="${key}"] [data-count]`);
+    if (c) c.textContent = `${out.length} of ${list.length}`;
+    return out;
+  };
+  const empty = text => `<div class="staff-empty">${text}</div>`;
+
+  /* ---------- counts & badges ---------- */
+  const portalReqs = () => (typeof loadReqs === 'function' ? loadReqs() : []);
+  const counts = () => ({
+    verifications: state.verifications.filter(v => v.status === 'pending').length,
+    references: state.references.filter(r => r.status === 'draft').length + portalReqs().filter(r => r.status === 'pending').length,
+    transcripts: state.transcripts.filter(t => t.status === 'pending' || t.status === 'held').length,
+    verifiers: state.verifiers.filter(v => v.status === 'active').length,
+    logbooks: state.logbooks.filter(l => l.status === 'pending').length
+  });
+  const setText = (sel, text) => document.querySelectorAll(sel).forEach(el => { el.textContent = text; });
+  const renderCounts = () => {
+    const c = counts();
+    [['nav-badge-verifications', c.verifications], ['nav-badge-references', c.references], ['nav-badge-transcripts', c.transcripts]].forEach(([id, n]) => {
+      const el = document.getElementById(id); if (el) { el.textContent = n; el.style.display = n ? '' : 'none'; }
+    });
+    setText('[data-stat="pending-verifications"]', c.verifications);
+    setText('[data-stat="reference-requests"]', c.references);
+    setText('[data-stat="transcript-requests"]', c.transcripts);
+    setText('[data-stat="active-verifiers"]', c.verifiers);
+    setText('#fac-header-queue', `Open Verification Queue (${c.verifications})`);
+    setText('#admin-header-queue', `Transcript Queue (${c.transcripts})`);
+    const units = state.verifiers.filter(v => v.status === 'active').map(v => v.unit.replace(/^(Faculty of|Department of|College of|Directorate of)\s+/, '').split(/[ ,&]/)[0]);
+    const vs = document.querySelector('[data-stat="active-verifiers"]')?.nextElementSibling; if (vs) vs.innerHTML = esc(units.join(', ') || 'None active') + ' &rarr;';
+  };
+
+  /* ---------- LECTURER: verification queue ---------- */
+  const vStatus = { pending: ['amber', 'Pending verification'], verified: ['green', 'Verified &amp; signed'], rejected: ['red', 'Changes requested'] };
+  const renderVerifications = () => {
+    const el = document.getElementById('list-verifications'); if (!el) return;
+    const list = applyTb('verifications', state.verifications, v => v.submitted, v => `${stu(v.sid).name} ${v.sid} ${v.title} ${v.issuer}`, v => v.status);
+    el.innerHTML = list.length ? list.map(v => {
+      const s = stu(v.sid), [tone, label] = vStatus[v.status], overdue = v.status === 'pending' && Date.now() - new Date(v.submitted) > 3 * DAY;
+      return `<article class="staff-item tone-${tone}">
+        <div class="staff-item-main">
+          <div class="staff-item-meta">${badge(tone, label)}${overdue ? badge('red', 'Overdue · 3-day target') : ''}<small>Submitted ${ago(v.submitted)} · ${esc(v.category)}</small></div>
+          <h3>${esc(s.name)} <span>(ID ${v.sid} · ${esc(s.level)})</span></h3>
+          <p>${esc(v.title)}</p>
+          <small>${esc(v.issuer)} · Proof: ${v.proof.map(p => esc(p[0])).join(', ')}</small>
+          ${v.status === 'rejected' ? `<div class="staff-note red"><strong>Feedback sent:</strong> ${esc(v.reason)}</div>` : ''}
+          ${v.status === 'verified' ? `<div class="staff-note green">Verified ${fmtDate(v.decided)} · signature recorded in audit trail</div>` : ''}
+        </div>
+        <div class="staff-item-actions">${v.status === 'pending'
+          ? `<button type="button" class="btn btn-primary" onclick="staffReviewVerification('${v.id}')">Review &amp; Verify</button><button type="button" class="btn btn-secondary" onclick="staffRejectVerification('${v.id}')">Reject with Feedback</button>`
+          : `<button type="button" class="btn btn-secondary" onclick="staffReviewVerification('${v.id}')">View details</button>`}</div>
+      </article>`;
+    }).join('') : empty('No submissions match your search.');
+  };
+  window.staffReviewVerification = id => {
+    const v = state.verifications.find(x => x.id === id); if (!v) return;
+    const pending = v.status === 'pending';
+    openModal(`${modalHead('Verification review', esc(v.title), esc(v.issuer))}
+      ${studentSummary(v.sid)}
+      <h3 class="staff-h3">Attached proof</h3>
+      <div class="proof-list">${v.proof.map(([n, t]) => `<div class="proof-card"><span class="proof-icon">${t.startsWith('PDF') ? 'PDF' : t.startsWith('MP4') ? '▶' : t.startsWith('JPG') ? 'IMG' : '🔗'}</span><div><strong>${esc(n)}</strong><small>${esc(t)} · submitted ${fmtDate(v.submitted)}</small></div><button type="button" class="text-link" onclick="showToast('Opening ${esc(n).replace(/'/g, '')} (sample preview)')">Open</button></div>`).join('')}</div>
+      <h3 class="staff-h3">Verification checklist</h3>
+      <div class="check-list-staff">
+        <label><input type="checkbox" class="vchk"${pending ? '' : ' checked disabled'}> Issuer and date match the claim</label>
+        <label><input type="checkbox" class="vchk"${pending ? '' : ' checked disabled'}> Student name and ID match the proof</label>
+        <label><input type="checkbox" class="vchk"${pending ? '' : ' checked disabled'}> Claim falls within my verification scope (${esc(v.category)})</label>
+      </div>
+      ${v.status === 'rejected' ? `<div class="staff-note red"><strong>Feedback sent:</strong> ${esc(v.reason)}</div>` : ''}
+      <div class="form-actions">${pending
+        ? `<button type="button" class="btn btn-secondary" onclick="staffRejectVerification('${v.id}')">Reject with Feedback</button><button type="button" class="btn btn-primary" id="btn-confirm-verify" disabled onclick="staffConfirmVerification('${v.id}')">Verify &amp; Sign</button>`
+        : '<button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Close</button>'}</div>`);
+    if (pending) {
+      const boxes = [...document.querySelectorAll('#staff-modal-body .vchk')];
+      boxes.forEach(b => b.addEventListener('change', () => { document.getElementById('btn-confirm-verify').disabled = !boxes.every(x => x.checked); }));
+    }
+  };
+  window.staffConfirmVerification = id => {
+    const v = state.verifications.find(x => x.id === id); if (!v) return;
+    v.status = 'verified'; v.decided = iso(Date.now()); persist('verifications');
+    appendAudit('VERIFY_ACHIEVEMENT', LECTURER, `${stu(v.sid).name} (${v.sid})`, v.title);
+    closeModal(); renderAll(); toast('Achievement verified and digitally signed.');
+  };
+  const REJECT_REASONS = ['Missing official evidence', 'Evidence does not match the claim', 'Outside my verification scope', 'Document is unreadable or incomplete', 'Other'];
+  window.staffRejectVerification = id => {
+    const v = state.verifications.find(x => x.id === id); if (!v) return;
+    openModal(`${modalHead('Reject with feedback', esc(v.title), `${esc(stu(v.sid).name)} will see this feedback and can resubmit.`)}
+      <form class="staff-form" onsubmit="staffConfirmReject(event,'${v.id}')">
+        <label class="field"><span>Reason</span><select id="rej-reason" required><option value="">Choose a reason…</option>${REJECT_REASONS.map(r => `<option>${r}</option>`).join('')}</select></label>
+        <label class="field"><span>Comment to the student</span><textarea id="rej-comment" rows="4" required minlength="10" placeholder="Explain what is missing and how to fix it"></textarea></label>
+        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="submit" class="btn btn-primary">Send feedback</button></div>
+      </form>`);
+  };
+  window.staffConfirmReject = (e, id) => {
+    e.preventDefault();
+    const v = state.verifications.find(x => x.id === id); if (!v) return;
+    v.status = 'rejected'; v.decided = iso(Date.now());
+    v.reason = `${document.getElementById('rej-reason').value}: ${document.getElementById('rej-comment').value.trim()}`;
+    persist('verifications');
+    appendAudit('REJECT_ACHIEVEMENT', LECTURER, `${stu(v.sid).name} (${v.sid})`, `${v.title} – ${document.getElementById('rej-reason').value}`);
+    closeModal(); renderAll(); toast('Feedback sent to the student.');
+  };
+
+  /* ---------- LECTURER: reference letters (connected to Natasha's requests) ---------- */
+  const rStatus = { draft: ['amber', 'Draft ready for review'], signed: ['green', 'Signed &amp; dispatched'], declined: ['gray', 'Declined'] };
+  const renderReferences = () => {
+    const el = document.getElementById('list-references'); if (!el) return;
+    const list = applyTb('references', state.references, r => r.due, r => `${stu(r.sid).name} ${r.sid} ${r.opportunity}`, r => r.status);
+    el.innerHTML = list.length ? list.map(r => {
+      const s = stu(r.sid), [tone, label] = rStatus[r.status], overdue = r.status === 'draft' && new Date(r.due) < Date.now();
+      return `<article class="staff-item tone-${tone === 'amber' ? 'red' : tone}">
+        <div class="staff-item-main">
+          <div class="staff-item-meta">${badge(tone, label)}${r.status === 'draft' ? badge(overdue ? 'red' : 'gray', overdue ? 'Overdue' : 'Due ' + fmtDate(r.due)) : ''}<small>${esc(r.opportunity)}</small></div>
+          <h3>Recommendation letter for ${esc(s.name)} <span>(ID ${r.sid})</span></h3>
+          <p>Evidence: ${esc(r.evidence)}</p>
+          ${r.status === 'declined' ? `<div class="staff-note">Declined: ${esc(r.reason)}</div>` : ''}
+          ${r.status === 'signed' ? `<div class="staff-note green">Signed ${fmtDate(r.signed)} and sent to ${esc(r.recipient)}</div>` : ''}
+        </div>
+        <div class="staff-item-actions">${r.status === 'draft'
+          ? `<button type="button" class="btn btn-primary" onclick="staffOpenLetter('${r.id}')">Review &amp; Edit Letter</button><button type="button" class="btn btn-secondary" onclick="staffDeclineLetter('${r.id}')">Decline</button>`
+          : `<button type="button" class="btn btn-secondary" onclick="staffOpenLetter('${r.id}')">View letter</button>`}</div>
+      </article>`;
+    }).join('') : empty('No letters match your search.');
+    const pl = document.getElementById('list-portal-requests');
+    if (pl) {
+      const reqs = portalReqs();
+      pl.innerHTML = reqs.length ? reqs.map(q => `<div class="staff-mini-row"><span><strong>Wayne Matongera (250444) — ${esc(q.purpose)}</strong><small>To: ${esc(q.target)}</small></span>${typeof reqBadge === 'function' ? reqBadge(q.status) : ''}</div>`).join('')
+        : empty('No portal requests yet. When a student requests a letter from the Recommendations page, it appears here.');
+    }
+  };
+  window.openRecommendationsPage = () => document.querySelector('.nav-btn[data-route="recommendations"]')?.click();
+  const letterBody = r => {
+    const s = stu(r.sid);
+    return r.body || `<p><strong>To the ${esc(r.recipient)},</strong></p>
+      <p>I am pleased to recommend <strong>${esc(s.name)} (Student ID ${r.sid})</strong>, a ${esc(s.programme)} student at Africa University, for the ${esc(r.opportunity)}.</p>
+      <p>${esc(s.name.split(' ')[0])} holds a cumulative GPA of <strong>${s.cgpa.toFixed(2)} / 4.00</strong> (${esc(s.standing)}). Verified evidence on record: ${esc(r.evidence)}.</p>
+      <p>In my modules ${esc(s.name.split(' ')[0])} has shown strong technical ability, reliability and leadership. I recommend ${esc(s.name.split(' ')[0])} without reservation.</p>`;
+  };
+  window.staffOpenLetter = id => {
+    const r = state.references.find(x => x.id === id); if (!r) return;
+    const editable = r.status === 'draft';
+    openModal(`${modalHead('Recommendation letter', esc(r.opportunity), editable ? 'Click the letter to edit it. Signing records your digital signature in the audit trail.' : rStatus[r.status][1])}
+      <div class="letter-paper">
+        <div class="letter-head"><strong>AFRICA UNIVERSITY</strong><span>Faculty of Engineering &amp; Applied Sciences · ${fmtDate(Date.now())}</span></div>
+        <div id="letter-body" ${editable ? 'contenteditable="true"' : ''}>${letterBody(r)}</div>
+        <div class="letter-sign"><strong>Dr. C. T. Chimedza, Ph.D.</strong><span>Senior Lecturer &amp; Academic Supervisor</span>${r.status === 'signed' ? '<span class="badge badge-green">Digitally signed</span>' : ''}</div>
+      </div>
+      <div class="form-actions">${editable
+        ? `<button type="button" class="btn btn-secondary" onclick="staffSaveLetter('${r.id}', false)">Save draft</button><button type="button" class="btn btn-primary" onclick="staffSaveLetter('${r.id}', true)">Sign &amp; dispatch</button>`
+        : '<button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Close</button>'}</div>`, true);
+  };
+  window.staffSaveLetter = (id, sign) => {
+    const r = state.references.find(x => x.id === id); if (!r) return;
+    r.body = document.getElementById('letter-body').innerHTML;
+    if (sign) { r.status = 'signed'; r.signed = iso(Date.now()); appendAudit('LETTER_SIGN', LECTURER, `${stu(r.sid).name} (${r.sid})`, r.opportunity); }
+    persist('references'); closeModal(); renderAll();
+    toast(sign ? `Letter signed and sent to ${r.recipient}.` : 'Draft saved.');
+  };
+  window.staffDeclineLetter = id => {
+    const r = state.references.find(x => x.id === id); if (!r) return;
+    openModal(`${modalHead('Decline letter request', esc(r.opportunity), `${esc(stu(r.sid).name)} will be told why.`)}
+      <form class="staff-form" onsubmit="staffConfirmDecline(event,'${r.id}')">
+        <label class="field"><span>Reason</span><textarea id="dec-reason" rows="3" required minlength="5" placeholder="e.g. I have not taught this student recently enough to comment."></textarea></label>
+        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="submit" class="btn btn-primary">Decline request</button></div>
+      </form>`);
+  };
+  window.staffConfirmDecline = (e, id) => {
+    e.preventDefault();
+    const r = state.references.find(x => x.id === id); if (!r) return;
+    r.status = 'declined'; r.reason = document.getElementById('dec-reason').value.trim(); persist('references');
+    appendAudit('LETTER_DECLINE', LECTURER, `${stu(r.sid).name} (${r.sid})`, r.opportunity);
+    closeModal(); renderAll(); toast('Request declined. Student notified.');
+  };
+  window.staffNewLetter = () => {
+    openModal(`${modalHead('New recommendation draft', 'Start a letter', 'The draft is pre-filled from the student\'s verified record.')}
+      <form class="staff-form" onsubmit="staffCreateLetter(event)">
+        <label class="field"><span>Student</span><select id="nl-sid" required>${Object.entries(STUDENTS).map(([id, s]) => `<option value="${id}">${esc(s.name)} (${id})</option>`).join('')}</select></label>
+        <label class="field"><span>Opportunity</span><input id="nl-opp" required placeholder="e.g. MTN Graduate Programme 2027"></label>
+        <label class="field"><span>Recipient</span><input id="nl-rec" required placeholder="e.g. MTN Zimbabwe Talent Team"></label>
+        <label class="field"><span>Due date</span><input id="nl-due" type="date" required></label>
+        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="submit" class="btn btn-primary">Create draft</button></div>
+      </form>`);
+    const d = document.getElementById('nl-due'); d.value = new Date(Date.now() + 7 * DAY).toISOString().slice(0, 10);
+  };
+  window.staffCreateLetter = e => {
+    e.preventDefault();
+    const sid = document.getElementById('nl-sid').value, s = stu(sid);
+    const r = { id: 'r' + Date.now(), sid, opportunity: document.getElementById('nl-opp').value.trim(), recipient: document.getElementById('nl-rec').value.trim(),
+      evidence: `CGPA ${s.cgpa.toFixed(2)} / 4.0, ${s.standing}`, due: iso(document.getElementById('nl-due').value + 'T17:00:00'), status: 'draft' };
+    state.references.push(r); persist('references');
+    appendAudit('LETTER_CREATE', LECTURER, `${s.name} (${sid})`, r.opportunity);
+    renderAll(); staffOpenLetter(r.id);
+  };
+
+  /* ---------- LECTURER: taught modules & class insight ---------- */
+  const FIRST = ['Tatenda', 'Rudo', 'Tinashe', 'Chipo', 'Farai', 'Nyasha', 'Tapiwa', 'Kudakwashe', 'Rumbidzai', 'Takudzwa', 'Ruvimbo', 'Simbarashe', 'Anesu', 'Tafara', 'Mufaro', 'Vimbai', 'Panashe', 'Shingai', 'Fadzai', 'Munashe', 'Blessing', 'Grace', 'Joseph', 'Esther', 'Brian', 'Ruth', 'Kevin', 'Faith'];
+  const LAST = ['Moyo', 'Ncube', 'Dube', 'Sibanda', 'Mutasa', 'Chikore', 'Mapfumo', 'Zvobgo', 'Gumbo', 'Marufu', 'Chinembiri', 'Makoni', 'Nyathi', 'Mhlanga', 'Banda', 'Phiri', 'Mwale', 'Sithole', 'Mazarura', 'Chirwa'];
+  const rng = seed => () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+  const MODULES = [
+    { code: 'WTS201', name: 'Web Technologies', mark: 'WT', enrolled: 64, credits: 3, lecture: 'Mon 10:00–12:00 · ICT Lab 3', exam: '10 Nov · Great Hall', seed: 201 },
+    { code: 'CIS305', name: 'Database Systems', mark: 'CI', enrolled: 84, credits: 3, lecture: 'Wed 14:00–16:00 · ICT Lab 2', exam: '18 Nov · NB 14', seed: 305 }
+  ];
+  const rosterCache = {};
+  const roster = m => {
+    if (rosterCache[m.code]) return rosterCache[m.code];
+    const r = rng(m.seed), used = new Set(), list = [];
+    if (m.code === 'WTS201') { list.push({ id: '250444', name: 'Wayne Matongera', att: 96, mark: 84 }); list.push({ id: '250189', name: 'Natasha Chitembwe', att: 93, mark: 79 }); used.add('Wayne Matongera'); used.add('Natasha Chitembwe'); }
+    while (list.length < m.enrolled) {
+      const n = `${FIRST[Math.floor(r() * FIRST.length)]} ${LAST[Math.floor(r() * LAST.length)]}`; if (used.has(n)) continue; used.add(n);
+      const att = Math.min(100, Math.round(72 + r() * 28)), mark = Math.max(30, Math.min(95, Math.round(50 + r() * 35 + (att - 85) * 0.6)));
+      let id; do { id = String(250100 + Math.floor(r() * 880)); } while (list.some(x => x.id === id));
+      list.push({ id, name: n, att, mark });
+    }
+    list.forEach(s => { s.status = s.att < 75 || s.mark < 50 ? 'At risk' : s.mark >= 75 ? 'Distinction track' : 'On track'; });
+    return (rosterCache[m.code] = list.sort((a, b) => a.name.localeCompare(b.name)));
+  };
+  const renderModules = () => {
+    const el = document.getElementById('list-modules'); if (!el) return;
+    el.innerHTML = MODULES.map(m => {
+      const r = roster(m), avg = Math.round(r.reduce((s, x) => s + x.mark, 0) / r.length), risk = r.filter(x => x.status === 'At risk').length;
+      return `<article class="staff-item module-item" role="button" tabindex="0" onclick="staffOpenModule('${m.code}')" onkeydown="if(event.key==='Enter')staffOpenModule('${m.code}')">
+        <span class="course-mark large">${m.mark}</span>
+        <div class="staff-item-main"><h3>${m.code} · ${m.name}</h3><small>${m.enrolled} students · ${m.credits} credits · Lecture ${m.lecture} · Final exam ${m.exam}</small>
+          <div class="module-kpis"><span>Average mark <b>${avg}%</b></span><span>Avg attendance <b>${Math.round(r.reduce((s, x) => s + x.att, 0) / r.length)}%</b></span><span class="${risk ? 'risk' : ''}">At risk <b>${risk}</b></span></div></div>
+        <div class="staff-item-actions"><button type="button" class="btn btn-secondary" onclick="event.stopPropagation();staffExportClass('${m.code}')">Export Class List</button><button type="button" class="btn btn-primary" onclick="event.stopPropagation();staffOpenModule('${m.code}')">Open class insight</button></div>
+      </article>`;
+    }).join('');
+  };
+  window.staffExportClass = code => {
+    const m = MODULES.find(x => x.code === code); if (!m) return;
+    const rows = [['Student ID', 'Name', 'Attendance %', 'Coursework mark %', 'Status'], ...roster(m).map(s => [s.id, s.name, s.att, s.mark, s.status])];
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `${code}_class_list_2026-27_S1.csv`;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    appendAudit('CLASS_EXPORT', LECTURER, `${code} ${m.name}`, `${rows.length - 1} students`); renderAll();
+    toast(`${code} class list downloaded (${rows.length - 1} students).`);
+  };
+  window.staffOpenModule = code => {
+    const m = MODULES.find(x => x.code === code); if (!m) return;
+    const r = roster(m), avg = r.reduce((s, x) => s + x.mark, 0) / r.length;
+    const bands = [['0–39', 0, 39], ['40–49', 40, 49], ['50–59', 50, 59], ['60–69', 60, 69], ['70–79', 70, 79], ['80–100', 80, 100]].map(([l, a, b]) => ({ l, n: r.filter(x => x.mark >= a && x.mark <= b).length, fail: b < 50 }));
+    const W = 520, H = 190, L = 30, B = 26, T = 14, max = Math.max(...bands.map(b => b.n)), step = (W - L) / bands.length, bw = step * 0.62;
+    const y = v => T + (H - T - B) * (1 - v / Math.ceil(max / 5) / 5);
+    const ticks = [0, 1, 2, 3, 4, 5].map(i => i * Math.ceil(max / 5));
+    let svg = `<svg class="staff-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mark distribution for ${code}: ${bands.map(b => `${b.l}: ${b.n}`).join(', ')}">`;
+    ticks.forEach(t => { svg += `<line x1="${L}" x2="${W}" y1="${y(t)}" y2="${y(t)}" class="grid"/><text x="${L - 6}" y="${y(t) + 3}" text-anchor="end" class="axis">${t}</text>`; });
+    bands.forEach((b, i) => { const x = L + step * i + (step - bw) / 2, top = y(b.n), h = H - B - top, rr = Math.min(4, h);
+      svg += `<g><title>${b.l}%: ${b.n} students</title><path class="bar${b.fail ? ' fail' : ''}" d="M${x},${H - B} V${top + rr} Q${x},${top} ${x + rr},${top} H${x + bw - rr} Q${x + bw},${top} ${x + bw},${top + rr} V${H - B} Z"/><text x="${x + bw / 2}" y="${top - 5}" text-anchor="middle" class="val">${b.n}</text><text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" class="axis">${b.l}</text></g>`; });
+    svg += '</svg>';
+    const risk = r.filter(x => x.status === 'At risk').sort((a, b) => a.mark - b.mark);
+    openModal(`${modalHead(`${code} · ${CURRENT_SEMESTER}`, `${esc(m.name)} — class insight`, `${m.enrolled} students · Lecture ${m.lecture} · Final exam ${m.exam}`)}
+      <div class="staff-kpis"><div><small>Average mark</small><strong>${avg.toFixed(1)}%</strong></div><div><small>Pass rate (≥50%)</small><strong>${Math.round(r.filter(x => x.mark >= 50).length / r.length * 100)}%</strong></div><div><small>Avg attendance</small><strong>${Math.round(r.reduce((s, x) => s + x.att, 0) / r.length)}%</strong></div><div><small>At risk</small><strong class="risk">${risk.length}</strong></div></div>
+      <div class="staff-two">
+        <section><h3 class="staff-h3">Coursework mark distribution</h3><p class="staff-modal-sub"><span class="key-dot fail"></span> below pass mark (50%) <span class="key-dot"></span> pass</p>${svg}</section>
+        <section><h3 class="staff-h3">At risk <small>(attendance &lt; 75% or mark &lt; 50%)</small></h3><div class="risk-list">${risk.length ? risk.map(s => `<div><span><strong>${esc(s.name)}</strong><small>${s.id}</small></span><span class="${s.mark < 50 ? 'risk' : ''}">${s.mark}%</span><span class="${s.att < 75 ? 'risk' : ''}">${s.att}% att.</span></div>`).join('') : '<p class="staff-modal-sub">No students at risk.</p>'}</div></section>
+      </div>
+      <h3 class="staff-h3">Class roster</h3>
+      <label class="staff-search" style="margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" placeholder="Search roster" oninput="staffFilterRoster(this.value)"></label>
+      <div class="roster-wrap"><table class="ap-table roster-table"><thead><tr><th>Student</th><th>ID</th><th class="num">Attendance</th><th class="num">Mark</th><th>Status</th></tr></thead><tbody>${r.map(s => `<tr data-name="${esc(s.name.toLowerCase())} ${s.id}"><td>${esc(s.name)}</td><td>${s.id}</td><td class="num${s.att < 75 ? ' risk' : ''}">${s.att}%</td><td class="num${s.mark < 50 ? ' risk' : ''}">${s.mark}%</td><td>${badge(s.status === 'At risk' ? 'red' : s.status === 'Distinction track' ? 'green' : 'gray', s.status)}</td></tr>`).join('')}</tbody></table></div>
+      <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Close</button><button type="button" class="btn btn-primary" onclick="staffExportClass('${code}')">Export Class List (CSV)</button></div>`, true);
+  };
+  window.staffFilterRoster = q => { q = q.trim().toLowerCase(); document.querySelectorAll('.roster-table tbody tr').forEach(tr => { tr.style.display = !q || tr.dataset.name.includes(q) ? '' : 'none'; }); };
+
+  /* ---------- LECTURER: supervised interns & logbooks ---------- */
+  const INTERNS = [
+    { sid: '250444', host: 'Econet Wireless Zimbabwe', role: 'Software Engineering Intern', supervisor: 'Eng. P. Ndlovu', attendance: '98% (42/43 working days on time)', assessment: ['green', 'Supervisor assessment: Outstanding'] },
+    { sid: '250189', host: 'NetOne Cellular Zimbabwe', role: 'Network Operations Intern', supervisor: 'Mrs. S. Moyo', attendance: '95% (41/43 working days on time)', assessment: ['green', 'Supervisor assessment: Good standing'] }
+  ];
+  const renderInterns = () => {
+    const el = document.getElementById('list-interns'); if (!el) return;
+    el.innerHTML = INTERNS.map(i => {
+      const s = stu(i.sid), lb = state.logbooks.filter(l => l.sid === i.sid), ok = lb.filter(l => l.status === 'approved').length, pend = lb.filter(l => l.status === 'pending').length, ret = lb.filter(l => l.status === 'returned').length;
+      return `<article class="staff-item tone-green"><div class="staff-item-main">
+        <div class="staff-item-meta">${badge(i.assessment[0], i.assessment[1])}${pend ? badge('amber', `${pend} logbook week awaiting review`) : ''}${ret ? badge('red', `${ret} returned`) : ''}<small>Host: ${esc(i.host)}</small></div>
+        <h3>${esc(s.name)} <span>(ID ${i.sid} · ${esc(s.level)})</span></h3>
+        <p>Role: ${esc(i.role)} · Workplace supervisor: ${esc(i.supervisor)}</p>
+        <small>Attendance: ${esc(i.attendance)} · Weekly reports: ${ok}/${lb.length} approved</small>
+        <div class="ap-bar" style="margin-top:8px;max-width:320px"><span class="done${ok === lb.length ? ' full' : ''}" style="width:${ok / lb.length * 100}%"></span></div>
+      </div><div class="staff-item-actions"><button type="button" class="btn ${pend ? 'btn-primary' : 'btn-secondary'}" onclick="staffOpenLogbook('${i.sid}')">${pend ? 'Review logbook' : 'Workplace Logbook'}</button></div></article>`;
+    }).join('');
+  };
+  window.staffOpenLogbook = sid => {
+    const i = INTERNS.find(x => x.sid === sid), s = stu(sid), lb = state.logbooks.filter(l => l.sid === sid);
+    openModal(`${modalHead('Industrial attachment logbook', `${esc(s.name)} · ${esc(i.host)}`, `${esc(i.role)} · Workplace supervisor ${esc(i.supervisor)}`)}
+      <div class="logbook">${lb.map(l => `<div class="log-week ${l.status}">
+        <div class="log-top"><strong>Week ${l.week}</strong><small>w/c ${fmtDate(l.from)} · ${l.hours} hours</small>${badge(l.status === 'approved' ? 'green' : l.status === 'pending' ? 'amber' : 'red', l.status === 'approved' ? 'Approved' : l.status === 'pending' ? 'Awaiting review' : 'Returned')}</div>
+        <p>${esc(l.tasks)}</p>
+        ${l.comment ? `<small class="log-comment">${l.status === 'returned' ? 'Returned: ' : 'Supervisor comment: '}${esc(l.comment)}</small>` : ''}
+        ${l.status === 'pending' ? `<div class="log-actions"><input type="text" id="log-c-${sid}-${l.week}" placeholder="Comment (required to return)" aria-label="Comment for week ${l.week}"><button type="button" class="btn btn-secondary" onclick="staffLogbook('${sid}',${l.week},'returned')">Return</button><button type="button" class="btn btn-primary" onclick="staffLogbook('${sid}',${l.week},'approved')">Approve</button></div>` : ''}
+      </div>`).join('')}</div>`, true);
+  };
+  window.staffLogbook = (sid, week, decision) => {
+    const l = state.logbooks.find(x => x.sid === sid && x.week === week); if (!l) return;
+    const c = document.getElementById(`log-c-${sid}-${week}`)?.value.trim() || '';
+    if (decision === 'returned' && c.length < 3) { toast('Add a comment so the student knows what to fix.'); document.getElementById(`log-c-${sid}-${week}`)?.focus(); return; }
+    l.status = decision; l.comment = c || (decision === 'approved' ? 'Approved.' : ''); persist('logbooks');
+    appendAudit(decision === 'approved' ? 'LOGBOOK_APPROVE' : 'LOGBOOK_RETURN', LECTURER, `${stu(sid).name} (${sid})`, `Week ${week} logbook`);
+    renderAll(); staffOpenLogbook(sid); toast(decision === 'approved' ? `Week ${week} approved.` : `Week ${week} returned to the student.`);
+  };
+
+  /* ---------- ADMIN: transcripts ---------- */
+  const tStatus = { pending: ['red', 'Pending registry seal'], held: ['amber', 'On hold'], sealed: ['green', 'Sealed &amp; dispatched'] };
+  const renderTranscripts = () => {
+    const el = document.getElementById('list-transcripts'); if (!el) return;
+    const list = applyTb('transcripts', state.transcripts, t => t.requested, t => `${stu(t.sid).name} ${t.sid} ${t.recipient}`, t => t.status);
+    el.innerHTML = list.length ? list.map(t => {
+      const s = stu(t.sid), [tone, label] = tStatus[t.status], feesOk = t.fees === 'Cleared';
+      return `<article class="staff-item tone-${tone}"><div class="staff-item-main">
+        <div class="staff-item-meta">${badge(tone, label)}${!feesOk && t.status !== 'sealed' ? badge('amber', 'Fees not cleared') : ''}<small>Requested ${ago(t.requested)} by student ${t.sid}</small></div>
+        <h3>Official academic transcript · ${esc(s.name)} <span>(ID ${t.sid})</span></h3>
+        <p>Recipient: ${esc(t.recipient)}</p>
+        <small>Academic audit: ${s.modules} completed modules · ${s.cgpa.toFixed(2)} CGPA · Fees: ${esc(t.fees)} · Disciplinary record: ${esc(t.discipline)}</small>
+        ${t.status === 'held' ? `<div class="staff-note amber"><strong>Hold reason:</strong> ${esc(t.holdReason)}</div>` : ''}
+        ${t.status === 'sealed' ? `<div class="staff-note green">Sealed ${fmtDate(t.sealed)} · PDF with verification QR sent to recipient</div>` : ''}
+      </div><div class="staff-item-actions">${t.status === 'pending'
+        ? `<button type="button" class="btn btn-primary" onclick="staffReviewTranscript('${t.id}')">Review &amp; Seal</button><button type="button" class="btn btn-secondary" onclick="staffHoldTranscript('${t.id}')">Hold</button>`
+        : t.status === 'held' ? `<button type="button" class="btn btn-secondary" onclick="staffReleaseTranscript('${t.id}')">Release hold</button>`
+        : `<button type="button" class="btn btn-secondary" onclick="staffReviewTranscript('${t.id}')">View record</button>`}</div></article>`;
+    }).join('') : empty('No transcript requests match your search.');
+  };
+  window.staffReviewTranscript = id => {
+    const t = state.transcripts.find(x => x.id === id); if (!t) return;
+    const s = stu(t.sid), checks = [['Fees cleared', t.fees === 'Cleared', t.fees], ['Disciplinary record clean', t.discipline === 'Clean', t.discipline], ['Student ID format valid (YYNNNN)', /^\d{6}$/.test(t.sid), t.sid], ['All module marks confirmed', true, `${s.modules} modules`]];
+    const ok = checks.every(c => c[1]);
+    openModal(`${modalHead('Transcript review', `Official transcript · ${esc(s.name)}`, `Recipient: ${esc(t.recipient)}`)}
+      ${studentSummary(t.sid)}
+      <h3 class="staff-h3">Pre-seal academic audit</h3>
+      <div class="audit-checks">${checks.map(([l, pass, d]) => `<div class="${pass ? 'pass' : 'fail'}"><span>${pass ? '&#10003;' : '&#10007;'}</span><strong>${l}</strong><small>${esc(d)}</small></div>`).join('')}</div>
+      ${t.status === 'pending' && !ok ? '<div class="staff-note amber">This transcript cannot be sealed until every check passes. Place it on hold and tell the student what to resolve.</div>' : ''}
+      <div class="form-actions">${t.status === 'pending'
+        ? `<button type="button" class="btn btn-secondary" onclick="staffHoldTranscript('${t.id}')">Place on hold</button><button type="button" class="btn btn-primary" ${ok ? '' : 'disabled'} onclick="staffSealTranscript('${t.id}')">Approve &amp; Digitally Seal</button>`
+        : '<button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Close</button>'}</div>`);
+  };
+  window.staffSealTranscript = id => {
+    const t = state.transcripts.find(x => x.id === id); if (!t) return;
+    t.status = 'sealed'; t.sealed = iso(Date.now()); persist('transcripts');
+    appendAudit('TRANSCRIPT_SEAL', REGISTRAR, `${stu(t.sid).name} (${t.sid})`, t.recipient);
+    closeModal(); renderAll(); toast('Transcript sealed and dispatched (PDF + verification QR).');
+  };
+  window.staffHoldTranscript = id => {
+    const t = state.transcripts.find(x => x.id === id); if (!t) return;
+    const suggestion = t.fees !== 'Cleared' ? `Fees not cleared (${t.fees}). Please settle with the Bursary.` : '';
+    openModal(`${modalHead('Place transcript on hold', `${esc(stu(t.sid).name)} · ${esc(t.recipient)}`, 'The student will see this reason on their request.')}
+      <form class="staff-form" onsubmit="staffConfirmHold(event,'${t.id}')">
+        <label class="field"><span>Hold reason</span><textarea id="hold-reason" rows="3" required minlength="5">${esc(suggestion)}</textarea></label>
+        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="submit" class="btn btn-primary">Place on hold</button></div>
+      </form>`);
+  };
+  window.staffConfirmHold = (e, id) => {
+    e.preventDefault();
+    const t = state.transcripts.find(x => x.id === id); if (!t) return;
+    t.status = 'held'; t.holdReason = document.getElementById('hold-reason').value.trim(); persist('transcripts');
+    appendAudit('TRANSCRIPT_HOLD', REGISTRAR, `${stu(t.sid).name} (${t.sid})`, t.holdReason);
+    closeModal(); renderAll(); toast('Transcript placed on hold. Student notified.');
+  };
+  window.staffReleaseTranscript = id => {
+    const t = state.transcripts.find(x => x.id === id); if (!t) return;
+    if (t.sid === '250189') t.fees = 'Cleared';
+    t.status = 'pending'; delete t.holdReason; persist('transcripts');
+    appendAudit('TRANSCRIPT_RELEASE', REGISTRAR, `${stu(t.sid).name} (${t.sid})`, t.recipient);
+    renderAll(); toast('Hold released. The transcript is back in the seal queue.');
+  };
+
+  /* ---------- ADMIN: verifiers ---------- */
+  const vfStatus = { active: ['green', 'Active'], suspended: ['amber', 'Suspended'], revoked: ['red', 'Revoked'] };
+  const renderVerifiers = () => {
+    const el = document.getElementById('list-verifiers'); if (!el) return;
+    el.innerHTML = state.verifiers.map(v => {
+      const [tone, label] = vfStatus[v.status], days = Math.ceil((new Date(v.expiry) - Date.now()) / DAY), soon = v.status === 'active' && days <= 45;
+      return `<div class="verifier-row ${v.status}"><div class="staff-item-main">
+        <strong>${esc(v.unit)}</strong>
+        <small>Designated verifier: ${esc(v.name)} · ${esc(v.email)}</small>
+        <small>Scope: ${esc(v.scope)}</small>
+        <small>Authorised until ${fmtDate(v.expiry)}${soon ? ` · <b class="risk">expires in ${days} days</b>` : ''}</small>
+      </div><div class="verifier-side">${badge(tone, label)}<div class="staff-item-actions">${v.status === 'active'
+        ? `<button type="button" class="btn btn-secondary" onclick="staffVerifier('${v.id}','suspended')">Suspend</button><button type="button" class="btn btn-secondary danger" onclick="staffVerifier('${v.id}','revoked')">Revoke</button>`
+        : v.status === 'suspended' ? `<button type="button" class="btn btn-secondary" onclick="staffVerifier('${v.id}','active')">Reinstate</button><button type="button" class="btn btn-secondary danger" onclick="staffVerifier('${v.id}','revoked')">Revoke</button>`
+        : '<small class="muted">Revoked permanently</small>'}</div></div></div>`;
+    }).join('');
+  };
+  window.staffVerifier = (id, to) => {
+    const v = state.verifiers.find(x => x.id === id); if (!v) return;
+    const verb = { suspended: 'Suspend', active: 'Reinstate', revoked: 'Revoke' }[to];
+    const why = { suspended: `${v.name} will not be able to verify claims until reinstated.`, active: `${v.name} will regain verification rights for: ${v.scope}.`, revoked: `This permanently removes ${v.name}'s verification rights. It cannot be undone.` }[to];
+    openModal(`${modalHead('Verifier governance', `${verb} ${esc(v.name)}?`, esc(v.unit))}
+      <p class="staff-modal-sub">${esc(why)}</p>
+      <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="button" class="btn btn-primary" onclick="staffConfirmVerifier('${id}','${to}')">${verb}</button></div>`);
+  };
+  window.staffConfirmVerifier = (id, to) => {
+    const v = state.verifiers.find(x => x.id === id); if (!v) return;
+    v.status = to; persist('verifiers');
+    appendAudit({ suspended: 'VERIFIER_SUSPEND', active: 'VERIFIER_REINSTATE', revoked: 'VERIFIER_REVOKE' }[to], REGISTRAR, v.name, v.unit);
+    closeModal(); renderAll(); toast(`${v.name}: ${vfStatus[to][1].toLowerCase()}.`);
+  };
+  window.staffOpenAddVerifier = () => {
+    openModal(`${modalHead('Verifier governance', 'Add a designated verifier', 'Delegates verification rights for a specific scope until the expiry date.')}
+      <form class="staff-form" onsubmit="staffAddVerifier(event)">
+        <label class="field"><span>Faculty, department or office</span><input id="av-unit" required placeholder="e.g. Faculty of Health Sciences"></label>
+        <label class="field"><span>Verifier name</span><input id="av-name" required placeholder="e.g. Dr. A. Mukwena"></label>
+        <label class="field"><span>University email</span><input id="av-email" type="email" required pattern=".+@africau\\.edu" placeholder="name@africau.edu" title="Must be an @africau.edu address"></label>
+        <label class="field"><span>Scope (what they may verify)</span><textarea id="av-scope" rows="2" required placeholder="e.g. Clinical placements, health research awards"></textarea></label>
+        <label class="field"><span>Authorised until</span><input id="av-expiry" type="date" required></label>
+        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="submit" class="btn btn-primary">Add verifier</button></div>
+      </form>`);
+    document.getElementById('av-expiry').value = new Date(Date.now() + 365 * DAY).toISOString().slice(0, 10);
+  };
+  window.staffAddVerifier = e => {
+    e.preventDefault();
+    const v = { id: 'vf' + Date.now(), unit: document.getElementById('av-unit').value.trim(), name: document.getElementById('av-name').value.trim(), email: document.getElementById('av-email').value.trim(), scope: document.getElementById('av-scope').value.trim(), expiry: document.getElementById('av-expiry').value, status: 'active' };
+    state.verifiers.push(v); persist('verifiers');
+    appendAudit('VERIFIER_ADD', REGISTRAR, v.name, `${v.unit} – ${v.scope}`);
+    closeModal(); renderAll(); toast(`${v.name} added as a verifier.`);
+  };
+
+  /* ---------- ADMIN: audit trail ---------- */
+  const renderAudit = () => {
+    const el = document.getElementById('list-audit'); if (!el) return;
+    const list = applyTb('audit', state.audit, a => a.ts, a => `${a.target} ${a.note} ${a.actor}`, a => a.action);
+    el.innerHTML = list.length ? list.map(a => `<div class="audit-row"><span class="audit-ts">[${fmtStamp(a.ts)}]</span><span class="audit-body"><b>${a.action}</b> · ${esc(a.actor)} → ${esc(a.target)}${a.note ? ` · <span class="muted">${esc(a.note)}</span>` : ''}</span><span class="audit-hash">${a.hash}</span></div>`).join('') : empty('No audit entries match these filters.');
+  };
+  window.staffResetDemo = () => {
+    openModal(`${modalHead('Demo data', 'Reset staff demo data?', 'Restores the original sample verifications, letters, transcripts, verifiers, logbooks and audit trail on this browser.')}
+      <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="staffCloseModal()">Cancel</button><button type="button" class="btn btn-primary" onclick="staffConfirmReset()">Reset</button></div>`);
+  };
+  window.staffConfirmReset = () => {
+    Object.keys(STAFF_KEYS).forEach(k => { state[k] = seeds[k](); persist(k); });
+    closeModal(); renderAll(); toast('Staff demo data reset.');
+  };
+
+  /* ---------- dashboards ---------- */
+  const actItem = a => `<li><span class="act-dot"></span><span><span class="act-line"><strong>${ACTION_LABEL[a.action] || a.action}</strong> · ${esc(a.target)}</span><small>${esc(a.note || '')}${a.note ? ' · ' : ''}${ago(a.ts)}</small></span></li>`;
+  const attItem = (tone, title, sub, tag, onclick) => `<li><button type="button" onclick="${onclick}"><span class="att-bar ${tone}"></span><span><strong>${title}</strong><small>${sub}</small></span>${tag}<span class="att-go">&rarr;</span></button></li>`;
+  const SCHEDULE = [
+    { d: '2026-11-09T10:00', t: 'WTS201 lecture', s: 'ICT Lab 3 · revision session' },
+    { d: '2026-11-10T09:00', t: 'WTS201 final examination', s: 'Great Hall · invigilation 09:00–12:00' },
+    { d: '2026-11-11T14:00', t: 'CIS305 lecture', s: 'ICT Lab 2 · exam briefing' },
+    { d: '2026-11-13T10:00', t: 'Attachment visit · Econet Wireless', s: 'Assess Wayne Matongera with Eng. P. Ndlovu' },
+    { d: '2026-11-16T10:00', t: 'WTS201 marks due to Registry', s: 'Upload moderated final marks' },
+    { d: '2026-11-18T14:00', t: 'CIS305 final examination', s: 'NB 14 · invigilation 14:00–17:00' },
+    { d: '2026-11-20T09:00', t: 'Faculty board · results moderation', s: 'FEAS boardroom' }
+  ];
+  const renderFacultyDash = () => {
+    const el = document.getElementById('fac-dash-panels'); if (!el) return;
+    const items = [];
+    state.verifications.filter(v => v.status === 'pending').sort((a, b) => new Date(a.submitted) - new Date(b.submitted)).forEach(v => {
+      const od = Date.now() - new Date(v.submitted) > 3 * DAY;
+      items.push({ od, h: attItem(od ? 'red' : 'amber', `Verify: ${esc(v.title)}`, `${esc(stu(v.sid).name)} · submitted ${ago(v.submitted)}`, od ? badge('red', 'Overdue') : badge('amber', 'Pending'), `staffReviewVerification('${v.id}')`) });
+    });
+    state.references.filter(r => r.status === 'draft').forEach(r => {
+      const od = new Date(r.due) < Date.now();
+      items.push({ od, h: attItem(od ? 'red' : 'amber', `Letter: ${esc(r.opportunity)}`, `${esc(stu(r.sid).name)} · due ${fmtDate(r.due)}`, od ? badge('red', 'Overdue') : badge('gray', 'Due ' + fmtDate(r.due)), `staffOpenLetter('${r.id}')`) });
+    });
+    portalReqs().filter(q => q.status === 'pending').forEach(q => items.push({ od: false, h: attItem('amber', `Letter request: ${esc(q.purpose)}`, `Wayne Matongera · to ${esc(q.target)}`, badge('amber', 'New'), 'openRecommendationsPage()') }));
+    state.logbooks.filter(l => l.status === 'pending').forEach(l => items.push({ od: false, h: attItem('amber', `Logbook week ${l.week} to review`, `${esc(stu(l.sid).name)} · ${esc(l.tasks)}`, badge('amber', 'Pending'), `staffOpenLogbook('${l.sid}')`) }));
+    items.sort((a, b) => b.od - a.od);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const upcoming = SCHEDULE.filter(x => new Date(x.d) >= today).slice(0, 5);
+    const dayLabel = d => { const n = Math.round((new Date(d).setHours(0, 0, 0, 0) - today) / DAY); return n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : new Date(d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }); };
+    const acts = state.audit.filter(a => a.actor === LECTURER).sort((a, b) => new Date(b.ts) - new Date(a.ts)).slice(0, 5);
+    el.innerHTML = `
+      <section class="card staff-panel"><div class="section-head"><div><h2>Needs your attention</h2><p>${items.length ? `${items.length} item${items.length > 1 ? 's' : ''} · overdue first` : 'All caught up'}</p></div></div>
+        <ul class="att-list">${items.map(i => i.h).join('') || '<li class="staff-empty">Nothing waiting for you. 🎉</li>'}</ul></section>
+      <section class="card staff-panel"><div class="section-head"><div><h2>Coming up</h2><p>${CURRENT_SEMESTER}</p></div><button type="button" class="text-link" onclick="navigate('faculty-modules')">Modules &rarr;</button></div>
+        <ul class="sched-list">${upcoming.map(x => `<li><span class="sched-day">${dayLabel(x.d)}<b>${new Date(x.d).toTimeString().slice(0, 5)}</b></span><span><strong>${esc(x.t)}</strong><small>${esc(x.s)}</small></span></li>`).join('') || '<li class="staff-empty">No scheduled items.</li>'}</ul></section>
+      <section class="card staff-panel span-2"><div class="section-head"><div><h2>Recent activity</h2><p>Your last 5 recorded actions</p></div></div>
+        <ul class="act-list">${acts.map(actItem).join('') || '<li class="staff-empty">No activity yet.</li>'}</ul></section>`;
+  };
+  const MONTHS = [['Jun', 9, 3.1], ['Jul', 14, 2.8], ['Aug', 21, 3.4], ['Sep', 17, 2.6], ['Oct', 12, 2.2]];
+  const renderAdminDash = () => {
+    const el = document.getElementById('admin-dash-panels'); if (!el) return;
+    const items = [];
+    state.transcripts.filter(t => t.status === 'pending').sort((a, b) => new Date(a.requested) - new Date(b.requested)).forEach(t => {
+      const blocked = t.fees !== 'Cleared', od = Date.now() - new Date(t.requested) > 3 * DAY;
+      items.push(attItem(blocked || od ? 'red' : 'amber', `Seal transcript: ${esc(stu(t.sid).name)}`, `${esc(t.recipient)} · requested ${ago(t.requested)}`, blocked ? badge('amber', 'Fees not cleared') : od ? badge('red', 'Overdue') : badge('red', 'Pending'), `staffReviewTranscript('${t.id}')`));
+    });
+    state.transcripts.filter(t => t.status === 'held').forEach(t => items.push(attItem('amber', `On hold: ${esc(stu(t.sid).name)}`, esc(t.holdReason), badge('amber', 'Hold'), `navigate('admin-transcripts')`)));
+    state.verifiers.filter(v => v.status === 'active' && (new Date(v.expiry) - Date.now()) / DAY <= 45).forEach(v => items.push(attItem('amber', `Verifier authorisation expiring: ${esc(v.name)}`, `${esc(v.unit)} · ${fmtDate(v.expiry)}`, badge('gray', 'Renew'), `navigate('admin-verifiers')`)));
+    const nov = state.transcripts.filter(t => new Date(t.requested).getMonth() === new Date().getMonth()).length + 6;
+    const data = [...MONTHS, ['Nov', nov, null]];
+    const W = 520, H = 200, L = 30, B = 24, T = 18, max = Math.ceil(Math.max(...data.map(d => d[1])) / 5) * 5, step = (W - L) / data.length, bw = step * 0.55;
+    const y = v => T + (H - T - B) * (1 - v / max);
+    let svg = `<svg class="staff-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Transcript requests per month: ${data.map(d => `${d[0]} ${d[1]}`).join(', ')}">`;
+    [0, max / 2, max].forEach(t => { svg += `<line x1="${L}" x2="${W}" y1="${y(t)}" y2="${y(t)}" class="grid"/><text x="${L - 6}" y="${y(t) + 3}" text-anchor="end" class="axis">${t}</text>`; });
+    data.forEach((d, i) => { const x = L + step * i + (step - bw) / 2, top = y(d[1]), rr = 4, cur = i === data.length - 1;
+      svg += `<g><title>${d[0]} 2026: ${d[1]} requests${d[2] ? ` · average turnaround ${d[2]} days` : ' (month to date)'}</title><path class="bar${cur ? ' current' : ''}" d="M${x},${H - B} V${top + rr} Q${x},${top} ${x + rr},${top} H${x + bw - rr} Q${x + bw},${top} ${x + bw},${top + rr} V${H - B} Z"/><text x="${x + bw / 2}" y="${top - 5}" text-anchor="middle" class="val">${d[1]}</text><text x="${x + bw / 2}" y="${H - 7}" text-anchor="middle" class="axis">${d[0]}</text></g>`; });
+    svg += '</svg>';
+    const avgTurn = (MONTHS.reduce((s, m) => s + m[2] * m[1], 0) / MONTHS.reduce((s, m) => s + m[1], 0)).toFixed(1);
+    const acts = [...state.audit].sort((a, b) => new Date(b.ts) - new Date(a.ts)).slice(0, 5);
+    el.innerHTML = `
+      <section class="card staff-panel"><div class="section-head"><div><h2>Needs attention</h2><p>${items.length ? `${items.length} item${items.length > 1 ? 's' : ''}` : 'All caught up'}</p></div><button type="button" class="text-link" onclick="navigate('admin-transcripts')">Queue &rarr;</button></div>
+        <ul class="att-list">${items.join('') || '<li class="staff-empty">Nothing waiting. 🎉</li>'}</ul></section>
+      <section class="card staff-panel"><div class="section-head"><div><h2>Transcript requests per month</h2><p>2026 · hover a bar for turnaround · Nov is month to date</p></div></div>
+        ${svg}
+        <div class="staff-kpis small"><div><small>Avg turnaround (Jun–Oct)</small><strong>${avgTurn} days</strong></div><div><small>Target</small><strong>3 days</strong></div><div><small>Sealed this month</small><strong>${state.transcripts.filter(t => t.status === 'sealed' && new Date(t.sealed).getMonth() === new Date().getMonth()).length}</strong></div></div></section>
+      <section class="card staff-panel span-2"><div class="section-head"><div><h2>Recent activity</h2><p>Latest entries from the audit trail</p></div><button type="button" class="text-link" onclick="navigate('admin-verifiers'); setTimeout(()=>document.getElementById('audit-trail')?.scrollIntoView({behavior:'smooth'}),50)">Full audit trail &rarr;</button></div>
+        <ul class="act-list">${acts.map(actItem).join('')}</ul></section>`;
+  };
+
+  /* ---------- render all ---------- */
+  function renderAll() {
+    renderCounts(); renderVerifications(); renderReferences(); renderModules(); renderInterns();
+    renderTranscripts(); renderVerifiers(); renderAudit(); renderFacultyDash(); renderAdminDash();
+  }
+  window.staffRenderAll = renderAll;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildToolbars(); renderAll();
+    // Natasha's request workflow re-renders on click; keep our counts in sync with it.
+    document.addEventListener('click', () => setTimeout(() => { renderCounts(); renderReferences(); renderFacultyDash(); }, 80));
+  });
+})();

@@ -276,13 +276,13 @@
         <button class="nav-btn" data-route="verification-queue">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
           <span>Verification Queue</span>
-          <span class="badge badge-amber" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">3</span>
+          <span id="nav-badge-verifications" class="badge badge-amber" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">3</span>
         </button>
 
         <button class="nav-btn" data-route="reference-requests">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
           <span>Reference Requests</span>
-          <span class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">2</span>
+          <span id="nav-badge-references" class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">2</span>
         </button>
 
          <button class="nav-btn" data-route="recommendations">
@@ -311,7 +311,7 @@
         <button class="nav-btn" data-route="admin-transcripts">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg>
           <span>Official Transcripts</span>
-          <span class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">4</span>
+          <span id="nav-badge-transcripts" class="badge badge-red" style="margin-left: auto; font-size: 10px; padding: 2px 7px;">4</span>
         </button>
 
         <button class="nav-btn" data-route="admin-id-validation">
@@ -480,12 +480,11 @@
                   <g><line class="simple-grid" x1="66" x2="796" y1="268" y2="268" /><text class="simple-axis" x="53" y="271" text-anchor="end">0.0</text></g>
                   <line class="simple-axis-line" x1="66" x2="66" y1="28" y2="268" />
                   <text class="simple-axis-title" transform="rotate(-90 17 150)" x="17" y="150">CGPA</text>
-                  <polyline class="simple-cgpa-line" points="66,106 248.5,94 431,82 613.5,58 796,41.2" />
-                  <g><line class="simple-tick" x1="66" x2="66" y1="268" y2="272" /><text class="simple-axis semester-label" x="66" y="291" text-anchor="middle">2025-1</text><circle class="simple-point" cx="66" cy="106" r="4.5" /><text class="point-status" x="66" y="94" text-anchor="middle">2.70</text></g>
-                  <g><line class="simple-tick" x1="248.5" x2="248.5" y1="268" y2="272" /><text class="simple-axis semester-label" x="248.5" y="291" text-anchor="middle">2025-2</text><circle class="simple-point" cx="248.5" cy="94" r="4.5" /><text class="point-status" x="248.5" y="82" text-anchor="middle">2.90</text></g>
-                  <g><line class="simple-tick" x1="431" x2="431" y1="268" y2="272" /><text class="simple-axis semester-label" x="431" y="291" text-anchor="middle">2026-1</text><circle class="simple-point good" cx="431" cy="82" r="4.5" /><text class="point-status good" x="431" y="70" text-anchor="middle">3.10 · Good</text></g>
-                  <g><line class="simple-tick" x1="613.5" x2="613.5" y1="268" y2="272" /><text class="simple-axis semester-label" x="613.5" y="291" text-anchor="middle">2026-2</text><circle class="simple-point dean" cx="613.5" cy="58" r="4.5" /><text class="point-status dean" x="613.5" y="46" text-anchor="middle">3.50 · Dean's List</text></g>
-                  <g><line class="simple-tick" x1="796" x2="796" y1="268" y2="272" /><text class="simple-axis semester-label" x="796" y="291" text-anchor="middle">2027-1</text><circle class="simple-point dean active" cx="796" cy="41.2" r="6" /><text class="point-status dean" x="796" y="28" text-anchor="middle">3.78 · Dean's List</text></g>
+                  <polyline class="simple-cgpa-line" points="66,49.0 309.3,46.0 552.7,44.2 796,41.2" />
+                  <g><line class="simple-tick" x1="66" x2="66" y1="268" y2="272" /><text class="simple-axis semester-label" x="66" y="291" text-anchor="middle">2025-1</text><circle class="simple-point dean" cx="66" cy="49.0" r="4.5" /><text class="point-status dean" x="66" y="36.0" text-anchor="start">3.65</text></g>
+                  <g><line class="simple-tick" x1="309.3" x2="309.3" y1="268" y2="272" /><text class="simple-axis semester-label" x="309.3" y="291" text-anchor="middle">2025-2</text><circle class="simple-point dean" cx="309.3" cy="46.0" r="4.5" /><text class="point-status dean" x="309.3" y="33.0" text-anchor="middle">3.70</text></g>
+                  <g><line class="simple-tick" x1="552.7" x2="552.7" y1="268" y2="272" /><text class="simple-axis semester-label" x="552.7" y="291" text-anchor="middle">2026-1</text><circle class="simple-point dean" cx="552.7" cy="44.2" r="4.5" /><text class="point-status dean" x="552.7" y="31.200000000000003" text-anchor="middle">3.73</text></g>
+                  <g><line class="simple-tick" x1="796" x2="796" y1="268" y2="272" /><text class="simple-axis semester-label" x="796" y="291" text-anchor="middle">2026-2</text><circle class="simple-point dean active" cx="796" cy="41.2" r="6" /><text class="point-status dean" x="796" y="28.200000000000003" text-anchor="end">3.78 · Dean&#39;s List</text></g>
                 </svg>
               </div>
             </div>
@@ -544,13 +543,13 @@
                 </div>
               </div>
               <div class="faculty-actions-col">
-                <button class="btn btn-primary" onclick="openLetterModal()" style="white-space: nowrap;">
+                <button class="btn btn-primary" onclick="staffNewLetter()" style="white-space: nowrap;">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
                   <span>New Recommendation Draft</span>
                 </button>
                 <button class="btn btn-secondary" onclick="navigate('verification-queue')" style="white-space: nowrap; background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.25);">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
-                  <span>Open Verification Queue (3)</span>
+                  <span id="fac-header-queue">Open Verification Queue (3)</span>
                 </button>
               </div>
             </div>
@@ -565,11 +564,11 @@
           <div class="stats-grid">
             <div class="card clickable" onclick="navigate('verification-queue')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg></span>
-              <div><span>PENDING VERIFICATIONS</span><strong>3</strong><small>Student evidence submissions &rarr;</small></div>
+              <div><span>PENDING VERIFICATIONS</span><strong data-stat="pending-verifications">3</strong><small>Student evidence submissions &rarr;</small></div>
             </div>
             <div class="card clickable" onclick="navigate('reference-requests')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
-              <div><span>REFERENCE REQUESTS</span><strong>2</strong><small>Auto-compiled letter drafts &rarr;</small></div>
+              <div><span>REFERENCE REQUESTS</span><strong data-stat="reference-requests">2</strong><small>Auto-compiled letter drafts &rarr;</small></div>
             </div>
             <div class="card clickable" onclick="navigate('faculty-modules')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg></span>
@@ -581,13 +580,7 @@
             </div>
           </div>
 
-          <!-- Quick Access Navigation Hub -->
-          <div class="quick-grid">
-            <button onclick="navigate('verification-queue')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg><span><strong>Verification Queue</strong><small>3 student credentials awaiting sign-off</small></span>&rarr;</button>
-            <button onclick="navigate('reference-requests')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span><strong>Reference Requests</strong><small>2 letters auto-compiled and ready</small></span>&rarr;</button>
-            <button onclick="navigate('faculty-modules')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg><span><strong>My Taught Modules</strong><small>WTS201 &amp; CIS305 class rosters</small></span>&rarr;</button>
-            <button onclick="navigate('supervised-students')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg><span><strong>Supervised Students</strong><small>Attachment attendance and reviews</small></span>&rarr;</button>
-          </div>
+          <div class="staff-panels" id="fac-dash-panels"></div>
 
           <!-- Privacy & Need-To-Know Notice (Section 4.6) -->
           <div style="margin-top: 10px; padding: 14px 18px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 10px;">
@@ -614,58 +607,8 @@
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <!-- Review Row 1 -->
-            <div class="review-row card" style="border-left: 4px solid #d97706; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-amber review-status">Pending Faculty Verification</span>
-                  <small style="color: #64748b;">Submitted 2 days ago</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Wayne Matongera (Student ID: 250444 &bull; Level 2.1)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">GDSC Solution Challenge 2025 · 1st Runner Up (Mutare Regional Innovation Showcase)</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Attached Proof: Official Certificate of Award (PDF) &amp; GitHub Source Repository</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="verifyAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Verify &amp; Sign</button>
-                <button type="button" class="btn btn-secondary" onclick="rejectAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Reject with Feedback</button>
-              </div>
-            </div>
-
-            <!-- Review Row 2 -->
-            <div class="review-row card" style="border-left: 4px solid #d97706; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-amber review-status">Pending Faculty Verification</span>
-                  <small style="color: #64748b;">Submitted yesterday</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Natasha Chitembwe (Student ID: 250189 &bull; Level 2.1)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Cisco CCNA: Introduction to Networks (Credential ID: CSCO-912048)</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Attached Proof: Cisco NetAcad Digital Verification Link</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="verifyAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Verify &amp; Sign</button>
-                <button type="button" class="btn btn-secondary" onclick="rejectAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Reject with Feedback</button>
-              </div>
-            </div>
-
-            <!-- Review Row 3 -->
-            <div class="review-row card" style="border-left: 4px solid #d97706; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-amber review-status">Pending Faculty Verification</span>
-                  <small style="color: #64748b;">Submitted 3 days ago</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Kudzai Ndlovu (Student ID: 250312 &bull; Level 2.1)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">1st Place Africa University ICT Innovation Hackathon 2025</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Attached Proof: Dean of FEAS Award Certificate &amp; Prototype Demo</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="verifyAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Verify &amp; Sign</button>
-                <button type="button" class="btn btn-secondary" onclick="rejectAchievement(this)" style="font-size: 12px; padding: 7px 16px;">Reject with Feedback</button>
-              </div>
-            </div>
-          </div>
+          <div class="staff-toolbar" data-list="verifications"></div>
+          <div class="staff-list" id="list-verifications"></div>
         </div>
 
         <!-- ===============================================================
@@ -683,45 +626,13 @@
                 <h2 style="margin-top: 6px;">Recommendation Letter Requests from Supervised Students</h2>
                 <p>The system auto-compiles verified CGPA, course marks, and awards into an official editable draft on Africa University letterhead.</p>
               </div>
-              <button class="btn btn-primary" onclick="openLetterModal()">+ New Custom Recommendation Draft</button>
+              <button class="btn btn-primary" type="button" onclick="staffNewLetter()">+ New Custom Recommendation Draft</button>
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <!-- Letter Request 1 -->
-            <div class="review-row card" style="border-left: 4px solid var(--red); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-red review-status">Draft Ready for Review</span>
-                  <small style="color: #64748b;">Opportunity: Google Student Developer Fellowship 2026</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Recommendation Letter for Wayne Matongera (Student ID: 250444)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Auto-Synthesized Evidence: Dean's List (CGPA 3.78 / 4.0), Top 12%, WTS201 Grade A (84%), GDSC 1st Runner Up.</p>
-                <small style="color: #16a34a; font-weight: 600; display: block; margin-top: 4px;">System Turnaround: Generated in 0.4s &bull; Ready for Dr. Chimedza to edit, sign and seal.</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="openLetterModal()" style="font-size: 12px; padding: 7px 16px;">Review &amp; Edit Letter Draft</button>
-                <button type="button" class="btn btn-secondary" onclick="showToast('Request archived with note.')" style="font-size: 12px; padding: 7px 16px;">Decline</button>
-              </div>
-            </div>
-
-            <!-- Letter Request 2 -->
-            <div class="review-row card" style="border-left: 4px solid var(--red); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-red review-status">Draft Ready for Review</span>
-                  <small style="color: #64748b;">Opportunity: Old Mutual Zimbabwe Industrial Attachment</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Recommendation Letter for Jordy T. (Student ID: 240512)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Auto-Synthesized Evidence: CGPA 3.65 / 4.0, Mobile Applications Project Lead, Good Academic Standing.</p>
-                <small style="color: #16a34a; font-weight: 600; display: block; margin-top: 4px;">System Turnaround: Ready for review and signature.</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="openLetterModal()" style="font-size: 12px; padding: 7px 16px;">Review &amp; Edit Letter Draft</button>
-                <button type="button" class="btn btn-secondary" onclick="showToast('Request archived with note.')" style="font-size: 12px; padding: 7px 16px;">Decline</button>
-              </div>
-            </div>
-          </div>
+          <div class="staff-toolbar" data-list="references"></div>
+          <div class="staff-list" id="list-references"></div>
+          <section class="card" id="portal-requests-card"><div class="section-head"><div><h2>Requests submitted by students through the portal</h2><p>Live requests from the Recommendations workflow</p></div><button class="btn btn-secondary" type="button" onclick="openRecommendationsPage()">Open Recommendations &rarr;</button></div><div class="staff-list" id="list-portal-requests" style="margin-top:14px"></div></section>
         </div>
 
         <!-- ===============================================================
@@ -732,32 +643,13 @@
             <button class="back-link" onclick="navigate('faculty-dashboard')">&larr; Back to Faculty Dashboard</button>
             <div class="section-head">
               <div>
-                <h2>My Taught Modules &bull; Semester 1 (2025/2026)</h2>
+                <h2>My Taught Modules &bull; Semester 1 (2026/2027)</h2>
                 <p>Enrolled student rosters, lecture schedules, and examination moderation</p>
               </div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="list">
-              <div class="list-row" style="cursor: default; padding: 18px 20px;">
-                <span class="course-mark">WT</span>
-                <span style="flex: 1;">
-                  <strong style="font-size: 15px;">WTS201 &bull; Web Technologies</strong>
-                  <small style="display: block; color: #64748b; margin-top: 4px;">64 Students Enrolled &bull; 3 Credits &bull; Lecture: Mon 10:00–12:00 (ICT Lab 3) &bull; Final Exam: 10 Nov (Great Hall)</small>
-                </span>
-                <button class="btn btn-secondary" onclick="showToast('Exported WTS201 attendance and grade roster.')">Export Class List</button>
-              </div>
-              <div class="list-row" style="cursor: default; padding: 18px 20px;">
-                <span class="course-mark">CI</span>
-                <span style="flex: 1;">
-                  <strong style="font-size: 15px;">CIS305 &bull; Database Systems</strong>
-                  <small style="display: block; color: #64748b; margin-top: 4px;">84 Students Enrolled &bull; 3 Credits &bull; Lecture: Wed 14:00–16:00 (ICT Lab 2) &bull; Final Exam: 18 Nov (NB 14)</small>
-                </span>
-                <button class="btn btn-secondary" onclick="showToast('Exported CIS305 attendance and grade roster.')">Export Class List</button>
-              </div>
-            </div>
-          </div>
+          <div class="staff-list" id="list-modules"></div>
         </div>
 
         <!-- ===============================================================
@@ -778,33 +670,7 @@
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <div class="card" style="padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-green">Supervisor Assessment: Outstanding</span>
-                  <small style="color: #64748b;">Host: Econet Wireless Zimbabwe</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Wayne Matongera (Student ID: 250444 &bull; Level 2.1)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Role: Software Engineering Intern &bull; Workplace Supervisor: Eng. P. Ndlovu</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Attendance: 98% (42/43 working days on-time) &bull; Weekly Reports: 8/8 Approved</small>
-              </div>
-              <button class="btn btn-secondary" onclick="showToast('Viewing full workplace logbook for Wayne Matongera.')">Workplace Logbook</button>
-            </div>
-
-            <div class="card" style="padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-green">Supervisor Assessment: Good Standing</span>
-                  <small style="color: #64748b;">Host: NetOne Cellular Zimbabwe</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Natasha Chitembwe (Student ID: 250189 &bull; Level 2.1)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Role: Network Operations Intern &bull; Workplace Supervisor: Mrs. S. Moyo</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Attendance: 95% &bull; Weekly Reports: 7/8 Approved</small>
-              </div>
-              <button class="btn btn-secondary" onclick="showToast('Viewing full workplace logbook for Natasha Chitembwe.')">Workplace Logbook</button>
-            </div>
-          </div>
+          <div class="staff-list" id="list-interns"></div>
         </div>
 
         <!-- ===============================================================
@@ -832,9 +698,9 @@
               <div class="faculty-actions-col">
                 <button class="btn btn-primary" onclick="navigate('admin-transcripts')" style="white-space: nowrap;">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg>
-                  <span>Transcript Queue (4)</span>
+                  <span id="admin-header-queue">Transcript Queue (4)</span>
                 </button>
-                <button class="btn btn-secondary" onclick="navigate('admin-verifiers')" style="white-space: nowrap; background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.25);">
+                <button class="btn btn-secondary" onclick="navigate('admin-verifiers'); setTimeout(()=>document.getElementById('audit-trail')?.scrollIntoView({behavior:'smooth'}),50)" style="white-space: nowrap; background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.25);">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                   <span>Audit Trail</span>
                 </button>
@@ -851,7 +717,7 @@
           <div class="stats-grid">
             <div class="card clickable" onclick="navigate('admin-transcripts')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span>
-              <div><span>TRANSCRIPT REQUESTS</span><strong>4</strong><small>Pending official digital seal &rarr;</small></div>
+              <div><span>TRANSCRIPT REQUESTS</span><strong data-stat="transcript-requests">4</strong><small>Pending official digital seal &rarr;</small></div>
             </div>
             <div class="card clickable" onclick="navigate('admin-id-validation')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8h5M19.5 5.5v5"/></svg></span>
@@ -859,7 +725,7 @@
             </div>
             <div class="card clickable" onclick="navigate('admin-verifiers')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-              <div><span>ACTIVE VERIFIERS</span><strong>5</strong><small>Computing, Math, Business, Sports, Chaplaincy &rarr;</small></div>
+              <div><span>ACTIVE VERIFIERS</span><strong data-stat="active-verifiers">5</strong><small>Computing, Math, Business, Sports, Chaplaincy &rarr;</small></div>
             </div>
             <div class="card clickable" onclick="navigate('admin-id-validation')">
               <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
@@ -873,6 +739,8 @@
             <button onclick="navigate('admin-id-validation')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span><strong>Student ID Validation</strong><small>1,240 verified student accounts</small></span>&rarr;</button>
             <button onclick="navigate('admin-verifiers')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span><strong>Verifier Governance</strong><small>RBAC privilege matrix and audit</small></span>&rarr;</button>
           </div>
+
+          <div class="staff-panels" id="admin-dash-panels"></div>
         </div>
 
         <!-- ===============================================================
@@ -893,41 +761,8 @@
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <!-- Transcript Item 1 -->
-            <div class="review-row card" style="border-left: 4px solid #dc2626; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-red review-status">Pending Registry Seal</span>
-                  <small style="color: #64748b;">Requested by Student 250444</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Official Academic Transcript &bull; Wayne Matongera (Student ID: 250444)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Recipient: Australian University Admissions / Postgraduate Credit Transfer</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Academic Audit: 16 Completed Modules &bull; 3.78 CGPA &bull; Fees Status: Cleared &bull; Disciplinary Record: Clean</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="sealTranscript(this)" style="font-size: 12px; padding: 7px 16px;">Approve &amp; Digitally Seal</button>
-                <button type="button" class="btn btn-secondary" onclick="showToast('Transcript held pending departmental clearance.')" style="font-size: 12px; padding: 7px 16px;">Hold</button>
-              </div>
-            </div>
-
-            <!-- Transcript Item 2 -->
-            <div class="review-row card" style="border-left: 4px solid #dc2626; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="badge badge-red review-status">Pending Registry Seal</span>
-                  <small style="color: #64748b;">Requested by Student 240112</small>
-                </div>
-                <h3 style="font-size: 16px; margin: 8px 0 3px;">Official Academic Transcript &bull; Tendai Moyo (Student ID: 240112)</h3>
-                <p style="font-size: 13px; color: #475569; margin: 0;">Recipient: Chevening Scholarship Secretariat &bull; Foreign &amp; Commonwealth Office</p>
-                <small style="color: #64748b; display: block; margin-top: 4px;">Academic Audit: 32 Completed Modules &bull; 3.89 CGPA &bull; Fees Status: Cleared</small>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary" onclick="sealTranscript(this)" style="font-size: 12px; padding: 7px 16px;">Approve &amp; Digitally Seal</button>
-                <button type="button" class="btn btn-secondary" onclick="showToast('Transcript held.')" style="font-size: 12px; padding: 7px 16px;">Hold</button>
-              </div>
-            </div>
-          </div>
+          <div class="staff-toolbar" data-list="transcripts"></div>
+          <div class="staff-list" id="list-transcripts"></div>
         </div>
 
         <!-- ===============================================================
@@ -1005,51 +840,19 @@
             </div>
           </div>
 
-          <div class="card">
-            <div class="list">
-              <div class="list-row" style="cursor: default; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div>
-                  <strong>Faculty of Engineering &amp; Applied Sciences</strong>
-                  <small style="color: #64748b; display: block; margin-top: 2px;">Designated Verifier: Dr. C. T. Chimedza &bull; Scope: Academic Awards, Computing Hackathons, Course Honors</small>
-                </div>
-                <span class="badge badge-green">Active &bull; Authorized</span>
-              </div>
-              <div class="list-row" style="cursor: default; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div>
-                  <strong>Directorate of Sports &amp; Recreation</strong>
-                  <small style="color: #64748b; display: block; margin-top: 2px;">Designated Verifier: Coach T. Sibanda &bull; Scope: Inter-University Athletics, Regional Tournaments</small>
-                </div>
-                <span class="badge badge-green">Active &bull; Authorized</span>
-              </div>
-              <div class="list-row" style="cursor: default; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div>
-                  <strong>Chaplaincy &amp; Community Outreach</strong>
-                  <small style="color: #64748b; display: block; margin-top: 2px;">Designated Verifier: Rev. M. Dube &bull; Scope: Volunteer Initiatives, Leadership Service, Faith-based Projects</small>
-                </div>
-                <span class="badge badge-green">Active &bull; Authorized</span>
-              </div>
-            </div>
-          </div>
+          <section class="card">
+            <div class="section-head"><div><h2>Designated verifiers</h2><p>Who may verify which kinds of student claims, and until when</p></div><button class="btn btn-primary" type="button" onclick="staffOpenAddVerifier()">+ Add verifier</button></div>
+            <div class="staff-list" id="list-verifiers" style="margin-top:14px"></div>
+          </section>
 
-          <div class="card" style="margin-top: 18px; border-left: 4px solid #0284c7;">
+          <section class="card" style="border-left: 4px solid #0284c7;" id="audit-trail">
             <div class="section-head">
-              <div>
-                <h2>Tamper-Proof Audit Trail (Firestore Cloud Log)</h2>
-                <p>Cryptographic hash verification logs recording all verification and transcript sealing actions.</p>
-              </div>
-              <span class="badge badge-green">100% SHA-256 Verified</span>
+              <div><h2>Tamper-Proof Audit Trail</h2><p>Every verification, letter, transcript and verifier change, newest first</p></div>
+              <button class="text-link" type="button" onclick="staffResetDemo()">Reset demo data</button>
             </div>
-            <div class="list" style="margin-top: 12px; font-family: monospace; font-size: 11px;">
-              <div class="list-row" style="cursor: default; padding: 10px 14px;">
-                <span style="color: #0284c7;">[AUDIT 2026-11-05 18:42]</span>
-                <span style="flex: 1;">ACTION: VERIFY_ACHIEVEMENT | ACTOR: Dr. Chimedza (Staff 250731) | TARGET: Wayne Matongera (250444) | HASH: a7f89b...e21</span>
-              </div>
-              <div class="list-row" style="cursor: default; padding: 10px 14px;">
-                <span style="color: #0284c7;">[AUDIT 2026-11-05 17:15]</span>
-                <span style="flex: 1;">ACTION: TRANSCRIPT_SEAL | ACTOR: Registry Admin (Auth 240618) | TARGET: Tendai Moyo (240112) | HASH: 4e91c0...93d</span>
-              </div>
-            </div>
-          </div>
+            <div class="staff-toolbar" data-list="audit"></div>
+            <div class="audit-list" id="list-audit"></div>
+          </section>
         </div>
 
         <!-- VIEW: PERSONAL & ACADEMIC -->
@@ -1411,7 +1214,7 @@
             <div>
               <span class="eyebrow">DEGREE PROGRESSION</span>
               <h2>On track for graduation in 2028.</h2>
-              <p>You have earned 52 of 124 credits and completed 16 of 38 required modules. Maintain your Dean's List performance through Level 3.1 &amp; Level 3.2.</p>
+              <p>You have earned 52 of 124 credits and completed 16 of 38 required modules. You have made the Dean's List every semester so far.</p>
               <div class="big-bar ap-hero-bar" aria-label="Credits: 52 earned, 13 in progress, of 124 required">
                 <span class="ap-earned" style="width: 41.9%;"></span><span class="ap-inprog" style="width: 10.5%;"></span>
               </div>
@@ -1446,7 +1249,7 @@
             <!-- Graduation requirements -->
             <section class="card ap-reqs" aria-labelledby="ap-reqs-title">
               <div class="section-head">
-                <div><h2 id="ap-reqs-title">Graduation requirements</h2><p>BSc Computer Science &middot; 2025 curriculum</p></div>
+                <div><h2 id="ap-reqs-title">Graduation requirements</h2><p>BSc Computer Information Systems &middot; 2025 curriculum</p></div>
               </div>
               <div class="ap-req-list" id="ap-requirements"></div>
             </section>
