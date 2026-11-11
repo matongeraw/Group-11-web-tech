@@ -1411,12 +1411,88 @@
             <div>
               <span class="eyebrow">DEGREE PROGRESSION</span>
               <h2>On track for graduation in 2028.</h2>
-              <p>You have completed 16 out of 38 required modules. Maintain your Dean's List performance through Level 3.1 &amp; Level 3.2.</p>
-              <div class="big-bar"><span style="width: 42%;"></span></div>
-              <div class="bar-labels"><span>16 courses completed</span><span>42% completed</span><span>Expected Nov 2028</span></div>
+              <p>You have earned 52 of 124 credits and completed 16 of 38 required modules. Maintain your Dean's List performance through Level 3.1 &amp; Level 3.2.</p>
+              <div class="big-bar ap-hero-bar" aria-label="Credits: 52 earned, 13 in progress, of 124 required">
+                <span class="ap-earned" style="width: 41.9%;"></span><span class="ap-inprog" style="width: 10.5%;"></span>
+              </div>
+              <div class="bar-labels"><span>52 credits earned</span><span>+13 in progress</span><span>Expected Nov 2028</span></div>
             </div>
             <div class="progress-number"><strong>42%</strong><span>DEGREE</span></div>
           </section>
+
+          <!-- Key academic metrics (rendered by script.js) -->
+          <div class="ap-metrics" id="ap-metrics"></div>
+
+          <div class="ap-grid">
+            <!-- GPA trend -->
+            <section class="card ap-trend" aria-labelledby="ap-trend-title">
+              <div class="section-head">
+                <div><h2 id="ap-trend-title">GPA trend over semesters</h2><p>Semester GPA and cumulative GPA (CGPA) on a 4.0 scale</p></div>
+                <div class="ap-legend" aria-hidden="true">
+                  <span><i class="ap-key-bar"></i>Semester GPA</span>
+                  <span><i class="ap-key-line"></i>CGPA</span>
+                  <span><i class="ap-key-dean"></i>Dean's List (3.50)</span>
+                </div>
+              </div>
+              <div class="ap-chart-wrap" id="ap-trend-chart"></div>
+              <div class="ap-tooltip" id="ap-tooltip" role="status" hidden></div>
+              <div class="ap-trend-notes" id="ap-trend-notes"></div>
+              <details class="ap-table-toggle">
+                <summary>View as table</summary>
+                <div id="ap-trend-table"></div>
+              </details>
+            </section>
+
+            <!-- Graduation requirements -->
+            <section class="card ap-reqs" aria-labelledby="ap-reqs-title">
+              <div class="section-head">
+                <div><h2 id="ap-reqs-title">Graduation requirements</h2><p>BSc Computer Science &middot; 2025 curriculum</p></div>
+              </div>
+              <div class="ap-req-list" id="ap-requirements"></div>
+            </section>
+          </div>
+
+          <!-- Credit accumulation -->
+          <section class="card" aria-labelledby="ap-credits-title">
+            <div class="section-head">
+              <div><h2 id="ap-credits-title">Credit accumulation</h2><p>Credits earned each semester and running total toward 124</p></div>
+              <span class="badge badge-green">Minimum load met every semester</span>
+            </div>
+            <div class="ap-credit-split" id="ap-credit-split"></div>
+            <div class="ap-credit-steps" id="ap-credit-steps"></div>
+          </section>
+
+          <!-- Current semester -->
+          <section class="card" aria-labelledby="ap-current-title">
+            <div class="section-head">
+              <div><h2 id="ap-current-title">Current semester modules</h2><p>Semester 1 &middot; 2026/2027 &middot; provisional, based on coursework to date</p></div>
+              <button class="text-link" onclick="navigate('examination')">Exam timetable &rarr;</button>
+            </div>
+            <div class="ap-current" id="ap-current"></div>
+          </section>
+
+          <!-- Module breakdown -->
+          <section class="card" aria-labelledby="ap-modules-title">
+            <div class="section-head">
+              <div><h2 id="ap-modules-title">Module breakdown</h2><p>Completed modules by semester, with marks, grades and grade points</p></div>
+              <div class="segmented" role="group" aria-label="Filter modules by requirement type" id="ap-module-filter">
+                <button type="button" class="active" data-filter="all">All</button>
+                <button type="button" data-filter="core">Core</button>
+                <button type="button" data-filter="elective">Elective</button>
+                <button type="button" data-filter="university">University-wide</button>
+              </div>
+            </div>
+            <div class="ap-semesters" id="ap-semesters"></div>
+          </section>
+
+          <div class="card support-card">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <div>
+              <strong>Assigned academic advisor</strong>
+              <p>Dr. Elena Mensah &mdash; Department of Computing &amp; Technology &middot; Office hours Tue &amp; Thu 14:00&ndash;16:00, ICT Hub Room 12</p>
+              <p>Grades shown are prototype sample data. Official results are issued by the Academic Registry.</p>
+            </div>
+          </div>
         </div>
 
         <!-- VIEW: SKILLS & ACTIVITIES -->

@@ -1243,7 +1243,6 @@ function handleAchievementSubmit(e) {
 // refresh the lists whenever someone logs in or clicks around
 document.addEventListener('click', () => setTimeout(renderRequests, 60));
 
- feat/task4-skills-activities
 /* ===== Skills and extracurricular activities demo ===== */
 document.addEventListener('DOMContentLoaded', () => {
   const activityList = document.getElementById('activity-list');
@@ -1674,4 +1673,208 @@ if (cvModal) {
     if (e.target === cvModal) closeCvPreviewModal();
   });
 }
-development
+
+/* =====================================================================
+   ACADEMIC PROGRESS — GPA trends, credit accumulation, module breakdown
+   and graduation requirements (prototype sample data).
+   ===================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const root = document.getElementById('view-academic-progress');
+  if (!root || !document.getElementById('ap-metrics')) return;
+
+  const GRADE_POINTS = { 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'F': 0 };
+  const TOTAL_CREDITS = 124;
+  const TYPE_LABEL = { core: 'Core', elective: 'Elective', university: 'University-wide' };
+
+  const semesters = [
+    { code: '2025-1', level: 'Level 1.1', modules: [
+      { code: 'CIS101', name: 'Programming Fundamentals', credits: 4, mark: 76, grade: 'A-', type: 'core' },
+      { code: 'CIS103', name: 'Introduction to Information Systems', credits: 3, mark: 62, grade: 'B-', type: 'core' },
+      { code: 'MTH101', name: 'Discrete Mathematics', credits: 3, mark: 57, grade: 'C+', type: 'core' },
+      { code: 'UNI101', name: 'Communication Skills', credits: 4, mark: 53, grade: 'C', type: 'university' }
+    ]},
+    { code: '2025-2', level: 'Level 1.2', modules: [
+      { code: 'CIS104', name: 'Object-Oriented Programming', credits: 3, mark: 82, grade: 'A', type: 'core' },
+      { code: 'CIS106', name: 'Computer Architecture', credits: 3, mark: 67, grade: 'B', type: 'core' },
+      { code: 'MTH102', name: 'Linear Algebra', credits: 3, mark: 56, grade: 'C+', type: 'core' },
+      { code: 'UNI102', name: 'Introduction to African Studies', credits: 3, mark: 58, grade: 'C+', type: 'university' }
+    ]},
+    { code: '2026-1', level: 'Level 2.1', modules: [
+      { code: 'CIS201', name: 'Data Structures & Algorithms', credits: 3, mark: 85, grade: 'A', type: 'core' },
+      { code: 'CIS203', name: 'Database Systems', credits: 4, mark: 72, grade: 'B+', type: 'core' },
+      { code: 'CIS205', name: 'Systems Analysis & Design', credits: 3, mark: 66, grade: 'B', type: 'core' },
+      { code: 'MTH201', name: 'Probability Theory', credits: 4, mark: 55, grade: 'C+', type: 'elective' }
+    ]},
+    { code: '2026-2', level: 'Level 2.2', modules: [
+      { code: 'CIS206', name: 'Software Engineering', credits: 3, mark: 88, grade: 'A', type: 'core' },
+      { code: 'CIS208', name: 'Computer Networks', credits: 3, mark: 81, grade: 'A', type: 'elective' },
+      { code: 'CIS210', name: 'Human-Computer Interaction', credits: 3, mark: 73, grade: 'B+', type: 'elective' },
+      { code: 'UNI201', name: 'Leadership & Ethics', credits: 3, mark: 63, grade: 'B-', type: 'university' }
+    ]}
+  ];
+
+  const current = { code: '2027-1', level: 'Level 3.1', modules: [
+    { code: 'WTS201', name: 'Web Technologies', credits: 3, mark: 84, grade: 'A', type: 'core', done: 70,
+      assess: [['Assignment 1', true], ['Lab portfolio', true], ['Project', true], ['Final exam · 10 Nov', false]] },
+    { code: 'STA201', name: 'Applied Statistics', credits: 3, mark: 81, grade: 'A', type: 'core', done: 60,
+      assess: [['Test 1', true], ['Test 2', true], ['Assignment', true], ['Final exam · 12 Nov', false]] },
+    { code: 'CIS202', name: 'Mobile Applications', credits: 3, mark: 80, grade: 'A', type: 'core', done: 55,
+      assess: [['Prototype', true], ['App demo', true], ['Practical exam · 15 Nov', false]] },
+    { code: 'CIS204', name: 'Operating Systems', credits: 4, mark: 72, grade: 'B+', type: 'core', done: 65,
+      assess: [['Quiz series', true], ['Lab reports', true], ['Mid-semester test', true], ['Final exam', false]] }
+  ]};
+
+  /* ---------- derived figures ---------- */
+  const qp = mods => mods.reduce((s, m) => s + GRADE_POINTS[m.grade] * m.credits, 0);
+  const cr = mods => mods.reduce((s, m) => s + m.credits, 0);
+  const fmt = n => n.toFixed(2);
+  let runQP = 0, runCR = 0;
+  const series = [...semesters, { ...current, provisional: true }].map(s => {
+    runQP += qp(s.modules); runCR += cr(s.modules);
+    const gpa = qp(s.modules) / cr(s.modules);
+    return { code: s.code, level: s.level, gpa, cgpa: runQP / runCR, credits: cr(s.modules), totalCredits: runCR,
+             provisional: !!s.provisional, standing: gpa >= 3.5 ? "Dean's List" : gpa >= 2.0 ? 'Good standing' : 'Probation' };
+  });
+  const done = series.filter(s => !s.provisional);
+  const latest = done[done.length - 1];
+  const prov = series[series.length - 1];
+  const earned = latest.totalCredits;
+  const inProg = cr(current.modules);
+  const completedMods = semesters.flatMap(s => s.modules);
+  const countType = (t, list) => list.filter(m => m.type === t).length;
+  const creditType = t => completedMods.filter(m => m.type === t).reduce((s, m) => s + m.credits, 0);
+
+  /* ---------- metric tiles ---------- */
+  const firstGPA = done[0].gpa;
+  document.getElementById('ap-metrics').innerHTML = [
+    ['Cumulative GPA', fmt(latest.cgpa), `<span class="ap-delta">&#9650; ${fmt(latest.cgpa - done[0].cgpa)}</span> since ${done[0].code}`],
+    ['Current semester GPA', fmt(prov.gpa), 'Provisional &middot; Dean\'s List pace'],
+    ['Credits earned', `${earned}<small> / ${TOTAL_CREDITS}</small>`, `${inProg} in progress &middot; ${TOTAL_CREDITS - earned - inProg} remaining`],
+    ['Modules', `${completedMods.length}<small> / 38</small>`, `${current.modules.length} in progress &middot; ${38 - completedMods.length - current.modules.length} remaining`]
+  ].map(([l, v, s]) => `<div class="card"><span>${l}</span><strong>${v}</strong><small>${s}</small></div>`).join('');
+
+  /* ---------- GPA trend chart (SVG) ---------- */
+  const W = 600, H = 260, L = 38, R = 14, T = 16, B = 40;
+  const pw = W - L - R, ph = H - T - B;
+  const step = pw / series.length, bw = Math.min(46, step * 0.5);
+  const y = v => T + ph - (v / 4) * ph;
+  const cx = i => L + step * i + step / 2;
+  let svg = `<svg class="ap-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Semester GPA rose from ${fmt(firstGPA)} in ${series[0].code} to ${fmt(latest.gpa)} in ${latest.code}; CGPA is ${fmt(latest.cgpa)}.">
+    <defs><pattern id="ap-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#3f7fbf22"/><line x1="0" y1="0" x2="0" y2="6" stroke="#3f7fbf" stroke-width="2"/></pattern></defs>`;
+  [0, 1, 2, 3, 4].forEach(v => { svg += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${v.toFixed(1)}</text>`; });
+  svg += `<line class="dean" x1="${L}" x2="${W - R}" y1="${y(3.5)}" y2="${y(3.5)}"/>`;
+  series.forEach((s, i) => {
+    const top = y(s.gpa), h = T + ph - top, x = cx(i) - bw / 2, r = 4;
+    // bar with 4px rounded top, square baseline
+    const path = `M${x},${T + ph} V${top + r} Q${x},${top} ${x + r},${top} H${x + bw - r} Q${x + bw},${top} ${x + bw},${top + r} V${T + ph} Z`;
+    svg += `<g class="col" data-i="${i}" tabindex="0" aria-label="${s.code}: semester GPA ${fmt(s.gpa)}, CGPA ${fmt(s.cgpa)}${s.provisional ? ' (provisional)' : ''}">
+      <rect class="hit" x="${L + step * i}" y="${T}" width="${step}" height="${ph}"/>
+      <path class="bar${s.provisional ? ' prov' : ''}" d="${path}"/>
+      <text class="val" x="${cx(i)}" y="${top - 7}" text-anchor="middle">${fmt(s.gpa)}</text>
+      <text class="axis" x="${cx(i)}" y="${H - 22}" text-anchor="middle">${s.code}</text>
+      <text class="axis" x="${cx(i)}" y="${H - 9}" text-anchor="middle" style="font-weight:500">${s.provisional ? 'In progress' : s.level}</text></g>`;
+  });
+  const pts = series.map((s, i) => `${cx(i)},${y(s.cgpa)}`);
+  svg += `<polyline class="cg-line" points="${pts.slice(0, -1).join(' ')}"/><polyline class="cg-line prov" points="${pts.slice(-2).join(' ')}"/>`;
+  series.forEach((s, i) => { svg += `<circle class="cg-dot" cx="${cx(i)}" cy="${y(s.cgpa)}" r="4.5" pointer-events="none"/>`; });
+  svg += `<text class="axis" x="${L + 6}" y="${y(3.5) - 6}" text-anchor="start" style="fill:#16794c">Dean's List 3.50</text></svg>`;
+  const chartEl = document.getElementById('ap-trend-chart');
+  chartEl.innerHTML = svg;
+
+  const tip = document.getElementById('ap-tooltip');
+  const card = root.querySelector('.ap-trend');
+  const showTip = g => {
+    const s = series[+g.dataset.i];
+    chartEl.querySelectorAll('.col').forEach(c => c.classList.toggle('on', c === g));
+    tip.innerHTML = `<b>${s.code} &middot; ${s.level}${s.provisional ? ' (provisional)' : ''}</b>Semester GPA <strong>${fmt(s.gpa)}</strong><br>CGPA <strong>${fmt(s.cgpa)}</strong><br><span>${s.credits} credits &middot; ${s.standing}</span>`;
+    tip.hidden = false;
+    const gr = g.querySelector('.bar').getBoundingClientRect(), cr2 = card.getBoundingClientRect();
+    let left = gr.left - cr2.left + gr.width / 2 - tip.offsetWidth / 2;
+    left = Math.max(8, Math.min(left, cr2.width - tip.offsetWidth - 8));
+    tip.style.left = left + 'px';
+    tip.style.top = Math.max(8, gr.top - cr2.top - tip.offsetHeight - 10) + 'px';
+  };
+  const hideTip = () => { tip.hidden = true; chartEl.querySelectorAll('.col').forEach(c => c.classList.remove('on')); };
+  chartEl.querySelectorAll('.col').forEach(g => {
+    g.addEventListener('mouseenter', () => showTip(g));
+    g.addEventListener('focus', () => showTip(g));
+    g.addEventListener('mouseleave', hideTip);
+    g.addEventListener('blur', hideTip);
+  });
+
+  const best = done.reduce((a, b) => (b.gpa > a.gpa ? b : a));
+  document.getElementById('ap-trend-notes').innerHTML = `
+    <div><small>Best completed semester</small><strong>${best.code} &middot; ${fmt(best.gpa)}</strong></div>
+    <div><small>Improvement</small><strong>+${fmt(latest.gpa - firstGPA)} GPA in ${done.length - 1} semesters</strong></div>
+    <div><small>Projected CGPA after this semester</small><strong>${fmt(prov.cgpa)}</strong></div>`;
+  document.getElementById('ap-trend-table').innerHTML = `<table class="ap-table"><thead><tr><th>Semester</th><th>Level</th><th class="num">Credits</th><th class="num">Semester GPA</th><th class="num">CGPA</th><th>Standing</th></tr></thead><tbody>${
+    series.map(s => `<tr><td>${s.code}${s.provisional ? ' *' : ''}</td><td>${s.level}</td><td class="num">${s.credits}</td><td class="num">${fmt(s.gpa)}</td><td class="num">${fmt(s.cgpa)}</td><td>${s.standing}</td></tr>`).join('')
+  }</tbody></table><p style="font-size:10px;color:var(--muted)">* Provisional, based on coursework to date.</p>`;
+
+  /* ---------- graduation requirements ---------- */
+  const bar = (d, p, total) => {
+    const dp = Math.min(100, d / total * 100), pp = Math.min(100 - dp, p / total * 100);
+    return `<div class="ap-bar"><span class="done${dp >= 100 ? ' full' : ''}" style="width:${dp}%"></span>${pp ? `<span class="prog" style="width:${pp}%"></span>` : ''}</div>`;
+  };
+  const curCore = countType('core', current.modules);
+  const reqs = [
+    { name: 'Total credits', d: earned, p: inProg, total: TOTAL_CREDITS, unit: 'credits', note: `${TOTAL_CREDITS - earned} credits still needed` },
+    { name: 'Core modules', d: countType('core', completedMods), p: curCore, total: 26, unit: 'modules', note: `${curCore} in progress this semester` },
+    { name: 'Electives', d: countType('elective', completedMods), p: 0, total: 8, unit: 'modules', note: 'Choose 5 more from the Level 3–4 elective list' },
+    { name: 'University-wide courses', d: countType('university', completedMods), p: 0, total: 4, unit: 'modules', note: 'UNI301 Entrepreneurship remaining' },
+    { name: 'Community service', d: 32, p: 0, total: 40, unit: 'hours', note: '8 hours left · log hours under Skills & Activities' }
+  ];
+  const checks = [
+    { name: 'Minimum CGPA 2.00', ok: latest.cgpa >= 2, text: `Met · current CGPA ${fmt(latest.cgpa)}` },
+    { name: 'Industrial attachment', ok: false, text: 'Scheduled for Level 3.2 · placement form opens Jan 2027' },
+    { name: 'Capstone project', ok: false, text: 'Level 4 · supervisor allocation in 2027/28' }
+  ];
+  document.getElementById('ap-requirements').innerHTML =
+    reqs.map(r => `<div class="ap-req"><div><strong>${r.name}</strong><b>${r.d}${r.p ? ` (+${r.p})` : ''} / ${r.total} ${r.unit}</b></div>${bar(r.d, r.p, r.total)}<small>${Math.round(r.d / r.total * 100)}% complete &middot; ${r.note}</small></div>`).join('') +
+    checks.map(c => `<div class="ap-req"><div><strong>${c.name}</strong><span class="badge ${c.ok ? 'badge-green' : 'badge-gray'}">${c.ok ? '&#10003; Met' : 'Not started'}</span></div><small>${c.text}</small></div>`).join('');
+
+  /* ---------- credit accumulation ---------- */
+  const seg = (cls, n) => `<span class="${cls}" style="width:${n / TOTAL_CREDITS * 100}%" title="${n} credits"></span>`;
+  const cc = creditType('core'), ce = creditType('elective'), cu = creditType('university');
+  document.getElementById('ap-credit-split').innerHTML =
+    `<div class="ap-bar" role="img" aria-label="Credits: core ${cc}, elective ${ce}, university-wide ${cu}, in progress ${inProg}, remaining ${TOTAL_CREDITS - earned - inProg}">${seg('seg-core', cc)}${seg('seg-elective', ce)}${seg('seg-university', cu)}${seg('seg-prog', inProg)}</div>
+     <div class="ap-split-legend"><span><i class="seg-core"></i>Core <b>${cc}</b></span><span><i class="seg-elective"></i>Elective <b>${ce}</b></span><span><i class="seg-university"></i>University-wide <b>${cu}</b></span><span><i class="seg-prog"></i>In progress <b>${inProg}</b></span><span><i style="background:#efeff1"></i>Remaining <b>${TOTAL_CREDITS - earned - inProg}</b></span></div>`;
+  document.getElementById('ap-credit-steps').innerHTML = series.map(s =>
+    `<div class="ap-step${s.provisional ? ' prov' : ''}"><small>${s.code} &middot; ${s.provisional ? 'In progress' : s.level}</small><strong>+${s.credits}</strong><span>${s.totalCredits} of ${TOTAL_CREDITS} total</span>${bar(s.provisional ? s.totalCredits - s.credits : s.totalCredits, s.provisional ? s.credits : 0, TOTAL_CREDITS)}</div>`).join('');
+
+  /* ---------- current semester ---------- */
+  document.getElementById('ap-current').innerHTML = current.modules.map(m => `
+    <div class="ap-mod">
+      <div class="ap-mod-top"><div><strong>${m.name}</strong><small>${m.code} &middot; ${m.credits} credits &middot; ${TYPE_LABEL[m.type]}</small></div>
+        <div class="ap-grade">${m.grade}<small>projected</small></div></div>
+      <div class="ap-mod-row"><span>Coursework mark <b>${m.mark}%</b></span><span>Assessed so far <b>${m.done}%</b></span></div>
+      ${bar(m.done, 0, 100)}
+      <div class="ap-assess">${m.assess.map(([a, ok]) => `<span class="${ok ? 'done' : ''}">${ok ? '&#10003; ' : ''}${a}</span>`).join('')}</div>
+    </div>`).join('');
+
+  /* ---------- module breakdown ---------- */
+  const semEl = document.getElementById('ap-semesters');
+  const renderSemesters = filter => {
+    semEl.innerHTML = semesters.map((s, i) => {
+      const st = series[i];
+      const rows = s.modules.filter(m => filter === 'all' || m.type === filter);
+      return `<details class="ap-sem"${i === semesters.length - 1 ? ' open' : ''}>
+        <summary><span><strong>${s.code} &middot; ${s.level}</strong><small>${s.modules.length} modules &middot; ${st.standing}</small></span>
+          <span class="ap-sum-stat hide-sm">Credits<b>${st.credits}</b></span>
+          <span class="ap-sum-stat">Semester GPA<b>${fmt(st.gpa)}</b></span>
+          <span class="ap-sum-stat hide-sm">CGPA<b>${fmt(st.cgpa)}</b></span>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></summary>
+        <table class="ap-table"><thead><tr><th>Module</th><th>Type</th><th class="num">Credits</th><th class="num">Mark</th><th class="num">Grade</th><th class="num">Grade points</th></tr></thead><tbody>${
+          rows.length ? rows.map(m => `<tr><td><strong>${m.name}</strong><br><small style="color:var(--muted)">${m.code}</small></td><td><span class="ap-type">${TYPE_LABEL[m.type]}</span></td><td class="num">${m.credits}</td><td class="num"><div class="ap-mark">${bar(m.mark, 0, 100)}<span>${m.mark}%</span></div></td><td class="num"><strong>${m.grade}</strong></td><td class="num">${(GRADE_POINTS[m.grade] * m.credits).toFixed(1)}</td></tr>`).join('')
+                      : `<tr class="ap-empty-row"><td colspan="6">No ${TYPE_LABEL[filter].toLowerCase()} modules this semester.</td></tr>`
+        }</tbody></table></details>`;
+    }).join('');
+  };
+  renderSemesters('all');
+  document.querySelectorAll('#ap-module-filter button').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('#ap-module-filter button').forEach(b => b.classList.toggle('active', b === btn));
+    const open = [...semEl.querySelectorAll('details')].map(d => d.open);
+    renderSemesters(btn.dataset.filter);
+    semEl.querySelectorAll('details').forEach((d, i) => { d.open = open[i]; });
+  }));
+});
