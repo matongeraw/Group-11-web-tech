@@ -1,6 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+ feat/react-firebase-foundation
     function signedIn() {
       return request.auth != null;
     }
@@ -159,12 +160,40 @@ service cloud.firestore {
           && activeUser(uid)
           && resource.data.status == 'pending';
       }
+
+    function signedIn() { return request.auth != null; }
+    function role() { return signedIn() ? request.auth.token.role : null; }
+    function isAdmin() { return role() == 'admin'; }
+    function isLecturer() { return role() == 'lecturer'; }
+    function isAssignedStudent(classId) {
+      return signedIn() && role() == 'student' &&
+        classId is string && classId != '' &&
+        exists(/databases/$(database)/documents/classes/$(classId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/classes/$(classId)).data.studentUids;
+    }
+    function isAssignedClassLecturer(classId) {
+      return signedIn() && isLecturer() &&
+        classId is string && classId != '' &&
+        exists(/databases/$(database)/documents/classes/$(classId)) &&
+        get(/databases/$(database)/documents/classes/$(classId)).data.lecturerUid == request.auth.uid;
+    }
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if signedIn() && request.auth.uid == uid && request.resource.data.role == 'student' && request.resource.data.status == 'active';
+      allow update: if signedIn() && request.auth.uid == uid && request.resource.data.role == resource.data.role && request.resource.data.status == resource.data.status;
+      allow delete: if isAdmin();
+ development
     }
 
     match /students/{uid} {
+ feat/react-firebase-foundation
       allow get: if canReadStudent(uid);
       allow list: if isAdmin();
       allow create, update, delete: if false;
+
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+development
     }
 
     match /lecturers/{uid} {
@@ -219,6 +248,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['title', 'message', 'audience', 'createdBy', 'createdAt']);
       allow update, delete: if isAdmin();
     }
+ feat/react-firebase-foundation
 
     match /documents/{id} {
       allow read: if isAdmin()
@@ -239,6 +269,41 @@ service cloud.firestore {
 
     match /{document=**} {
       allow read, write: if false;
+
+    match /events/{id} {
+      allow read: if signedIn() && (isAdmin() || resource.data.status == 'approved');
+      allow create, update, delete: if isAdmin();
+    }
+    match /courses/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /classes/{id} {
+      allow read: if signedIn() && (
+        isAdmin() ||
+        (isLecturer() && resource.data.lecturerUid == request.auth.uid) ||
+        (role() == 'student' && request.auth.uid in resource.data.studentUids)
+      );
+      allow write: if isAdmin();
+    }
+    match /timetables/{id} {
+      allow read: if signedIn() && (
+        isAdmin() ||
+        (isLecturer() && resource.data.lecturerUid == request.auth.uid) ||
+        isAssignedStudent(resource.data.classId)
+      );
+      allow write: if isAdmin();
+    }
+    match /documents/{id} {
+      allow read: if signedIn() && (
+        resource.data.ownerUid == request.auth.uid ||
+        isAdmin() ||
+        (isAssignedClassLecturer(resource.data.classId) &&
+          resource.data.ownerUid in get(/databases/$(database)/documents/classes/$(resource.data.classId)).data.studentUids)
+      );
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if signedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+ development
     }
   }
 }

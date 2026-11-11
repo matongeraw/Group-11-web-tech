@@ -70,7 +70,7 @@ npm run set-role -- lecturer.name@africau.edu lecturer
 
 The command updates Firebase custom claims and the Firestore user record. The account must sign out and sign in again to refresh its ID token. Keep the administrator service account private. Do not give admin rights to ordinary users.
 
-The supplied interface is currently the student-profile experience. Role-protected API endpoints for listing users, changing account status/roles and creating notifications are included. Separate lecturer/admin user-interface dashboards and page-by-page Firestore persistence are future integration work, not claimed as completed features.
+The role-aware interface includes administrator and lecturer dashboards. Admin event, roster, class, course and timetable updates are persisted through the role-protected API. Student academic/profile sections outside the event calendar remain partly prototype-only.
 
 ## 8. API overview
 
@@ -78,15 +78,37 @@ The supplied interface is currently the student-profile experience. Role-protect
 |---|---|---|
 | GET | `/api/health` | Public health status |
 | GET | `/api/me` | Authenticated active user |
+ feat/react-firebase-foundation
 | POST | `/api/profile/complete-registration` | Verified institutional-email token; new UID only; creates pending account |
 | GET | `/api/users` | Admin or lecturer assigned to the listed active students |
+
+| POST | `/api/profile/complete-registration` | Firebase-authenticated new user |
+| GET | `/api/users` | Admin |
+ development
 | PATCH | `/api/users/:uid/status` | Admin |
 | POST | `/api/admin/users/:uid/role` | Admin |
 | POST | `/api/admin/notifications` | Admin or lecturer |
+| GET | `/api/events` | Authenticated user; approved events only |
+| GET/POST | `/api/admin/events` | Admin |
+| PATCH/DELETE | `/api/admin/events/:id` | Admin |
+| PATCH | `/api/admin/events/:id/status` | Admin |
+| GET/POST/PATCH | `/api/admin/students` | Admin |
+| GET/PUT | `/api/admin/lecturers` | Admin |
+| GET/POST/PATCH/DELETE | `/api/admin/classes` | Admin |
+| GET/POST/PATCH/DELETE | `/api/admin/courses` | Admin |
+| GET/POST/PATCH/DELETE | `/api/admin/timetables` | Admin |
+| GET | `/api/lecturer/classes`, `/api/lecturer/students`, `/api/lecturer/timetable` | Assigned lecturer only |
+| GET | `/api/student/timetable` | Authenticated student; assigned classes only |
 
 Authenticated endpoints require `Authorization: Bearer <Firebase ID token>`.
 
+ feat/react-firebase-foundation
 ## 9. GitHub publishing
+
+New institutional events are created with `pending` status. An administrator must approve an event before it appears on the student calendar; editing an approved event returns it to pending review. Lecturer roster access is resolved from class assignments by the backend. Zimbabwe public holidays are loaded by year from Nager.Date.
+
+## 10. GitHub publishing
+ development
 
 ```powershell
 git init

@@ -214,11 +214,21 @@
         </button>
 
         <div class="course-nav-group">
-          <button class="nav-btn" data-route="courses">
+          <button class="nav-btn" data-route="courses" aria-expanded="false" aria-controls="course-submenu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg>
             <span>Courses</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: auto;"><path d="m9 18 6-6-6-6"/></svg>
           </button>
+          <div class="course-submenu" id="course-submenu">
+            <button class="nav-sub" data-route="calendar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              <span>Calendar</span>
+            </button>
+            <button class="nav-sub" data-route="examination">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+              <span>Examination</span>
+            </button>
+          </div>
         </div>
 
         <button class="nav-btn" data-route="academic-progress">
@@ -232,11 +242,17 @@
         </button>
 
         <div class="achievements-nav-group">
-          <button class="nav-btn" data-route="achievements">
+          <button class="nav-btn" data-route="achievements" aria-expanded="false" aria-controls="achievements-submenu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg>
             <span>Achievements</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: auto;"><path d="m9 18 6-6-6-6"/></svg>
           </button>
+          <div class="achievements-submenu" id="achievements-submenu">
+            <button class="nav-sub" data-route="my-cv">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>My CV</span>
+            </button>
+          </div>
         </div>
 
         <button class="nav-btn" data-route="projects">
@@ -402,14 +418,14 @@
             <img class="hero-brand" src="assets/africa-university-logo.png" alt="Africa University">
             <div class="hero-profile">
               <img class="avatar" src="assets/wayne-matongera-profile.jpg" alt="Profile" id="hero-avatar">
-              <div class="hero-copy">
-                <div class="name-line">
-                  <h1 id="hero-name">Wayne Matongera</h1>
-                  <span class="badge badge-green" id="hero-status-pill" onclick="toggleStudentAlumni()" style="cursor: pointer;" title="Click to toggle Active Student / Alumni status">Active</span>
-                </div>
-                <p id="hero-programme">BSc. Computer Information Systems &bull; Year 2</p>
-                <span id="hero-id">Student ID: 250444</span>
-              </div>
+         <div class="hero-copy">
+  <div class="name-line">
+    <h1 id="hero-name">Wayne Matongera</h1>
+    <span class="badge badge-green" id="hero-status-pill" onclick="toggleStudentAlumni()" style="cursor: pointer;" title="Click to toggle Active Student / Alumni status">Active</span>
+  </div>
+  <p id="hero-programme">BSc. Computer Information Systems &bull; Year 2</p>
+  <span id="hero-id">Student ID: 250444</span>
+</div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button class="btn btn-secondary" id="btn-edit-profile-trigger">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
@@ -1082,6 +1098,311 @@
               <div class="table-row"><div class="course-name"><span class="course-mark">CS</span><span><strong>Data Structures</strong><small>CSC201</small></span></div><span>Dr. P. Nyathi</span><span>4.0</span><span><span class="badge badge-green">Completed · A</span></span><span>&rsaquo;</span></div>
             </div>
           </div>
+
+         <!-- Pending Assignments (Natasha) -->
+          <div class="card" id="assignments-card" style="margin-top: 20px;">
+            <div class="section-head">
+              <div>
+                <h2>Assignments</h2>
+                <p>Pending coursework across your current modules</p>
+              </div>
+              <span style="display: flex; gap: 8px; align-items: center;">
+                <span class="badge badge-amber" id="assign-pending-count">0 pending</span>
+                <span class="badge badge-red" id="assign-overdue-count" style="display: none;">0 overdue</span>
+              </span>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin: 12px 0;">
+              <button type="button" class="btn btn-primary" data-assign-filter="pending" onclick="setAssignFilter('pending')" style="font-size: 11px; padding: 5px 12px;">Pending</button>
+              <button type="button" class="btn btn-secondary" data-assign-filter="submitted" onclick="setAssignFilter('submitted')" style="font-size: 11px; padding: 5px 12px;">Submitted</button>
+              <button type="button" class="btn btn-secondary" data-assign-filter="all" onclick="setAssignFilter('all')" style="font-size: 11px; padding: 5px 12px;">All</button>
+            </div>
+
+            <div id="assign-list" style="display: flex; flex-direction: column; gap: 10px;">
+
+              <div class="assign-row" data-offset="-1" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">WT</span>
+                  <span><strong>Responsive Portfolio Website</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="WTS201 &bull; Web Technologies &bull; 20 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="2" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">CI</span>
+                  <span><strong>Prototype Screens in Figma</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="CIS202 &bull; Mobile Applications &bull; 15 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="5" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">ST</span>
+                  <span><strong>Regression Analysis Worksheet</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="STA201 &bull; Applied Statistics &bull; 10 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="9" data-status="pending" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">CS</span>
+                  <span><strong>Linked List &amp; Stack Implementation</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="CSC201 &bull; Data Structures &bull; 25 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-primary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+              <div class="assign-row" data-offset="-6" data-status="submitted" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); border-left: 4px solid #16a34a; border-radius: 10px; padding: 12px 14px;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span class="course-mark">WT</span>
+                  <span><strong>JavaScript Form Validation Lab</strong>
+                  <small class="assign-meta" style="display: block; color: var(--muted);" data-info="WTS201 &bull; Web Technologies &bull; 10 marks"></small></span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge assign-badge"></span>
+                  <button type="button" class="btn btn-secondary assign-btn" onclick="toggleAssignment(this)" style="font-size: 11px; padding: 6px 12px;"></button>
+                </span>
+              </div>
+
+            </div>
+
+            <script>
+              (function () {
+                var KEY = 'auAssignmentStatus';
+                var filter = 'pending';
+                var rows = document.querySelectorAll('#assign-list .assign-row');
+
+                // restore saved statuses
+                try {
+                  var saved = JSON.parse(localStorage.getItem(KEY)) || {};
+                  rows.forEach(function (r, i) { if (saved[i]) r.setAttribute('data-status', saved[i]); });
+                } catch (e) {}
+
+                function dueDate(offset) {
+                  var d = new Date();
+                  d.setHours(0, 0, 0, 0);
+                  d.setDate(d.getDate() + offset);
+                  return d;
+                }
+
+                function refresh() {
+                  var pending = 0, overdue = 0;
+                  rows.forEach(function (r) {
+                    var offset = parseInt(r.getAttribute('data-offset'), 10);
+                    var status = r.getAttribute('data-status');
+                    var badge = r.querySelector('.assign-badge');
+                    var btn = r.querySelector('.assign-btn');
+                    var meta = r.querySelector('.assign-meta');
+                    var dateText = dueDate(offset).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+                    meta.innerHTML = meta.getAttribute('data-info') + ' &bull; Due ' + dateText;
+
+                    if (status === 'submitted') {
+                      badge.className = 'badge badge-green assign-badge';
+                      badge.textContent = 'Submitted';
+                      btn.className = 'btn btn-secondary assign-btn';
+                      btn.textContent = 'Undo';
+                      r.style.borderLeftColor = '#16a34a';
+                    } else {
+                      pending++;
+                      btn.className = 'btn btn-primary assign-btn';
+                      btn.textContent = 'Mark as submitted';
+                      if (offset < 0) {
+                        overdue++;
+                        badge.className = 'badge badge-red assign-badge';
+                        badge.textContent = 'Overdue by ' + Math.abs(offset) + (Math.abs(offset) === 1 ? ' day' : ' days');
+                        r.style.borderLeftColor = '#dc2626';
+                      } else if (offset === 0) {
+                        badge.className = 'badge badge-red assign-badge';
+                        badge.textContent = 'Due today';
+                        r.style.borderLeftColor = '#dc2626';
+                      } else if (offset <= 3) {
+                        badge.className = 'badge badge-amber assign-badge';
+                        badge.textContent = 'Due in ' + offset + (offset === 1 ? ' day' : ' days');
+                        r.style.borderLeftColor = '#d97706';
+                      } else {
+                        badge.className = 'badge badge-gray assign-badge';
+                        badge.textContent = 'Due in ' + offset + ' days';
+                        r.style.borderLeftColor = '#d97706';
+                      }
+                    }
+                    r.style.display = (filter === 'all' || filter === status) ? 'flex' : 'none';
+                  });
+
+                  document.getElementById('assign-pending-count').textContent = pending + ' pending';
+                  var o = document.getElementById('assign-overdue-count');
+                  o.textContent = overdue + ' overdue';
+                  o.style.display = overdue ? 'inline-flex' : 'none';
+
+                  document.querySelectorAll('[data-assign-filter]').forEach(function (b) {
+                    b.className = 'btn ' + (b.getAttribute('data-assign-filter') === filter ? 'btn-primary' : 'btn-secondary');
+                  });
+                }
+
+                window.setAssignFilter = function (f) { filter = f; refresh(); };
+
+                window.toggleAssignment = function (btn) {
+                  var row = btn.closest('.assign-row');
+                  var now = row.getAttribute('data-status') === 'pending' ? 'submitted' : 'pending';
+                  row.setAttribute('data-status', now);
+                  try {
+                    var s = {};
+                    rows.forEach(function (r, i) { s[i] = r.getAttribute('data-status'); });
+                    localStorage.setItem(KEY, JSON.stringify(s));
+                  } catch (e) {}
+                  refresh();
+                  if (typeof showToast === 'function') {
+                    showToast(now === 'submitted' ? 'Assignment marked as submitted.' : 'Assignment moved back to pending.');
+                  }
+                };
+
+                refresh();
+              })();
+            </script>
+          </div>
+        </div>
+
+        <!-- VIEW: COURSE CALENDAR -->
+        <div class="page-stack screen-view" id="view-calendar">
+          <div class="page-head">
+            <button class="back-link" type="button" onclick="navigate('courses')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              Back
+            </button>
+            <div class="section-head">
+              <div><h2>Calendar</h2><p>Student Profile &rarr; Courses &rarr; Calendar</p></div>
+              <button class="today-button" type="button" id="calendar-today">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+                Today
+              </button>
+            </div>
+          </div>
+
+          <div class="calendar-source-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+            <p>University events are fictional prototype records and are not institutionally verified. Zimbabwe public holiday dates are loaded from <a href="https://date.nager.at/" target="_blank" rel="noopener noreferrer">Nager.Date</a>; confirm official observances with the relevant authorities.</p>
+          </div>
+          <p class="holiday-source-status" id="holiday-source-status" role="status" aria-live="polite">Loading Zimbabwe public holidays…</p>
+
+          <div class="event-legend" aria-label="Calendar event categories">
+            <span><i class="institution"></i>Institution-approved</span>
+            <span><i class="pending"></i>Proposed / pending</span>
+            <span><i class="academic"></i>Academic</span>
+            <span><i class="holiday"></i>Zimbabwe public holiday</span>
+            <span><i class="today"></i>Today</span>
+          </div>
+
+          <div class="calendar-layout">
+            <section class="card calendar-card interactive-calendar" aria-label="Monthly calendar">
+              <div class="calendar-head">
+                <button type="button" id="calendar-prev" aria-label="Previous month">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <div><h2 id="calendar-month">November 2026</h2><p id="calendar-event-count">7 events scheduled</p></div>
+                <button type="button" id="calendar-next" aria-label="Next month">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+              </div>
+              <div class="calendar-days" id="calendar-days" role="grid" aria-label="Calendar dates"></div>
+            </section>
+
+            <aside class="card day-agenda" aria-live="polite">
+              <div class="section-head">
+                <div><h2 id="agenda-date">14 November</h2><p id="agenda-count">1 scheduled event</p></div>
+              </div>
+              <div id="agenda-list"></div>
+              <button class="text-link" type="button" onclick="navigate('examination')">
+                View examination timetable
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </aside>
+          </div>
+          <div class="calendar-tooltip" id="calendar-tooltip" role="tooltip" hidden></div>
+          <div class="calendar-event-modal" id="calendar-event-modal" hidden>
+            <section class="calendar-event-dialog" role="dialog" aria-modal="true" aria-labelledby="calendar-event-dialog-title" tabindex="-1">
+              <button class="calendar-event-close" id="calendar-event-close" type="button" aria-label="Close event details">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg>
+              </button>
+              <span class="header-kicker">CALENDAR EVENT DETAILS</span>
+              <h2 id="calendar-event-dialog-title">Scheduled events</h2>
+              <div id="calendar-event-details"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- VIEW: EXAMINATIONS -->
+        <div class="page-stack screen-view" id="view-examination">
+          <div class="page-head">
+            <button class="back-link" type="button" onclick="navigate('courses')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              Back
+            </button>
+            <div class="section-head">
+              <div><h2>Examinations</h2><p>Student Profile &rarr; Courses &rarr; Examination</p></div>
+            </div>
+          </div>
+
+          <div class="exam-summary-grid">
+            <div class="card">
+              <span class="stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M7 8h10M7 12h7"/></svg></span>
+              <div><small>Upcoming exams</small><strong>3</strong><span>November 2026</span></div>
+            </div>
+            <div class="card">
+              <span class="stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
+              <div><small>Previous pass rate</small><strong>100%</strong><span>4 of 4 passed</span></div>
+            </div>
+            <div class="card">
+              <span class="stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <div><small>Next exam</small><strong>10 Nov</strong><span>Web Technologies</span></div>
+            </div>
+          </div>
+
+          <section class="card exam-card">
+            <div class="section-head">
+              <div><h2>Final examination timetable</h2><p>Semester 1 &middot; 2026/2027</p></div>
+              <span class="badge badge-amber">Timetable published</span>
+            </div>
+            <div class="exam-table">
+              <div class="exam-head"><span>Date</span><span>Course</span><span>Time</span><span>Venue</span><span>Status</span></div>
+              <div class="exam-row">
+                <span><b>10</b><small>Nov 2026</small></span>
+                <span><strong>Web Technologies</strong><small>WTS201</small></span>
+                <span>09:00&ndash;12:00</span><span>Great Hall</span><span class="badge badge-green">Scheduled</span>
+              </div>
+              <div class="exam-row">
+                <span><b>12</b><small>Nov 2026</small></span>
+                <span><strong>Applied Statistics</strong><small>STA201</small></span>
+                <span>14:00&ndash;17:00</span><span>New Building 14</span><span class="badge badge-green">Scheduled</span>
+              </div>
+              <div class="exam-row">
+                <span><b>15</b><small>Nov 2026</small></span>
+                <span><strong>Mobile Applications</strong><small>CIS202</small></span>
+                <span>09:00&ndash;12:00</span><span>ICT Lab 2</span><span class="badge badge-green">Scheduled</span>
+              </div>
+            </div>
+          </section>
+          <div class="exam-note">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+            <p>Arrive at least 30 minutes before each examination and bring your student ID. Confirm any timetable updates with the Academic Registry.</p>
+          </div>
         </div>
 
         <!-- VIEW: ACADEMIC PROGRESS -->
@@ -1100,23 +1421,100 @@
 
         <!-- VIEW: SKILLS & ACTIVITIES -->
         <div class="page-stack screen-view" id="view-skills-activities">
-          <div class="card">
-            <h2>Technical Skills</h2>
-            <div class="tags" style="margin-top: 15px;">
-              <span>HTML5 &amp; CSS3</span><span>JavaScript (ES6+)</span><span>TypeScript</span><span>React</span><span>Python</span><span>PostgreSQL</span><span>Figma</span>
+          <section class="card skills-panel" aria-labelledby="skills-heading">
+            <div class="section-head">
+              <div>
+                <span class="skills-eyebrow">CAPABILITIES</span>
+                <h2 id="skills-heading">Skills</h2>
+                <p>Technical strengths and people skills, with self-reported proficiency.</p>
+              </div>
             </div>
-          </div>
+            <div class="skills-category">
+              <h3>Technical skills</h3>
+              <div class="skills-grid">
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>HTML5 &amp; CSS3</h4><span class="skill-level">Advanced</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="HTML5 and CSS3 proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85"><span style="width: 85%"></span></div>
+                  <div class="skill-card-footer"><span>85% · Self-assessed</span><a href="#/projects">Related projects <span aria-hidden="true">&rarr;</span></a></div>
+                </article>
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>JavaScript (ES6+)</h4><span class="skill-level">Proficient</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="JavaScript proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><span style="width: 75%"></span></div>
+                  <div class="skill-card-footer"><span>75% · Self-assessed</span><a href="#/projects">Related projects <span aria-hidden="true">&rarr;</span></a></div>
+                </article>
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>React &amp; TypeScript</h4><span class="skill-level">Developing</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="React and TypeScript proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><span style="width: 60%"></span></div>
+                  <div class="skill-card-footer"><span>60% · Self-assessed</span><a href="#/projects">Related projects <span aria-hidden="true">&rarr;</span></a></div>
+                </article>
+                <article class="skill-card">
+                  <div class="skill-card-heading"><h4>Python &amp; PostgreSQL</h4><span class="skill-level">Developing</span></div>
+                  <div class="skill-meter" role="progressbar" aria-label="Python and PostgreSQL proficiency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="55"><span style="width: 55%"></span></div>
+                  <div class="skill-card-footer"><span>55% · Self-assessed</span><span class="skill-no-evidence">No evidence linked</span></div>
+                </article>
+              </div>
+            </div>
+            <div class="skills-category">
+              <h3>Soft skills</h3>
+              <div class="soft-skills-grid">
+                <article class="soft-skill"><span aria-hidden="true">01</span><div><h4>Communication</h4><p>Sharing ideas clearly in team and presentation settings.</p></div><strong>Proficient</strong></article>
+                <article class="soft-skill"><span aria-hidden="true">02</span><div><h4>Teamwork</h4><p>Collaborating, listening, and contributing to shared goals.</p></div><strong>Advanced</strong></article>
+                <article class="soft-skill"><span aria-hidden="true">03</span><div><h4>Problem solving</h4><p>Breaking down challenges and testing practical solutions.</p></div><strong>Proficient</strong></article>
+              </div>
+            </div>
+            <p class="skills-disclaimer">Skill levels are self-reported examples and have not been independently assessed.</p>
+          </section>
+
+          <section class="card activities-panel" aria-labelledby="activities-heading">
+            <div class="activities-header">
+              <div>
+                <span class="skills-eyebrow">BEYOND THE CLASSROOM</span>
+                <h2 id="activities-heading">Activities &amp; involvement</h2>
+                <p>Explore roles, contributions, and achievements.</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="activity-add-button">+ Add activity</button>
+            </div>
+            <aside class="activity-demo-notice" aria-label="Demonstration data notice">
+              <strong>Demonstration data only</strong>
+              <span>These sample activities and Pending, Verified, and Rejected labels are for interface demonstration. They are not officially verified, are not connected to a database, and edits last only until you leave or refresh this page.</span>
+            </aside>
+            <div class="activity-filters" role="search" aria-label="Search and filter activities">
+              <label class="activity-search"><span class="sr-only">Search activities</span><input id="activity-search" type="search" placeholder="Search activities, roles, or organizations"></label>
+              <label><span class="sr-only">Filter by category</span><select id="activity-category-filter">
+                <option value="">All categories</option><option value="Leadership">Leadership</option><option value="Technology">Technology</option><option value="Community service">Community service</option><option value="Sports">Sports</option><option value="Arts &amp; culture">Arts &amp; culture</option>
+              </select></label>
+              <label><span class="sr-only">Filter by demonstration status</span><select id="activity-status-filter">
+                <option value="">All demo statuses</option><option value="Pending">Pending</option><option value="Verified">Verified</option><option value="Rejected">Rejected</option>
+              </select></label>
+            </div>
+            <p class="activity-results" id="activity-results" aria-live="polite"></p>
+            <div class="activity-grid" id="activity-list" aria-live="polite"></div>
+            <p class="activity-empty" id="activity-empty" hidden>No activities match these filters. Try another search or add an activity.</p>
+          </section>
         </div>
 
         <!-- VIEW: ACHIEVEMENTS -->
         <div class="page-stack screen-view" id="view-achievements">
-                    <div class="card" style="margin-bottom: 16px;">
+          <div class="card" style="margin-bottom: 16px;">
             <div class="section-head">
               <div>
-                <h2>Recommendation Letters</h2>
-                <p>Request a letter from your lecturer, built from your verified achievements.</p>
+                <h2>Verified Credentials &amp; Achievements</h2>
+                <p>Request a letter from your lecturer, manage your CV, or log a new milestone for verification.</p>
               </div>
-              <button type="button" class="btn btn-primary" onclick="openRequestModal()">+ Request Recommendation</button>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary" onclick="navigate('my-cv')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  <span>My CV</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="openRequestModal()">+ Request Recommendation</button>
+                <button type="button" class="btn btn-primary" id="btn-open-add-achievement" onclick="openAddAchievementModal()">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  + Log New Achievement
+                </button>
+              </div>
             </div>
             <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
           </div>
@@ -1124,6 +1522,108 @@
             <div class="card"><div class="medal">&#127894;</div><span class="badge badge-green">Verified</span><h3>Dean's Honour Roll</h3><p>Recognised for semester GPA performance (3.78).</p></div>
             <div class="card"><div class="medal">&#127942;</div><span class="badge badge-green">Verified</span><h3>GDSC Solution Challenge 2025</h3><p>1st Runner Up for campus accessibility prototype.</p></div>
             <div class="card"><div class="medal">&#128220;</div><span class="badge badge-green">Verified</span><h3>Cisco CCNA Certification</h3><p>Completed CCNA Introduction to Networks.</p></div>
+          </div>
+        </div>
+
+        <!-- VIEW: MY CV (Achievements -> My CV) -->
+        <div class="page-stack screen-view" id="view-my-cv">
+          <div class="page-head">
+            <button class="back-link" onclick="navigate('achievements')">&larr; Back to achievements</button>
+            <div class="section-head">
+              <div>
+                <h2>My CV</h2>
+                <p>Student Profile &rarr; Achievements &rarr; My CV</p>
+              </div>
+              <span class="badge badge-green" id="cv-status-badge">Current CV uploaded</span>
+            </div>
+          </div>
+
+          <div class="card cv-shell">
+            <div id="cv-uploaded-container">
+              <div class="cv-summary">
+                <span class="cv-document-icon uploaded">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  <b id="cv-doc-type">PDF</b>
+                </span>
+                <div>
+                  <div class="cv-title-line">
+                    <h2 id="cv-doc-name">Wayne_Matongera_Academic_CV.pdf</h2>
+                    <span class="badge badge-green">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      Uploaded
+                    </span>
+                  </div>
+                  <p id="cv-doc-meta">Version 1 &bull; 624 KB</p>
+                  <span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="cv-doc-updated">Last updated 20 Oct 2026 &bull; 09:30</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Interactive Document Preview Mini-Paper -->
+              <div class="cv-preview-card" onclick="openCvPreviewModal()" style="cursor: pointer;" title="Click to open full CV preview">
+                <div class="cv-paper">
+                  <header>
+                    <img src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
+                    <span>
+                      <strong>WAYNE MATONGERA</strong>
+                      <small>Computer Information Systems Student</small>
+                    </span>
+                  </header>
+                  <div></div>
+                  <div></div>
+                  <div class="short"></div>
+                  <h3>PROFILE</h3>
+                  <div></div>
+                  <div></div>
+                  <h3>EDUCATION &amp; EXPERIENCE</h3>
+                  <div></div>
+                  <div></div>
+                  <div class="short"></div>
+                </div>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Document preview
+                </span>
+              </div>
+
+              <div class="cv-action-row">
+                <button type="button" class="btn btn-secondary" onclick="openCvPreviewModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  View CV
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="downloadCV()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download CV
+                </button>
+                <button type="button" class="btn btn-primary" onclick="triggerCvUpload()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+                  Replace CV
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Progress Bar (Animated) -->
+            <div class="cv-upload-progress" id="cv-upload-progress-box" style="display: none; margin-top: 18px;">
+              <div>
+                <strong id="cv-upload-label">Uploading CV&hellip;</strong>
+                <span id="cv-upload-pct">0%</span>
+              </div>
+              <progress max="100" value="0" id="cv-progress-bar"></progress>
+            </div>
+
+            <!-- Error message container if file invalid -->
+            <div class="cv-error" id="cv-error-box" style="display: none; margin-top: 15px;" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span>
+                <strong>Upload failed: </strong>
+                <span id="cv-error-text">Unsupported file format.</span>
+              </span>
+            </div>
+
+            <!-- Hidden File Input -->
+            <input type="file" id="cv-file-input" class="cv-file-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleCvFileSelect(event)">
           </div>
         </div>
         <!-- VIEW: RECOMMENDATIONS (Natasha Nyamutsaka - 250426) -->
@@ -1461,8 +1961,209 @@ Faculty of Engineering & Applied Sciences, Africa University</textarea>
         </form>
       </div>
     </div>
+  <div class="modal-scrim activity-modal-scrim" id="activity-detail-modal" style="display: none;" aria-hidden="true">
+    <section class="modal activity-modal" role="dialog" aria-modal="true" aria-labelledby="activity-detail-title" tabindex="-1">
+      <button type="button" class="modal-close" id="activity-detail-close" aria-label="Close activity details">&times;</button>
+      <div id="activity-detail-content"></div>
+    </section>
+  </div>
+
+  <div class="modal-scrim activity-modal-scrim" id="activity-form-modal" style="display: none;" aria-hidden="true">
+    <section class="modal activity-modal" role="dialog" aria-modal="true" aria-labelledby="activity-form-title" tabindex="-1">
+      <button type="button" class="modal-close" id="activity-form-close" aria-label="Close activity form">&times;</button>
+      <span class="skills-eyebrow">DEMONSTRATION ENTRY</span>
+      <h2 id="activity-form-title">Add activity</h2>
+      <p class="activity-form-note">This sample entry is held in page memory only. Its status does not represent institutional verification.</p>
+      <form id="activity-form" class="activity-form">
+        <input type="hidden" id="activity-id">
+        <label class="field"><span>Activity name</span><input id="activity-name" name="name" type="text" maxlength="80" required></label>
+        <div class="activity-form-row">
+          <label class="field"><span>Category</span><select id="activity-category" name="category" required>
+            <option value="">Choose category</option><option>Leadership</option><option>Technology</option><option>Community service</option><option>Sports</option><option>Arts &amp; culture</option>
+          </select></label>
+          <label class="field"><span>Organization</span><input id="activity-organization" name="organization" type="text" maxlength="100" required></label>
+        </div>
+        <label class="field"><span>Student role</span><input id="activity-role" name="role" type="text" maxlength="80" required></label>
+        <div class="activity-form-row">
+          <label class="field"><span>Start date</span><input id="activity-start" name="start" type="date" required></label>
+          <label class="field"><span>End date <small>(leave blank if ongoing)</small></span><input id="activity-end" name="end" type="date"></label>
+        </div>
+        <label class="field"><span>Description</span><textarea id="activity-description" name="description" rows="3" maxlength="500" required></textarea></label>
+        <label class="field"><span>Achievements <small>(one per line)</small></span><textarea id="activity-achievements" name="achievements" rows="3" maxlength="500" placeholder="Describe contributions or outcomes"></textarea></label>
+        <label class="field"><span>Demonstration status</span><select id="activity-status" name="status" required>
+          <option>Pending</option><option>Verified</option><option>Rejected</option>
+        </select></label>
+        <p class="activity-form-note">Status is editable demonstration content only; it is not backed by a real database or verification service.</p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="activity-form-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="activity-form-submit">Add activity</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
   <div id="toast-root"></div>
 
   <script src="script.js"></script>
+  <!-- Modal: Log New Achievement -->
+  <div class="modal-scrim" id="modal-add-achievement" style="display: none;">
+    <div class="modal" style="max-width: 540px;">
+      <button class="modal-close" type="button" onclick="closeAddAchievementModal()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span class="badge badge-amber">Workshop Section 4.1</span>
+        <span style="font-size: 12px; color: var(--muted);">Student Self-Reporting & Verification</span>
+      </div>
+      <h2>Log New Student Achievement</h2>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+        Submit credentials, awards, or certs for faculty verifier approval. Unverified items remain marked pending.
+      </p>
+
+      <form id="form-log-achievement" onsubmit="handleAchievementSubmit(event)" style="margin-top: 15px;">
+        <label class="field">
+          <span>Achievement Title *</span>
+          <input type="text" id="achieve-title" placeholder="e.g. 1st Place National Hackathon" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Category *</span>
+          <select id="achieve-category" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Academic">Academic Awards & Honors</option>
+            <option value="Leadership">Student Leadership & Governance</option>
+            <option value="Certifications">Industry Certifications</option>
+            <option value="Innovation">Projects & Innovation</option>
+            <option value="Sports">Sports & Athletics</option>
+            <option value="Volunteering">Community Engagement & Volunteering</option>
+          </select>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Date Completed *</span>
+          <input type="date" id="achieve-date" required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Impact Level</span>
+          <select id="achieve-level" style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: white;">
+            <option value="Major">Major (National / International recognition)</option>
+            <option value="Moderate">Moderate (University-wide impact)</option>
+            <option value="Minor">Minor (Departmental / Class activity)</option>
+          </select>
+        </label>
+
+        <label class="field" style="margin-top: 10px;">
+          <span>Evidence Description or Document URL *</span>
+          <textarea id="achieve-evidence" rows="3" placeholder="Describe certificate or paste link..." required style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 12px;"></textarea>
+        </label>
+
+        <div class="form-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddAchievementModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit for Verification</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Full CV Preview (Figma Make Replica) -->
+  <div class="modal-scrim" id="modal-cv-preview" style="display: none;">
+    <div class="modal cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-preview-title">
+      <button class="modal-close" onclick="closeCvPreviewModal()" aria-label="Close preview">&times;</button>
+      
+      <div class="cv-modal-head">
+        <span class="cv-document-icon uploaded">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <b>PDF</b>
+        </span>
+        <div>
+          <h2 id="cv-preview-title">Wayne_Matongera_Academic_CV.pdf</h2>
+          <p id="cv-modal-meta">Version 1 &bull; Updated 20 Oct 2026</p>
+        </div>
+      </div>
+
+      <div class="cv-full-preview">
+        <div class="cv-person">
+          <img src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
+          <div>
+            <h1>Wayne Matongera</h1>
+            <p>BSc Computer Information Systems Student</p>
+            <span>w.matongera@africau.edu &bull; +263 77 456 7821 &bull; Mutare, Zimbabwe</span>
+            <span>linkedin.com/in/wayne-matongera &bull; github.com/waynematongera</span>
+          </div>
+        </div>
+
+        <section>
+          <h3>Professional profile</h3>
+          <p>Computer Information Systems student focused on accessible digital products, mobile development, data-informed solutions, and technology for community impact.</p>
+        </section>
+
+        <section>
+          <h3>Education</h3>
+          <strong>Africa University</strong>
+          <p>BSc Computer Information Systems &bull; Current GPA 3.78 / 4.00 &bull; Expected Nov 2028</p>
+        </section>
+
+        <section>
+          <h3>Relevant courses</h3>
+          <div class="cv-course-list">
+            <span>WTS201 &bull; Web Technologies</span>
+            <span>STA201 &bull; Applied Statistics</span>
+            <span>CIS202 &bull; Mobile Applications</span>
+          </div>
+        </section>
+
+        <section>
+          <h3>Achievements</h3>
+          <ul>
+            <li>Dean&rsquo;s List &bull; Semester 2, 2025 (GPA 3.78)</li>
+            <li>Google UX Design Certificate &bull; August 2025</li>
+            <li>Inter-University Hackathon &bull; 2nd Place, March 2025</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Selected projects</h3>
+          <p><strong>Smart Campus Navigator</strong> &mdash; Product designer and Flutter developer<br>
+          <strong>Student Performance Analytics</strong> &mdash; Data analyst and backend developer<br>
+          <strong>EcoTrack Web Platform</strong> &mdash; Frontend lead</p>
+        </section>
+
+        <section>
+          <h3>Leadership &amp; community</h3>
+          <ul>
+            <li>Vice President &bull; Women in Technology Club</li>
+            <li>Volunteer Mentor &bull; Code for Community</li>
+            <li>Core Team Member &bull; Google Developer Student Club</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Skills</h3>
+          <div class="tags">
+            <span>React</span><span>Flutter</span><span>SQL</span><span>Python</span><span>UX Design</span><span>Leadership</span>
+          </div>
+        </section>
+
+        <section class="cv-details-grid">
+          <div>
+            <h3>Languages</h3>
+            <p>English &bull; Shona</p>
+          </div>
+          <div>
+            <h3>Professional interests</h3>
+            <p>Digital inclusion &bull; Robotics &bull; Photography</p>
+          </div>
+        </section>
+
+        <p class="cv-reference">References available upon request (Dr. C. T. Chimedza, Senior Lecturer &amp; Academic Supervisor)</p>
+      </div>
+
+      <div class="form-actions" style="margin-top: 16px;">
+        <button type="button" class="btn btn-secondary" onclick="closeCvPreviewModal()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="downloadCV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download latest
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
