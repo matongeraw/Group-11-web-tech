@@ -149,15 +149,30 @@
         </form>
 
         <!-- Prototype Account Auto-fill Cards -->
-        <div class="demo-login" id="autofill-student-card">
-          <div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16794c" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
-            <span>
-              <strong>Prototype student account</strong>
-              <small>Student ID 250444 &bull; Password: student250444</small>
-            </span>
+        <div class="demo-login" id="autofill-student-card" style="flex-direction: column; align-items: stretch; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="assets/wayne-matongera-profile.jpg" alt="Wayne" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" onerror="this.src='assets/wayne_avatar.png'">
+              <span>
+                <strong style="font-size: 11.5px;">Student 1: Wayne Matongera</strong>
+                <small style="font-size: 10.5px; color: var(--muted); display: block;">ID 250444 &bull; student250444 &bull; BSc. CIS</small>
+              </span>
+            </div>
+            <button type="button" onclick="autoFillStudent('250444')" style="font-size: 11px; padding: 5px 9px;">Auto-fill</button>
           </div>
-          <button type="button" onclick="autoFill('student')">Auto-fill login</button>
+
+          <div style="border-top: 1px dashed #d1d5db; margin: 2px 0;"></div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="assets/nothando-makova-profile.jpg" alt="Nothando" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
+              <span>
+                <strong style="font-size: 11.5px;">Student 2: Nothando V. Makova</strong>
+                <small style="font-size: 10.5px; color: var(--muted); display: block;">ID 250764 &bull; student250764 &bull; BSc. Software Eng (3.92 GPA)</small>
+              </span>
+            </div>
+            <button type="button" onclick="autoFillStudent('250764')" style="font-size: 11px; padding: 5px 9px;">Auto-fill</button>
+          </div>
         </div>
 
         <div class="demo-login" id="autofill-lecturer-card" style="display: none;">
@@ -359,6 +374,12 @@
           <!-- Role switch badge in topbar -->
           <span class="role-badge-pill role-badge-student" id="topbar-role-badge">Student Mode</span>
 
+          <!-- Student Profile Switcher Pill -->
+          <button type="button" id="btn-student-switcher" onclick="switchStudentPersona()" class="btn btn-secondary" style="font-size: 11px; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; height: 32px; background: #fff; border: 1px solid var(--line);" title="Switch between Wayne Matongera and Nothando V. Makova">
+            <img id="student-switcher-avatar" src="assets/nothando-makova-profile.jpg" alt="Student" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover;">
+            <span id="student-switcher-label">Switch to Nothando (SE)</span>
+          </button>
+
           <label class="search">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
             <input placeholder="Search portal..." aria-label="Search portal">
@@ -452,19 +473,19 @@
             <div class="stats-grid">
               <div class="card">
                 <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 7h8M8 11h6"/></svg></span>
-                <div><span>CURRENT GPA</span><strong>3.78</strong><small>Top 12% of class</small></div>
+                <div><span>CURRENT GPA</span><strong id="stat-gpa">3.78</strong><small id="stat-gpa-note">Top 12% of class</small></div>
               </div>
               <div class="card">
                 <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
-                <div><span>COURSES COMPLETED</span><strong>16</strong><small>4 in progress</small></div>
+                <div><span>COURSES COMPLETED</span><strong id="stat-courses">16</strong><small id="stat-courses-note">4 in progress</small></div>
               </div>
               <div class="card">
                 <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>
-                <div><span>DEGREE PROGRESS</span><strong>42%</strong><small>Expected 2028</small></div>
+                <div><span>DEGREE PROGRESS</span><strong id="stat-progress">42%</strong><small id="stat-progress-note">Expected 2028</small></div>
               </div>
               <div class="card">
                 <span class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.2 9 4.7-2 4.7 2-1.2-9"/></svg></span>
-                <div><span>ACHIEVEMENTS</span><strong>6</strong><small>2 this year</small></div>
+                <div><span>ACHIEVEMENTS</span><strong id="stat-achievements">6</strong><small id="stat-achievements-note">2 this year</small></div>
               </div>
             </div>
 
@@ -485,11 +506,11 @@
                   <g><line class="simple-grid" x1="66" x2="796" y1="268" y2="268" /><text class="simple-axis" x="53" y="271" text-anchor="end">0.0</text></g>
                   <line class="simple-axis-line" x1="66" x2="66" y1="28" y2="268" />
                   <text class="simple-axis-title" transform="rotate(-90 17 150)" x="17" y="150">CGPA</text>
-                  <polyline class="simple-cgpa-line" points="66,49.0 309.3,46.0 552.7,44.2 796,41.2" />
-                  <g><line class="simple-tick" x1="66" x2="66" y1="268" y2="272" /><text class="simple-axis semester-label" x="66" y="291" text-anchor="middle">2025-1</text><circle class="simple-point dean" cx="66" cy="49.0" r="4.5" /><text class="point-status dean" x="66" y="36.0" text-anchor="start">3.65</text></g>
-                  <g><line class="simple-tick" x1="309.3" x2="309.3" y1="268" y2="272" /><text class="simple-axis semester-label" x="309.3" y="291" text-anchor="middle">2025-2</text><circle class="simple-point dean" cx="309.3" cy="46.0" r="4.5" /><text class="point-status dean" x="309.3" y="33.0" text-anchor="middle">3.70</text></g>
-                  <g><line class="simple-tick" x1="552.7" x2="552.7" y1="268" y2="272" /><text class="simple-axis semester-label" x="552.7" y="291" text-anchor="middle">2026-1</text><circle class="simple-point dean" cx="552.7" cy="44.2" r="4.5" /><text class="point-status dean" x="552.7" y="31.200000000000003" text-anchor="middle">3.73</text></g>
-                  <g><line class="simple-tick" x1="796" x2="796" y1="268" y2="272" /><text class="simple-axis semester-label" x="796" y="291" text-anchor="middle">2026-2</text><circle class="simple-point dean active" cx="796" cy="41.2" r="6" /><text class="point-status dean" x="796" y="28.200000000000003" text-anchor="end">3.78 · Dean&#39;s List</text></g>
+                  <polyline id="cgpa-polyline" class="simple-cgpa-line" points="66,49.0 309.3,46.0 552.7,44.2 796,41.2" />
+                  <g><line class="simple-tick" x1="66" x2="66" y1="268" y2="272" /><text class="simple-axis semester-label" x="66" y="291" text-anchor="middle">2025-1</text><circle id="cgpa-pt-1" class="simple-point dean" cx="66" cy="49.0" r="4.5" /><text id="cgpa-val-1" class="point-status dean" x="66" y="36.0" text-anchor="start">3.65</text></g>
+                  <g><line class="simple-tick" x1="309.3" x2="309.3" y1="268" y2="272" /><text class="simple-axis semester-label" x="309.3" y="291" text-anchor="middle">2025-2</text><circle id="cgpa-pt-2" class="simple-point dean" cx="309.3" cy="46.0" r="4.5" /><text id="cgpa-val-2" class="point-status dean" x="309.3" y="33.0" text-anchor="middle">3.70</text></g>
+                  <g><line class="simple-tick" x1="552.7" x2="552.7" y1="268" y2="272" /><text class="simple-axis semester-label" x="552.7" y="291" text-anchor="middle">2026-1</text><circle id="cgpa-pt-3" class="simple-point dean" cx="552.7" cy="44.2" r="4.5" /><text id="cgpa-val-3" class="point-status dean" x="552.7" y="31.2" text-anchor="middle">3.73</text></g>
+                  <g><line class="simple-tick" x1="796" x2="796" y1="268" y2="272" /><text class="simple-axis semester-label" x="796" y="291" text-anchor="middle">2026-2</text><circle id="cgpa-pt-4" class="simple-point dean active" cx="796" cy="41.2" r="6" /><text id="cgpa-last-text" class="point-status dean" x="796" y="28.2" text-anchor="end">3.78 · Dean&#39;s List</text></g>
                 </svg>
               </div>
             </div>
@@ -872,21 +893,21 @@
           <div class="card">
             <div class="section-head"><h2>Personal information</h2></div>
             <div class="info-grid">
-              <div class="info-row"><span class="icon-box">&#128197;</span><span><small>Date of birth</small><strong>14 September 2003</strong></span></div>
-              <div class="info-row"><span class="icon-box">&#127891;</span><span><small>Student ID</small><strong>250444</strong></span></div>
-              <div class="info-row"><span class="icon-box">&#127758;</span><span><small>Nationality</small><strong>Zimbabwean</strong></span></div>
-              <div class="info-row"><span class="icon-box">&#128222;</span><span><small>Phone number</small><strong>+263 77 456 7821</strong></span></div>
-              <div class="info-row"><span class="icon-box">&#9993;</span><span><small>Email address</small><strong>w.matongera@africau.edu</strong></span></div>
-              <div class="info-row"><span class="icon-box">&#128205;</span><span><small>Residence</small><strong>Room i24, Boys Residency</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#128197;</span><span><small>Date of birth</small><strong id="info-dob">14 September 2003</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#127891;</span><span><small>Student ID</small><strong id="info-id">250444</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#127758;</span><span><small>Nationality</small><strong id="info-nationality">Zimbabwean</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#128222;</span><span><small>Phone number</small><strong id="info-phone">+263 77 456 7821</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#9993;</span><span><small>Email address</small><strong id="info-email">w.matongera@africau.edu</strong></span></div>
+              <div class="info-row"><span class="icon-box">&#128205;</span><span><small>Residence</small><strong id="info-residence">Room i24, Boys Residency</strong></span></div>
             </div>
           </div>
           <div class="card" style="margin-top: 20px;">
             <div class="section-head"><h2>Academic information</h2></div>
             <div class="detail-grid">
-              <div><small>Programme</small><strong>BSc. Computer Information Systems</strong></div>
-              <div><small>Department</small><strong>Computing &amp; Technology</strong></div>
-              <div><small>Academic level</small><strong>Undergraduate &bull; Level 2.1</strong></div>
-              <div><small>Standing</small><strong class="success-text">Good standing (3.78 GPA)</strong></div>
+              <div><small>Programme</small><strong id="info-programme">BSc. Computer Information Systems</strong></div>
+              <div><small>Department</small><strong id="info-department">Computing &amp; Technology</strong></div>
+              <div><small>Academic level</small><strong id="info-level">Undergraduate &bull; Level 2.1</strong></div>
+              <div><small>Standing</small><strong class="success-text" id="info-standing">Good standing (3.78 GPA)</strong></div>
             </div>
           </div>
         </div>
@@ -1402,7 +1423,7 @@
             </div>
             <div id="my-requests-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;"></div>
           </div>
-          <div class="achievement-grid">
+          <div class="achievement-grid" id="student-achievements-grid">
             <div class="card"><div class="medal">&#127894;</div><span class="badge badge-green">Verified</span><h3>Dean's Honour Roll</h3><p>Recognised for semester GPA performance (3.78).</p></div>
             <div class="card"><div class="medal">&#127942;</div><span class="badge badge-green">Verified</span><h3>GDSC Solution Challenge 2025</h3><p>1st Runner Up for campus accessibility prototype.</p></div>
             <div class="card"><div class="medal">&#128220;</div><span class="badge badge-green">Verified</span><h3>Cisco CCNA Certification</h3><p>Completed CCNA Introduction to Networks.</p></div>
@@ -1449,10 +1470,10 @@
               <div class="cv-preview-card" onclick="openCvPreviewModal()" style="cursor: pointer;" title="Click to open full CV preview">
                 <div class="cv-paper">
                   <header>
-                    <img src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
+                    <img id="cv-mini-avatar" src="assets/wayne-matongera-profile.jpg" alt="Student Profile" onerror="this.src='assets/wayne_avatar.png'">
                     <span>
-                      <strong>WAYNE MATONGERA</strong>
-                      <small>Computer Information Systems Student</small>
+                      <strong id="cv-mini-name">WAYNE MATONGERA</strong>
+                      <small id="cv-mini-programme">Computer Information Systems Student</small>
                     </span>
                   </header>
                   <div></div>
@@ -1968,24 +1989,24 @@ Faculty of Engineering & Applied Sciences, Africa University</textarea>
 
       <div class="cv-full-preview">
         <div class="cv-person">
-          <img src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
+          <img id="cv-full-avatar" src="assets/wayne-matongera-profile.jpg" alt="Wayne Matongera" onerror="this.src='assets/wayne_avatar.png'">
           <div>
-            <h1>Wayne Matongera</h1>
-            <p>BSc Computer Information Systems Student</p>
-            <span>w.matongera@africau.edu &bull; +263 77 456 7821 &bull; Mutare, Zimbabwe</span>
-            <span>linkedin.com/in/wayne-matongera &bull; github.com/waynematongera</span>
+            <h1 id="cv-full-name">Wayne Matongera</h1>
+            <p id="cv-full-programme">BSc Computer Information Systems Student</p>
+            <span id="cv-full-contacts">w.matongera@africau.edu &bull; +263 77 456 7821 &bull; Mutare, Zimbabwe</span>
+            <span id="cv-full-links">linkedin.com/in/wayne-matongera &bull; github.com/waynematongera</span>
           </div>
         </div>
 
         <section>
           <h3>Professional profile</h3>
-          <p>Computer Information Systems student focused on accessible digital products, mobile development, data-informed solutions, and technology for community impact.</p>
+          <p id="cv-full-bio">Computer Information Systems student focused on accessible digital products, mobile development, data-informed solutions, and technology for community impact.</p>
         </section>
 
         <section>
           <h3>Education</h3>
           <strong>Africa University</strong>
-          <p>BSc Computer Information Systems &bull; Current GPA 3.78 / 4.00 &bull; Expected Nov 2028</p>
+          <p id="cv-full-education">BSc Computer Information Systems &bull; Current GPA 3.78 / 4.00 &bull; Expected Nov 2028</p>
         </section>
 
         <section>
