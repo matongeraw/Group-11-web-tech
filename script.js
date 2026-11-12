@@ -700,14 +700,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Toast Notification System
-  window.showToast = function(msg) {
+  window.showToast = function(msg, type = 'info') {
     const root = document.getElementById('toast-root');
     if (!root) return;
 
     const toast = document.createElement('div');
-    toast.className = 'toast';
+    toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`;
+    const icon = type === 'error'
+      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>`;
     toast.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
+      ${icon}
       <span>${msg}</span>
       <button onclick="this.parentElement.remove()" style="margin-left: 8px; cursor: pointer; background:none; border:none; color:inherit; font-weight:bold;">&times;</button>
     `;
@@ -718,11 +721,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   };
 
-  // Wire up login form submit
+  // Wire up login form submit and input listeners
   const loginForm = document.getElementById('auth-login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', window.performLogin);
   }
+
+  const inputIdEl = document.getElementById('login-identity');
+  const inputPassEl = document.getElementById('login-password');
+  if (inputIdEl) inputIdEl.addEventListener('input', () => window.clearLoginErrors && window.clearLoginErrors());
+  if (inputPassEl) inputPassEl.addEventListener('input', () => window.clearLoginErrors && window.clearLoginErrors());
 
   // Allow clicking the topbar role badge to cycle through roles for quick testing!
   const topRoleBadge = document.getElementById('topbar-role-badge');
@@ -741,9 +749,315 @@ document.addEventListener('DOMContentLoaded', () => {
   applyRoleUI(currentRole);
 });
 
+// =========================================================================
+// DEMO STUDENT PROFILES (Multi-Student Showcase)
+// =========================================================================
+window.STUDENT_PROFILES = {
+  '250444': {
+    id: '250444',
+    name: 'Wayne Matongera',
+    shortName: 'Wayne',
+    gender: 'Male',
+    dob: '14 September 2003',
+    programme: 'BSc. Computer Information Systems',
+    programmeFull: 'BSc. Computer Information Systems (Level 2.1)',
+    department: 'Computing & Technology',
+    faculty: 'Faculty of Engineering & Applied Sciences',
+    level: 'Undergraduate • Level 2.1',
+    year: 'Year 2',
+    cgpa: '3.78',
+    gpaClass: 'Good standing (3.78 GPA)',
+    standing: "Dean's List",
+    standingText: 'Top 12% of class',
+    coursesCompleted: '16',
+    coursesProgress: '4 in progress',
+    degreeProgress: '42%',
+    achievementsCount: '6',
+    avatar: 'assets/wayne-matongera-profile.jpg',
+    email: 'w.matongera@africau.edu',
+    phone: '+263 77 456 7821',
+    nationality: 'Zimbabwean',
+    residence: 'Room i24, Boys Residency',
+    linkedin: 'linkedin.com/in/wayne-matongera',
+    github: 'github.com/waynematongera',
+    cvFile: 'Wayne_Matongera_Academic_CV.pdf',
+    cvUpdated: '20 Oct 2026 · 09:30',
+    cvVersion: 1,
+    achievements: [
+      { medal: '🎖️', badge: 'Verified', title: "Dean's Honour Roll", desc: 'Recognised for semester GPA performance (3.78).' },
+      { medal: '🏆', badge: 'Verified', title: 'GDSC Solution Challenge 2025', desc: '1st Runner Up for campus accessibility prototype.' },
+      { medal: '📜', badge: 'Verified', title: 'Cisco CCNA Certification', desc: 'Completed CCNA Introduction to Networks.' }
+    ]
+  },
+  '250764': {
+    id: '250764',
+    name: 'Nothando V. Makova',
+    shortName: 'Nothando',
+    gender: 'Female',
+    dob: '22 June 2004',
+    programme: 'BSc. Software Engineering',
+    programmeFull: 'BSc. Software Engineering (Level 2.1)',
+    department: 'Computing & Information Technology',
+    faculty: 'Faculty of Engineering & Applied Sciences',
+    level: 'Undergraduate • Level 2.1',
+    year: 'Year 2',
+    cgpa: '3.92',
+    gpaClass: "Dean's First Class Honours (3.92 GPA)",
+    standing: "Dean's First Class Honours",
+    standingText: 'Top 3% of class',
+    coursesCompleted: '18',
+    coursesProgress: '4 in progress',
+    degreeProgress: '48%',
+    achievementsCount: '7',
+    avatar: 'assets/nothando-makova-profile.jpg',
+    email: 'makovan@africau.edu',
+    phone: '+263 77 892 1145',
+    nationality: 'Zimbabwean',
+    residence: "Room E12, Women's Executive Hall",
+    linkedin: 'linkedin.com/in/nothando-makova',
+    github: 'github.com/nothandomakova',
+    cvFile: 'Nothando_Makova_Software_Engineering_CV.pdf',
+    cvUpdated: '04 Nov 2026 · 14:15',
+    cvVersion: 2,
+    achievements: [
+      { medal: '🏆', badge: 'Verified', title: "Dean's First Class Honours (3.92 CGPA)", desc: 'Highest semester standing across Faculty of Engineering & Applied Sciences.' },
+      { medal: '🥇', badge: 'Verified', title: '1st Place · Zimbabwe National Collegiate Hackathon 2025', desc: 'National collegiate champion for offline-first maternal healthcare web app.' },
+      { medal: '☁️', badge: 'Verified', title: 'AWS Certified Cloud Practitioner', desc: 'Validation ID: AWS-782194 · Scalable cloud architecture & serverless computing.' },
+      { medal: '💻', badge: 'Verified', title: 'Google Women Techmakers (WTM) Scholar 2025', desc: 'Awarded regional fellowship for female leadership in software engineering.' },
+      { medal: '🎨', badge: 'Verified', title: 'Best Frontend Architecture Award · AU Tech Expo', desc: 'Honored for building high-performance, accessible responsive UI design systems.' }
+    ]
+  }
+};
+
+window.currentStudentId = '250444';
+
+// Apply Student Profile to all Views
+window.applyStudentProfile = function(studentId) {
+  const s = window.STUDENT_PROFILES[studentId] || window.STUDENT_PROFILES['250444'];
+  window.currentStudentId = s.id;
+
+  // 1. Sidebar mini-user
+  const miniName = document.getElementById('mini-user-name');
+  const miniId = document.getElementById('mini-user-id');
+  const miniAvatar = document.getElementById('mini-user-avatar');
+  const headerAvatar = document.getElementById('header-avatar');
+  if (miniName) miniName.textContent = s.name;
+  if (miniId) miniId.textContent = `Student ID ${s.id}`;
+  if (miniAvatar) miniAvatar.src = s.avatar;
+  if (headerAvatar) headerAvatar.src = s.avatar;
+
+  // 2. Overview Hero Card
+  const heroName = document.getElementById('hero-name');
+  const heroAvatar = document.getElementById('hero-avatar');
+  const heroProg = document.getElementById('hero-programme');
+  const heroId = document.getElementById('hero-id');
+  if (heroName) heroName.textContent = s.name;
+  if (heroAvatar) heroAvatar.src = s.avatar;
+  if (heroProg) heroProg.textContent = `${s.programme} • ${s.year}`;
+  if (heroId) heroId.textContent = `Student ID: ${s.id}`;
+
+  // 3. Stats Grid
+  const statGpa = document.getElementById('stat-gpa');
+  const statGpaNote = document.getElementById('stat-gpa-note');
+  const statCourses = document.getElementById('stat-courses');
+  const statCoursesNote = document.getElementById('stat-courses-note');
+  const statProgress = document.getElementById('stat-progress');
+  const statProgressNote = document.getElementById('stat-progress-note');
+  const statAchievements = document.getElementById('stat-achievements');
+  const statAchievementsNote = document.getElementById('stat-achievements-note');
+
+  if (statGpa) statGpa.textContent = s.cgpa;
+  if (statGpaNote) statGpaNote.textContent = s.standingText;
+  if (statCourses) statCourses.textContent = s.coursesCompleted;
+  if (statCoursesNote) statCoursesNote.textContent = s.coursesProgress;
+  if (statProgress) statProgress.textContent = s.degreeProgress;
+  if (statProgressNote) statProgressNote.textContent = 'Expected 2028';
+  if (statAchievements) statAchievements.textContent = s.achievementsCount;
+  if (statAchievementsNote) statAchievementsNote.textContent = s.id === '250764' ? '3 this year' : '2 this year';
+
+  // 4. CGPA Line Chart on Overview
+  const cgpaLine = document.getElementById('cgpa-polyline');
+  const cgpaLastText = document.getElementById('cgpa-last-text');
+  const cgpaVal1 = document.getElementById('cgpa-val-1');
+  const cgpaVal2 = document.getElementById('cgpa-val-2');
+  const cgpaVal3 = document.getElementById('cgpa-val-3');
+
+  if (s.id === '250764') {
+    if (cgpaLine) cgpaLine.setAttribute('points', '66,37.0 309.3,32.2 552.7,31.0 796,28.6');
+    if (cgpaVal1) cgpaVal1.textContent = '3.85';
+    if (cgpaVal2) cgpaVal2.textContent = '3.89';
+    if (cgpaVal3) cgpaVal3.textContent = '3.90';
+    if (cgpaLastText) cgpaLastText.textContent = "3.92 · Dean's First Class";
+  } else {
+    if (cgpaLine) cgpaLine.setAttribute('points', '66,49.0 309.3,46.0 552.7,44.2 796,41.2');
+    if (cgpaVal1) cgpaVal1.textContent = '3.65';
+    if (cgpaVal2) cgpaVal2.textContent = '3.70';
+    if (cgpaVal3) cgpaVal3.textContent = '3.73';
+    if (cgpaLastText) cgpaLastText.textContent = "3.78 · Dean's List";
+  }
+
+  // 5. Personal & Academic Info View
+  const infoDob = document.getElementById('info-dob');
+  const infoId = document.getElementById('info-id');
+  const infoNat = document.getElementById('info-nationality');
+  const infoPhone = document.getElementById('info-phone');
+  const infoEmail = document.getElementById('info-email');
+  const infoRes = document.getElementById('info-residence');
+  const infoProg = document.getElementById('info-programme');
+  const infoDept = document.getElementById('info-department');
+  const infoLevel = document.getElementById('info-level');
+  const infoStanding = document.getElementById('info-standing');
+
+  if (infoDob) infoDob.textContent = s.dob;
+  if (infoId) infoId.textContent = s.id;
+  if (infoNat) infoNat.textContent = s.nationality;
+  if (infoPhone) infoPhone.textContent = s.phone;
+  if (infoEmail) infoEmail.textContent = s.email;
+  if (infoRes) infoRes.textContent = s.residence;
+  if (infoProg) infoProg.textContent = s.programme;
+  if (infoDept) infoDept.textContent = s.department;
+  if (infoLevel) infoLevel.textContent = s.level;
+  if (infoStanding) infoStanding.textContent = s.gpaClass;
+
+  // 6. Achievements Grid
+  const achGrid = document.getElementById('student-achievements-grid');
+  if (achGrid && Array.isArray(s.achievements)) {
+    achGrid.innerHTML = s.achievements.map(a => `
+      <div class="card">
+        <div class="medal">${a.medal}</div>
+        <span class="badge badge-green">${a.badge}</span>
+        <h3>${a.title}</h3>
+        <p>${a.desc}</p>
+      </div>
+    `).join('');
+  }
+
+  // 7. My CV View & Preview Modal
+  const cvDocName = document.getElementById('cv-doc-name');
+  const cvDocMeta = document.getElementById('cv-doc-meta');
+  const cvDocUpdated = document.getElementById('cv-doc-updated');
+  const cvMiniAvatar = document.getElementById('cv-mini-avatar');
+  const cvMiniName = document.getElementById('cv-mini-name');
+  const cvMiniProg = document.getElementById('cv-mini-programme');
+  const cvPreviewTitle = document.getElementById('cv-preview-title');
+  const cvFullAvatar = document.getElementById('cv-full-avatar');
+  const cvFullName = document.getElementById('cv-full-name');
+  const cvFullProg = document.getElementById('cv-full-programme');
+  const cvFullContacts = document.getElementById('cv-full-contacts');
+  const cvFullLinks = document.getElementById('cv-full-links');
+  const cvFullBio = document.getElementById('cv-full-bio');
+  const cvFullEdu = document.getElementById('cv-full-education');
+
+  if (cvDocName) cvDocName.textContent = s.cvFile;
+  if (cvDocMeta) cvDocMeta.textContent = `Version ${s.cvVersion} • 640 KB`;
+  if (cvDocUpdated) cvDocUpdated.textContent = `Last updated ${s.cvUpdated}`;
+  if (cvMiniAvatar) cvMiniAvatar.src = s.avatar;
+  if (cvMiniName) cvMiniName.textContent = s.name.toUpperCase();
+  if (cvMiniProg) cvMiniProg.textContent = `${s.programme} Student`;
+  if (cvPreviewTitle) cvPreviewTitle.textContent = s.cvFile;
+  if (cvFullAvatar) cvFullAvatar.src = s.avatar;
+  if (cvFullName) cvFullName.textContent = s.name;
+  if (cvFullProg) cvFullProg.textContent = `${s.programme} Student`;
+  if (cvFullContacts) cvFullContacts.textContent = `${s.email} • ${s.phone} • Mutare, Zimbabwe`;
+  if (cvFullLinks) cvFullLinks.textContent = `${s.linkedin} • ${s.github}`;
+  if (cvFullBio) {
+    cvFullBio.textContent = s.id === '250764'
+      ? 'Software Engineering student with a 3.92 CGPA and Dean\'s First Class standing. Specializing in frontend architecture, distributed systems, accessible web development, and cloud-native application delivery.'
+      : 'Computer Information Systems student focused on accessible digital products, mobile development, data-informed solutions, and technology for community impact.';
+  }
+  if (cvFullEdu) {
+    cvFullEdu.textContent = `${s.programme} • Current GPA ${s.cgpa} / 4.00 • Expected Nov 2028`;
+  }
+
+  // 8. Update Topbar Switcher Button
+  const otherStudentId = s.id === '250764' ? '250444' : '250764';
+  const otherStudent = window.STUDENT_PROFILES[otherStudentId];
+  const switchAvatar = document.getElementById('student-switcher-avatar');
+  const switchLabel = document.getElementById('student-switcher-label');
+  if (switchAvatar && otherStudent) switchAvatar.src = otherStudent.avatar;
+  if (switchLabel && otherStudent) {
+    switchLabel.textContent = s.id === '250764'
+      ? 'Switch to Wayne (CIS)'
+      : 'Switch to Nothando (SE)';
+  }
+};
+
+window.switchStudentPersona = function() {
+  const newId = window.currentStudentId === '250764' ? '250444' : '250764';
+  window.applyStudentProfile(newId);
+  const student = window.STUDENT_PROFILES[newId];
+  if (typeof showToast === 'function') {
+    showToast(`Switched active profile to: ${student.name} (${student.programme})`);
+  }
+};
+
+window.autoFillStudent = function(studentId) {
+  selectLoginRole('student');
+  const inputId = document.getElementById('login-identity');
+  const inputPass = document.getElementById('login-password');
+  const s = window.STUDENT_PROFILES[studentId] || window.STUDENT_PROFILES['250764'];
+  if (inputId) inputId.value = s.id;
+  if (inputPass) inputPass.value = s.id === '250764' ? 'student250764' : 'student250444';
+  window.currentStudentId = s.id;
+  if (typeof showToast === 'function') {
+    showToast(`Auto-filled credentials for ${s.name} (${s.programme}).`);
+  }
+};
+
+// Credentials registry for prototype authentication & RBAC
+window.AU_CREDENTIALS = {
+  // Students
+  '250444': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu', studentId: '250444' },
+  'matongeraw@africau.edu': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu', studentId: '250444' },
+  'wayne': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu', studentId: '250444' },
+
+  '250764': { password: 'student250764', role: 'student', name: 'Nothando V. Makova', email: 'makovan@africau.edu', studentId: '250764' },
+  'makovan@africau.edu': { password: 'student250764', role: 'student', name: 'Nothando V. Makova', email: 'makovan@africau.edu', studentId: '250764' },
+  'nothando': { password: 'student250764', role: 'student', name: 'Nothando V. Makova', email: 'makovan@africau.edu', studentId: '250764' },
+
+  '250189': { password: 'student250189', role: 'student', name: 'Natasha Chitembwe', email: 'chitembwen@africau.edu', studentId: '250189' },
+  'chitembwen@africau.edu': { password: 'student250189', role: 'student', name: 'Natasha Chitembwe', email: 'chitembwen@africau.edu', studentId: '250189' },
+  '250312': { password: 'student250312', role: 'student', name: 'Kudzai Ndlovu', email: 'ndlovuk@africau.edu', studentId: '250312' },
+  'ndlovuk@africau.edu': { password: 'student250312', role: 'student', name: 'Kudzai Ndlovu', email: 'ndlovuk@africau.edu', studentId: '250312' },
+  '240112': { password: 'student240112', role: 'student', name: 'Tendai Moyo', email: 'moyot@africau.edu', studentId: '240112' },
+  'moyot@africau.edu': { password: 'student240112', role: 'student', name: 'Tendai Moyo', email: 'moyot@africau.edu', studentId: '240112' },
+  '240512': { password: 'student240512', role: 'student', name: 'Jordy Tafadzwa', email: 'tafadzwaj@africau.edu', studentId: '240512' },
+  'tafadzwaj@africau.edu': { password: 'student240512', role: 'student', name: 'Jordy Tafadzwa', email: 'tafadzwaj@africau.edu', studentId: '240512' },
+  'student': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu', studentId: '250444' },
+
+  // Faculty & Lecturers
+  '250731': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+  'chimedzac@africau.edu': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+  'faculty': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+  'lecturer': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+
+  // Academic Registry & Administration
+  '240618': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' },
+  'registry@africau.edu': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' },
+  'admin': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' },
+  'registry': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' }
+};
+
+window.clearLoginErrors = function() {
+  const errBox = document.getElementById('login-error-alert');
+  if (errBox) errBox.style.display = 'none';
+
+  const idInput = document.getElementById('login-identity');
+  const passInput = document.getElementById('login-password');
+  if (idInput) {
+    const parent = idInput.closest('.login-input');
+    if (parent) parent.classList.remove('has-error');
+  }
+  if (passInput) {
+    const parent = passInput.closest('.login-input');
+    if (parent) parent.classList.remove('has-error');
+  }
+};
+
 // Role Selection on Login Screen
 window.selectLoginRole = function(role) {
   currentRole = role;
+  window.clearLoginErrors();
 
   document.querySelectorAll('.demo-role-tab').forEach(tab => {
     if (tab.getAttribute('data-role') === role) {
@@ -774,7 +1088,7 @@ window.selectLoginRole = function(role) {
     subheading.textContent = 'Sign in with your student ID or university email to access your profile.';
     label.textContent = 'Student ID or university email';
     inputId.value = '250444';
-    inputId.placeholder = '250444 or name@africau.edu';
+    inputId.placeholder = '250444 or 250764 or name@africau.edu';
     inputPass.value = 'student250444';
     submitBtn.textContent = 'Sign in to student profile';
     if (privacyText) privacyText.textContent = 'Your academic information is protected and available only through your verified student account.';
@@ -823,36 +1137,124 @@ window.togglePasswordVisibility = function() {
 window.performLogin = function(e) {
   if (e) e.preventDefault();
 
+  window.clearLoginErrors();
+
+  const inputId = document.getElementById('login-identity');
+  const inputPass = document.getElementById('login-password');
+  const errBox = document.getElementById('login-error-alert');
+  const errText = document.getElementById('login-error-text');
+
+  const rawIdentity = (inputId ? inputId.value : '').trim();
+  const identity = rawIdentity.toLowerCase();
+  const password = inputPass ? inputPass.value : '';
+
+  if (!rawIdentity) {
+    if (errBox && errText) {
+      errText.textContent = 'Please enter your Student ID or University email.';
+      errBox.style.display = 'flex';
+    }
+    if (inputId) {
+      const parent = inputId.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputId.focus();
+    }
+    showToast('Please enter your Student ID or email.', 'error');
+    return false;
+  }
+
+  if (!password) {
+    if (errBox && errText) {
+      errText.textContent = 'Please enter your password.';
+      errBox.style.display = 'flex';
+    }
+    if (inputPass) {
+      const parent = inputPass.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputPass.focus();
+    }
+    showToast('Please enter your password.', 'error');
+    return false;
+  }
+
+  const account = window.AU_CREDENTIALS ? window.AU_CREDENTIALS[identity] : null;
+
+  if (!account) {
+    if (errBox && errText) {
+      errText.textContent = `Unrecognized ID or email "${rawIdentity}". For testing, please use Student (250444), Lecturer (250731), or Administrator (240618).`;
+      errBox.style.display = 'flex';
+    }
+    if (inputId) {
+      const parent = inputId.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputId.focus();
+    }
+    showToast('Authentication failed: Account not found.', 'error');
+    return false;
+  }
+
+  // Strict Password Verification
+  if (password !== account.password) {
+    if (errBox && errText) {
+      errText.textContent = `Authentication failed: Incorrect password for ${account.name}. Please enter the correct password.`;
+      errBox.style.display = 'flex';
+    }
+    if (inputPass) {
+      const parent = inputPass.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputPass.focus();
+      inputPass.select();
+    }
+    showToast('Access denied: Incorrect password.', 'error');
+    return false;
+  }
+
+  // Password confirmed! Log in and apply account role
+  currentRole = account.role;
+
   const loginView = document.getElementById('login-view');
   const portalShell = document.getElementById('portal-shell');
 
   if (loginView) loginView.style.display = 'none';
   if (portalShell) portalShell.style.display = 'flex';
 
-  if (typeof applyRoleUI === 'function') applyRoleUI(currentRole || 'student');
-
-  const roleLabels = {
-    student: 'Wayne Matongera (Student)',
-    lecturer: 'Dr. C. T. Chimedza (Faculty Verifier)',
-    admin: 'Academic Registry (Administrator)'
-  };
-
-  if (typeof showToast === 'function') {
-    showToast(`Welcome back, ${roleLabels[currentRole || 'student'] || 'User'}!`);
+  if (account.role === 'student') {
+    const studentId = account.studentId || (account.name && account.name.includes('Nothando') ? '250764' : '250444');
+    window.currentStudentId = studentId;
+    if (typeof window.applyStudentProfile === 'function') {
+      window.applyStudentProfile(studentId);
+    }
   }
-  if (typeof navigate === 'function') navigate('overview');
+
+  if (typeof applyRoleUI === 'function') applyRoleUI(currentRole);
+
+  showToast(`Welcome back, ${account.name}!`);
+
+  if (typeof navigate === 'function') {
+    if (currentRole === 'lecturer') navigate('faculty-dashboard');
+    else if (currentRole === 'admin') navigate('admin-dashboard');
+    else navigate('overview');
+  }
+
+  return true;
 };
 
 window.performLogout = function() {
   const loginView = document.getElementById('login-view');
   const portalShell = document.getElementById('portal-shell');
+  const passInput = document.getElementById('login-password');
+
+  window.clearLoginErrors();
+
+  if (passInput) {
+    passInput.value = '';
+    const parent = passInput.closest('.login-input');
+    if (parent) parent.classList.remove('has-error');
+  }
 
   if (portalShell) portalShell.style.display = 'none';
   if (loginView) loginView.style.display = 'grid';
 
-  if (typeof showToast === 'function') {
-    showToast('You have been signed out securely.');
-  }
+  showToast('You have been signed out securely.');
 };
 
 window.applyRoleUI = function(role) {
@@ -864,6 +1266,7 @@ window.applyRoleUI = function(role) {
   const miniId = document.getElementById('mini-user-id');
   const miniAvatar = document.getElementById('mini-user-avatar');
   const headerAvatar = document.getElementById('header-avatar');
+  const studentSwitcher = document.getElementById('btn-student-switcher');
 
   const navStudent = document.getElementById('nav-student');
   const navLecturer = document.getElementById('nav-lecturer');
@@ -872,6 +1275,7 @@ window.applyRoleUI = function(role) {
   if (navStudent) navStudent.style.display = currentRole === 'student' ? 'flex' : 'none';
   if (navLecturer) navLecturer.style.display = currentRole === 'lecturer' ? 'flex' : 'none';
   if (navAdmin) navAdmin.style.display = currentRole === 'admin' ? 'flex' : 'none';
+  if (studentSwitcher) studentSwitcher.style.display = currentRole === 'student' ? 'inline-flex' : 'none';
 
   if (role === 'lecturer') {
     if (topKicker) topKicker.textContent = 'FACULTY & VERIFIER PORTAL';
@@ -904,10 +1308,9 @@ window.applyRoleUI = function(role) {
       topRoleBadge.textContent = 'Student Mode';
       topRoleBadge.className = 'role-badge-pill role-badge-student';
     }
-    if (miniName) miniName.textContent = 'Wayne Matongera';
-    if (miniId) miniId.textContent = 'Student ID 250444';
-    if (miniAvatar) miniAvatar.src = 'assets/wayne-matongera-profile.jpg';
-    if (headerAvatar) headerAvatar.src = 'assets/wayne-matongera-profile.jpg';
+    if (typeof window.applyStudentProfile === 'function') {
+      window.applyStudentProfile(window.currentStudentId || '250444');
+    }
   }
 };
 
@@ -1898,6 +2301,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- shared student records (one source of truth) ---------- */
   const STUDENTS = {
     '250444': { name: 'Wayne Matongera', programme: 'BSc Computer Information Systems', level: 'Level 2.1', cgpa: 3.78, standing: "Dean's List", modules: 16 },
+    '250764': { name: 'Nothando V. Makova', programme: 'BSc Software Engineering', level: 'Level 2.1', cgpa: 3.92, standing: "Dean's First Class Honours", modules: 18 },
     '250189': { name: 'Natasha Chitembwe', programme: 'BSc Computer Information Systems', level: 'Level 2.1', cgpa: 3.52, standing: "Dean's List", modules: 16 },
     '250312': { name: 'Kudzai Ndlovu', programme: 'BSc Computer Science', level: 'Level 2.1', cgpa: 3.41, standing: 'Good standing', modules: 16 },
     '240112': { name: 'Tendai Moyo', programme: 'Bachelor of Accounting', level: 'Level 3.1', cgpa: 3.89, standing: "Dean's List", modules: 32 },
@@ -1927,9 +2331,14 @@ document.addEventListener('DOMContentLoaded', () => {
       { ts: '2026-11-05T18:42:00', action: 'VERIFY_ACHIEVEMENT', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Google UX Design Certificate' },
       { ts: daysAgo(4), action: 'LOGBOOK_APPROVE', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Week 8 logbook' },
       { ts: daysAgo(3), action: 'VERIFIER_RENEW', actor: REGISTRAR, target: 'Coach T. Sibanda', note: 'Sports & Recreation – renewed to Dec 2027' },
-      { ts: daysAgo(2), action: 'REJECT_ACHIEVEMENT', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Community Outreach Lead – coordinator letter missing' }
+      { ts: daysAgo(2), action: 'REJECT_ACHIEVEMENT', actor: LECTURER, target: 'Wayne Matongera (250444)', note: 'Community Outreach Lead – coordinator letter missing' },
+      { ts: daysAgo(1), action: 'VERIFY_ACHIEVEMENT', actor: LECTURER, target: 'Nothando V. Makova (250764)', note: 'AWS Certified Cloud Practitioner (AWS-782194)' }
     ].map((a, i) => ({ id: 'seed-' + (i + 1), ...a, ts: iso(a.ts), hash: hash(a.ts + a.action + a.target) })),
     verifications: () => [
+      { id: 'v6', sid: '250764', title: '1st Place · Zimbabwe National Collegiate Hackathon 2025', issuer: 'Ministry of Higher & Tertiary Education & Tech Hub Zimbabwe', category: 'Innovation', proof: [{ name: 'Hackathon_Champions_Trophy_Cert.pdf', type: 'PDF · 520 KB' }, { name: 'github.com/nothandomakova/maternal-health-offline', type: 'Source repository' }], submitted: daysAgo(3), status: 'pending' },
+      { id: 'v7', sid: '250764', title: 'AWS Certified Cloud Practitioner', issuer: 'Amazon Web Services · Credential ID AWS-782194', category: 'Certifications', proof: [{ name: 'AWS_Verification_Badge.pdf', type: 'PDF · 310 KB' }], submitted: '2026-10-15T11:00:00', status: 'verified', decided: '2026-10-18T14:30:00' },
+      { id: 'v8', sid: '250764', title: 'Google Women Techmakers (WTM) Scholar 2025', issuer: 'Google Developer Groups Sub-Saharan Africa', category: 'Leadership', proof: [{ name: 'Google_WTM_Award_Letter.pdf', type: 'PDF · 410 KB' }], submitted: daysAgo(4), status: 'pending' },
+      { id: 'v9', sid: '250764', title: 'Best Frontend Architecture Award · AU Tech Expo', issuer: 'Africa University Computer Society', category: 'Innovation', proof: [{ name: 'TechExpo_Excellence_Award.pdf', type: 'PDF · 295 KB' }], submitted: '2026-09-28T16:00:00', status: 'verified', decided: '2026-10-02T10:15:00' },
       { id: 'v1', sid: '250444', title: 'GDSC Solution Challenge 2025 · 1st Runner Up', issuer: 'Google Developer Student Clubs · Mutare Regional Innovation Showcase', category: 'Innovation', proof: [{ name: 'Certificate_of_Award.pdf', type: 'PDF · 412 KB' }, { name: 'github.com/wmatongera/gdsc-solution', type: 'Source repository' }], submitted: daysAgo(2), status: 'pending' },
       { id: 'v2', sid: '250189', title: 'Cisco CCNA: Introduction to Networks', issuer: 'Cisco Networking Academy · Credential ID CSCO-912048', category: 'Certifications', proof: [{ name: 'NetAcad digital badge', type: 'Verification link' }], submitted: daysAgo(1), status: 'pending' },
       { id: 'v3', sid: '250312', title: '1st Place · Africa University ICT Innovation Hackathon 2025', issuer: 'Dean of Engineering & Applied Sciences', category: 'Innovation', proof: [{ name: 'FEAS_Award_Certificate.pdf', type: 'PDF · 288 KB' }, { name: 'Prototype demo video', type: 'MP4 · 2 min' }], submitted: daysAgo(5), status: 'pending' },
@@ -1938,6 +2347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ],
     references: () => [
       { id: 'r1', sid: '250444', opportunity: 'Google Student Developer Fellowship 2026', recipient: 'Google Student Programs Selection Committee', evidence: "Dean's List (CGPA 3.78 / 4.0), Top 12%, WTS201 Grade A (84%), GDSC 1st Runner Up", due: iso(Date.now() + 3 * DAY), status: 'draft' },
+      { id: 'r3', sid: '250764', opportunity: 'AWS Cloud Solutions Engineering Internship', recipient: 'Amazon Web Services Africa University Relations', evidence: "Dean's First Class Honours (CGPA 3.92 / 4.0), AWS Cloud Practitioner, Collegiate Hackathon 1st Place", due: iso(Date.now() + 5 * DAY), status: 'draft' },
       { id: 'r2', sid: '240512', opportunity: 'Old Mutual Zimbabwe Industrial Attachment', recipient: 'Old Mutual Zimbabwe Graduate Recruitment', evidence: 'CGPA 3.65 / 4.0, Mobile Applications Project Lead, Good academic standing', due: iso(Date.now() - 1 * DAY), status: 'draft' }
     ],
     transcripts: () => [
