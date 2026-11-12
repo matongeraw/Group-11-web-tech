@@ -904,3 +904,55 @@
 
 .act-line{display:block}
 @media(max-width:760px){.faculty-actions-col{display:flex;flex-wrap:wrap;gap:8px;width:100%}.faculty-actions-col .btn{white-space:normal!important;flex:1 1 100%}}
+
+/* ===== Authentication Validation & Error States ===== */
+.login-input.has-error {
+  border-color: #dc2626 !important;
+  background: #fff5f5 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2) !important;
+}
+
+.login-error-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 11px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  margin-bottom: 14px;
+  animation: loginShake 0.35s ease-in-out;
+}
+
+.login-error-alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.toast.toast-error {
+  background: #991b1b !important;
+  color: #ffffff !important;
+  border-left: 4px solid #ef4444 !important;
+}
+
+.brand-badge-catchy {
+  display: inline-block;
+  background: rgba(197, 22, 46, 0.12);
+  color: var(--red);
+  font-weight: 700;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Portal | Africa University</title>
+  <title>AU Veritas | Africa University Student Passport &amp; Credential Portal</title>
   <link rel="icon" type="image/png" href="assets/africa-university-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@
         <div class="login-logo-card">
           <img src="assets/africa-university-logo.png" alt="Africa University" onerror="this.src='AU_logo.png'">
         </div>
-        <span class="badge badge-red" style="margin-top: 100px;">STUDENT ACADEMIC PROFILE</span>
+        <span class="badge badge-red" style="margin-top: 100px;">AU VERITAS &bull; VERIFIED STUDENT PASSPORT</span>
         <h1>Your academic journey,<br>all in one place.</h1>
         <p>Access your courses, calendar, examination timetable, CGPA progress, achievements, and professional profile securely.</p>
         <div class="login-features">
@@ -102,7 +102,7 @@
     <!-- Right Login Form Panel -->
     <main class="login-form-panel">
       <div class="login-form-card">
-        <span class="login-eyebrow">STUDENT PORTAL</span>
+        <span class="login-eyebrow">AU VERITAS ECOSYSTEM &bull; GROUP 11</span>
         <h2 id="login-heading">Welcome back to your student portal.</h2>
         <p id="login-subheading">Sign in with your student ID or university email to access your profile.</p>
 
@@ -114,6 +114,11 @@
         </div>
 
         <form id="auth-login-form" onsubmit="performLogin(event)">
+          <div id="login-error-alert" class="login-error-alert" role="alert" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="login-error-text">Incorrect password. Please try again.</span>
+          </div>
+
           <label>
             <span id="label-identity">Student ID or university email</span>
             <div class="login-input">
@@ -160,7 +165,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
             <span>
               <strong>Prototype lecturer account</strong>
-              <small>Lecturer ID 250731 &bull; Dr. C. T. Chimedza</small>
+              <small>Lecturer ID 250731 &bull; Dr. C. T. Chimedza &bull; Password: faculty2026</small>
             </span>
           </div>
           <button type="button" onclick="autoFill('lecturer')">Auto-fill login</button>
@@ -171,7 +176,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
             <span>
               <strong>Prototype administrator account</strong>
-              <small>Admin ID 240618 &bull; Academic Registry</small>
+              <small>Admin ID 240618 &bull; Academic Registry &bull; Password: registryAdmin2026</small>
             </span>
           </div>
           <button type="button" onclick="autoFill('admin')">Auto-fill login</button>

@@ -1,15 +1,22 @@
-# Africa University Student Profile (MyAU Passport)
+# AU Veritas (MyAU Passport) — Africa University
 ### SOE2103 Web Technologies &amp; Requirements Engineering &bull; Group 11
 
-**A Lifetime Student Identity, Academic Standing &amp; Verified Evidence Portal**
+**A Lifetime Student Identity, Academic Standing &amp; Verified Evidence Ecosystem**
 
 ---
 
 ## 1. Project Overview
 
-The **Africa University Student Profile (MyAU Passport)** is a rapid prototype portal gathering a student's entire university journey in a single verified profile: personal details, academic standing, courses, competencies, extracurricular activities, achievements, projects, and contact channels. 
+**AU Veritas (MyAU Passport)** is a rapid prototype portal gathering a student's entire university journey into a single verified, tamper-evident digital profile: personal details, academic standing, course progress, competencies, extracurricular activities, verified achievements, industrial attachment logbooks, automated recommendation letter drafting, and official transcript sealing.
 
-Unlike a conventional registry screen, it follows the student through graduation into alumni life, allowing alumni to present a verified academic and co-curricular summary to employers and postgraduate institutions.
+Unlike a conventional registry screen or unverified CV/LinkedIn page, it follows the student through graduation into alumni life, establishing institutional provenance and verified evidence for employers and postgraduate institutions.
+
+### Prototype Demo Credentials & Roles
+| Role | Identifier / Email | Password | Primary Purpose |
+|:---|:---|:---|:---|
+| **Student** | `250444` / `matongeraw@africau.edu` | `student250444` | Profile view, achievement logging, recommendation requests, attachment status |
+| **Faculty Verifier** | `250731` / `chimedzac@africau.edu` | `faculty2026` | Verification queue, proof inspection, recommendation letter drafting & signing |
+| **Academic Registry** | `240618` / `registry@africau.edu` | `registryAdmin2026` | Official transcript sealing, holds management, verifier governance, immutable audit trail |
 
 ### Connected Prototypes
 - **Interactive Figma Make Prototype**: [cerise-round-80477491.figma.site](https://cerise-round-80477491.figma.site)

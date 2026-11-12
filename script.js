@@ -700,14 +700,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Toast Notification System
-  window.showToast = function(msg) {
+  window.showToast = function(msg, type = 'info') {
     const root = document.getElementById('toast-root');
     if (!root) return;
 
     const toast = document.createElement('div');
-    toast.className = 'toast';
+    toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`;
+    const icon = type === 'error'
+      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>`;
     toast.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
+      ${icon}
       <span>${msg}</span>
       <button onclick="this.parentElement.remove()" style="margin-left: 8px; cursor: pointer; background:none; border:none; color:inherit; font-weight:bold;">&times;</button>
     `;
@@ -718,11 +721,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   };
 
-  // Wire up login form submit
+  // Wire up login form submit and input listeners
   const loginForm = document.getElementById('auth-login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', window.performLogin);
   }
+
+  const inputIdEl = document.getElementById('login-identity');
+  const inputPassEl = document.getElementById('login-password');
+  if (inputIdEl) inputIdEl.addEventListener('input', () => window.clearLoginErrors && window.clearLoginErrors());
+  if (inputPassEl) inputPassEl.addEventListener('input', () => window.clearLoginErrors && window.clearLoginErrors());
 
   // Allow clicking the topbar role badge to cycle through roles for quick testing!
   const topRoleBadge = document.getElementById('topbar-role-badge');
@@ -741,9 +749,54 @@ document.addEventListener('DOMContentLoaded', () => {
   applyRoleUI(currentRole);
 });
 
+// Credentials registry for prototype authentication & RBAC
+window.AU_CREDENTIALS = {
+  // Students
+  '250444': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu' },
+  'matongeraw@africau.edu': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu' },
+  '250189': { password: 'student250189', role: 'student', name: 'Natasha Chitembwe', email: 'chitembwen@africau.edu' },
+  'chitembwen@africau.edu': { password: 'student250189', role: 'student', name: 'Natasha Chitembwe', email: 'chitembwen@africau.edu' },
+  '250312': { password: 'student250312', role: 'student', name: 'Kudzai Ndlovu', email: 'ndlovuk@africau.edu' },
+  'ndlovuk@africau.edu': { password: 'student250312', role: 'student', name: 'Kudzai Ndlovu', email: 'ndlovuk@africau.edu' },
+  '240112': { password: 'student240112', role: 'student', name: 'Tendai Moyo', email: 'moyot@africau.edu' },
+  'moyot@africau.edu': { password: 'student240112', role: 'student', name: 'Tendai Moyo', email: 'moyot@africau.edu' },
+  '240512': { password: 'student240512', role: 'student', name: 'Jordy Tafadzwa', email: 'tafadzwaj@africau.edu' },
+  'tafadzwaj@africau.edu': { password: 'student240512', role: 'student', name: 'Jordy Tafadzwa', email: 'tafadzwaj@africau.edu' },
+  'student': { password: 'student250444', role: 'student', name: 'Wayne Matongera', email: 'matongeraw@africau.edu' },
+
+  // Faculty & Lecturers
+  '250731': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+  'chimedzac@africau.edu': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+  'faculty': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+  'lecturer': { password: 'faculty2026', role: 'lecturer', name: 'Dr. C. T. Chimedza', email: 'chimedzac@africau.edu' },
+
+  // Academic Registry & Administration
+  '240618': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' },
+  'registry@africau.edu': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' },
+  'admin': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' },
+  'registry': { password: 'registryAdmin2026', role: 'admin', name: 'Academic Registry (Administrator)', email: 'registry@africau.edu' }
+};
+
+window.clearLoginErrors = function() {
+  const errBox = document.getElementById('login-error-alert');
+  if (errBox) errBox.style.display = 'none';
+
+  const idInput = document.getElementById('login-identity');
+  const passInput = document.getElementById('login-password');
+  if (idInput) {
+    const parent = idInput.closest('.login-input');
+    if (parent) parent.classList.remove('has-error');
+  }
+  if (passInput) {
+    const parent = passInput.closest('.login-input');
+    if (parent) parent.classList.remove('has-error');
+  }
+};
+
 // Role Selection on Login Screen
 window.selectLoginRole = function(role) {
   currentRole = role;
+  window.clearLoginErrors();
 
   document.querySelectorAll('.demo-role-tab').forEach(tab => {
     if (tab.getAttribute('data-role') === role) {
@@ -823,36 +876,116 @@ window.togglePasswordVisibility = function() {
 window.performLogin = function(e) {
   if (e) e.preventDefault();
 
+  window.clearLoginErrors();
+
+  const inputId = document.getElementById('login-identity');
+  const inputPass = document.getElementById('login-password');
+  const errBox = document.getElementById('login-error-alert');
+  const errText = document.getElementById('login-error-text');
+
+  const rawIdentity = (inputId ? inputId.value : '').trim();
+  const identity = rawIdentity.toLowerCase();
+  const password = inputPass ? inputPass.value : '';
+
+  if (!rawIdentity) {
+    if (errBox && errText) {
+      errText.textContent = 'Please enter your Student ID or University email.';
+      errBox.style.display = 'flex';
+    }
+    if (inputId) {
+      const parent = inputId.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputId.focus();
+    }
+    showToast('Please enter your Student ID or email.', 'error');
+    return false;
+  }
+
+  if (!password) {
+    if (errBox && errText) {
+      errText.textContent = 'Please enter your password.';
+      errBox.style.display = 'flex';
+    }
+    if (inputPass) {
+      const parent = inputPass.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputPass.focus();
+    }
+    showToast('Please enter your password.', 'error');
+    return false;
+  }
+
+  const account = window.AU_CREDENTIALS ? window.AU_CREDENTIALS[identity] : null;
+
+  if (!account) {
+    if (errBox && errText) {
+      errText.textContent = `Unrecognized ID or email "${rawIdentity}". For testing, please use Student (250444), Lecturer (250731), or Administrator (240618).`;
+      errBox.style.display = 'flex';
+    }
+    if (inputId) {
+      const parent = inputId.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputId.focus();
+    }
+    showToast('Authentication failed: Account not found.', 'error');
+    return false;
+  }
+
+  // Strict Password Verification
+  if (password !== account.password) {
+    if (errBox && errText) {
+      errText.textContent = `Authentication failed: Incorrect password for ${account.name}. Please enter the correct password.`;
+      errBox.style.display = 'flex';
+    }
+    if (inputPass) {
+      const parent = inputPass.closest('.login-input');
+      if (parent) parent.classList.add('has-error');
+      inputPass.focus();
+      inputPass.select();
+    }
+    showToast('Access denied: Incorrect password.', 'error');
+    return false;
+  }
+
+  // Password confirmed! Log in and apply account role
+  currentRole = account.role;
+
   const loginView = document.getElementById('login-view');
   const portalShell = document.getElementById('portal-shell');
 
   if (loginView) loginView.style.display = 'none';
   if (portalShell) portalShell.style.display = 'flex';
 
-  if (typeof applyRoleUI === 'function') applyRoleUI(currentRole || 'student');
+  if (typeof applyRoleUI === 'function') applyRoleUI(currentRole);
 
-  const roleLabels = {
-    student: 'Wayne Matongera (Student)',
-    lecturer: 'Dr. C. T. Chimedza (Faculty Verifier)',
-    admin: 'Academic Registry (Administrator)'
-  };
+  showToast(`Welcome back, ${account.name}!`);
 
-  if (typeof showToast === 'function') {
-    showToast(`Welcome back, ${roleLabels[currentRole || 'student'] || 'User'}!`);
+  if (typeof navigate === 'function') {
+    if (currentRole === 'lecturer') navigate('faculty-dashboard');
+    else if (currentRole === 'admin') navigate('admin-dashboard');
+    else navigate('overview');
   }
-  if (typeof navigate === 'function') navigate('overview');
+
+  return true;
 };
 
 window.performLogout = function() {
   const loginView = document.getElementById('login-view');
   const portalShell = document.getElementById('portal-shell');
+  const passInput = document.getElementById('login-password');
+
+  window.clearLoginErrors();
+
+  if (passInput) {
+    passInput.value = '';
+    const parent = passInput.closest('.login-input');
+    if (parent) parent.classList.remove('has-error');
+  }
 
   if (portalShell) portalShell.style.display = 'none';
   if (loginView) loginView.style.display = 'grid';
 
-  if (typeof showToast === 'function') {
-    showToast('You have been signed out securely.');
-  }
+  showToast('You have been signed out securely.');
 };
 
 window.applyRoleUI = function(role) {
