@@ -969,17 +969,7 @@ window.applyStudentProfile = function(studentId) {
     cvFullEdu.textContent = `${s.programme} • Current GPA ${s.cgpa} / 4.00 • Expected Nov 2028`;
   }
 
-  // 8. Update Topbar Switcher Button
-  const otherStudentId = s.id === '250764' ? '250444' : '250764';
-  const otherStudent = window.STUDENT_PROFILES[otherStudentId];
-  const switchAvatar = document.getElementById('student-switcher-avatar');
-  const switchLabel = document.getElementById('student-switcher-label');
-  if (switchAvatar && otherStudent) switchAvatar.src = otherStudent.avatar;
-  if (switchLabel && otherStudent) {
-    switchLabel.textContent = s.id === '250764'
-      ? 'Switch to Wayne (CIS)'
-      : 'Switch to Nothando (SE)';
-  }
+
 };
 
 window.switchStudentPersona = function() {
@@ -1266,7 +1256,6 @@ window.applyRoleUI = function(role) {
   const miniId = document.getElementById('mini-user-id');
   const miniAvatar = document.getElementById('mini-user-avatar');
   const headerAvatar = document.getElementById('header-avatar');
-  const studentSwitcher = document.getElementById('btn-student-switcher');
 
   const navStudent = document.getElementById('nav-student');
   const navLecturer = document.getElementById('nav-lecturer');
@@ -1275,7 +1264,6 @@ window.applyRoleUI = function(role) {
   if (navStudent) navStudent.style.display = currentRole === 'student' ? 'flex' : 'none';
   if (navLecturer) navLecturer.style.display = currentRole === 'lecturer' ? 'flex' : 'none';
   if (navAdmin) navAdmin.style.display = currentRole === 'admin' ? 'flex' : 'none';
-  if (studentSwitcher) studentSwitcher.style.display = currentRole === 'student' ? 'inline-flex' : 'none';
 
   if (role === 'lecturer') {
     if (topKicker) topKicker.textContent = 'FACULTY & VERIFIER PORTAL';
